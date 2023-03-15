@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TestItems;
+use App\Models\Tests;
 use Illuminate\Http\Request;
 
 class TestItemsController extends Controller
@@ -14,7 +15,7 @@ class TestItemsController extends Controller
      */
     public function index()
     {
-        $data = TestItems::all();
+        $data = Tests::all();
         return view('testItems.index', compact('data'));
     }
 
@@ -50,7 +51,7 @@ class TestItemsController extends Controller
         $input['name'] = $request['name'];
 
         try {
-            TestItems::create($input);
+            Tests::create($input);
             return redirect('/tests')->with('status', 'Berhasil menambah data');
         } catch (\Throwable $th) {
             return $th;
@@ -104,7 +105,7 @@ class TestItemsController extends Controller
        
 
         try {
-            TestItems::where('id', $test->id)->update($input);
+            Tests::where('id', $test->id)->update($input);
             return redirect('/tests')->with('status', 'Berhasil mengubah data');
         } catch (\Throwable $th) {
             return $th;
@@ -121,7 +122,7 @@ class TestItemsController extends Controller
     public function destroy(TestItems $test)
     {
         try {
-            TestItems::where('id', $test->id)->delete();
+            Tests::where('id', $test->id)->delete();
             return redirect('/tests')->with('status', 'Berhasil menghapus data');
         } catch (\Throwable $th) {
             return $th;

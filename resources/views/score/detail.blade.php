@@ -133,7 +133,7 @@
             <form action="{{  url('parentStudent') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Students</h5>
+                    <h5 class="modal-title">Konfirmasi</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -173,7 +173,83 @@
         </div>
     </div>
 
-    
+    <style>
+        .select2-hidden-accessible {
+            border: 0 !important;
+            clip: rect(0 0 0 0) !important;
+            height: 1px !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            position: absolute !important;
+            width: 1px !important
+        }
+
+        .select2-container--default .select2-selection--single,
+        .select2-selection .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0;
+            padding: 6px 12px;
+            height: 40px
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #aaa;
+            border-radius: 4px
+        }
+
+        .select2-container .select2-selection--single {
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            height: 28px;
+            user-select: none;
+            -webkit-user-select: none
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            padding-right: 10px
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            padding-left: 0;
+            padding-right: 0;
+            height: auto;
+            margin-top: -3px
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #444;
+            line-height: 28px
+        }
+
+        .select2-container--default .select2-selection--single,
+        .select2-selection .select2-selection--single {
+            border: 1px solid #d2d6de;
+            border-radius: 0 !important;
+            padding: 6px 12px;
+            height: 40px !important
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 30px;
+            position: absolute;
+            top: 6px !important;
+            right: 1px;
+            width: 20px
+        }
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                closeOnSelect: true
+            });
+        });
+
+    </script>
 </div>
 
 

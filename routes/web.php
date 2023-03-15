@@ -6,6 +6,7 @@ use App\Http\Controllers\AnnouncesController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\PointCategoriesController;
 use App\Http\Controllers\ReedemItemsController;
+use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\TestItemsController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,10 @@ Route::resource('/pointCategories', PointCategoriesController::class);
 Route::resource('/tests', TestItemsController::class);
 Route::resource('/parents', ParentsController::class);
 Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
+Route::prefix('score')->group(function () {
+    Route::get('/form', [ScoreController::class, 'index']);
+    Route::post('/store', [ScoreController::class, 'store']);
+});
 
 Route::get('/', function () {
     return view('welcome');
