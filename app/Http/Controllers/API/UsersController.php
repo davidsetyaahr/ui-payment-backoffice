@@ -93,14 +93,20 @@ class UsersController extends Controller
                     ->select('average_score')
                     ->orderBy('id', 'DESC')
                     ->first();
-                $student = array_merge($val->toArray(), $score->toArray());
-                array_push($students, $student);
+                if ($score) {
+                    $student = array_merge($val->toArray(), $score->toArray());
+                    array_push($students, $student);
+                } else {
+                    $student = array_merge($val->toArray(), (['average_score' => 0]));
+                    array_push($students, $student);
+                }
             }
             return response()->json([
                 'code' => '00',
                 'payload' => $students,
             ], 200);
         } catch (\Throwable $th) {
+            return $th;
             return response()->json([
                 'code' => '400',
                 'error' => 'internal server error',

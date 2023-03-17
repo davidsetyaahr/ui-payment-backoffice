@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Score;
 use App\Models\Students;
+use App\Models\StudentScore;
+use App\Models\StudentScoreDetail;
 use App\Models\TestItems;
 use App\Models\Tests as ModelsTests;
 use Illuminate\Http\Request;
@@ -23,11 +25,12 @@ class ScoreController extends Controller
     {
         try {
             $students = Students::join('price as p', 'p.id', 'student.priceid')
-                    ->select('student.name', 'student.id')
-                    ->where('p.program', '!=', 'Private')
-                    ->get();
+                ->select('student.name', 'student.id')
+                ->where('p.program', '!=', 'Private')
+                ->get();
             $test = ModelsTests::all();
-            $item = TestItems::all();
+            $item = TestItems::orderBy('id', 'ASC')->get();
+
             $title = 'Input Score';
             $data = (object)[
                 'type' => 'create',
@@ -56,7 +59,27 @@ class ScoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        try {
+            $scores = StudentScore::create([
+                'test_id' => $request->test,
+                'student_id' => $request->student,
+                'average_score' => round($request->total),
+                'comment' => $request->comment ?? '-',
+                'date' => $request->date,
+            ]);
+            for ($i = 0; $i < count($request->items); $i++) {
+                StudentScoreDetail::create([
+                    'student_score_id' => $scores->id,
+                    'test_item_id' => $request->items[$i],
+                    'score' => $request->score[$i],
+                ]);
+            }
+            return redirect('/score/form')->with('success', 'Success add Score');
+        } catch (\Throwable $th) {
+            return $th;
+            //throw $th;
+        }
     }
 
     /**
@@ -102,5 +125,10 @@ class ScoreController extends Controller
     public function destroy(Score $score)
     {
         //
+    }
+
+    public function filter(Request $request)
+    {
+        return $request;
     }
 }

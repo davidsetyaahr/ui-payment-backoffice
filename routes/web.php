@@ -6,6 +6,7 @@ use App\Http\Controllers\AnnouncesController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\PointCategoriesController;
 use App\Http\Controllers\ReedemItemsController;
+use App\Http\Controllers\ReedemPointController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\TestItemsController;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +32,11 @@ Route::resource('/parents', ParentsController::class);
 Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
 Route::prefix('score')->group(function () {
     Route::get('/form', [ScoreController::class, 'index']);
+    Route::get('/filterScore', [ScoreController::class, 'filter']);
     Route::post('/store', [ScoreController::class, 'store']);
 });
+Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
+Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
 
 Route::get('/', function () {
     return view('welcome');

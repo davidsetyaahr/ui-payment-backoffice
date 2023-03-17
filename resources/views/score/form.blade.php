@@ -17,7 +17,6 @@
         border-radius: 0.25rem;
         transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
-
 </style>
 <div class="content">
     <div class="page-inner py-5 panel-header bg-primary-gradient">
@@ -66,20 +65,21 @@
                     @endif
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data'  : 'Edit Data'}}</h4>
+                            <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data' : 'Edit Data'}}</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3">
 
                                     <label for="email2">Class</label>
-                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                        name="class">
+                                    <select class="form-control" style="width:100%;" name="class" id="class">
                                         <option value="">Select Class
                                         </option>
+                                        <option value="Private">Private</option>
+                                        <option value="General">General</option>
                                         {{-- @foreach ($class as $st)
 
-                                            <option value="{{$st->id}}">{{$st->name}}
+                                        <option value="{{$st->id}}">{{$st->name}}
                                         </option>
                                         @endforeach --}}
                                     </select>
@@ -93,7 +93,7 @@
 
                                     <label for="email2">Students</label>
                                     <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                        name="student">
+                                        name="student" id="student">
                                         <option value="">Select Student
                                         </option>
                                         @foreach ($students as $st)
@@ -112,7 +112,7 @@
 
                                     <label for="email2">Test</label>
                                     <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                        name="test">
+                                        name="test" id="test">
                                         <option value="">Select Test
                                         </option>
                                         @foreach ($test as $st)
@@ -130,14 +130,15 @@
                                 <div class="col-md-2">
 
                                     <label for="email2">Date</label>
-                                    <input type="date" class="form-control" name="date" placeholder="Date" />
+                                    <input type="date" class="form-control" name="date" id="date" placeholder="Date" />
                                     @error('date')
                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                     @enderror
 
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="submit" class="btn btn-sm btn-primary mt-4">Filter</button>
+                                    <button type="button" onclick="" id="filter"
+                                        class="btn btn-sm btn-primary mt-4">Filter</button>
                                 </div>
                             </div>
 
@@ -150,7 +151,7 @@
                                                     <th>No</th>
                                                     <th>Item</th>
                                                     <th>Score</th>
-                                                    <th >Grade</th>
+                                                    <th>Grade</th>
                                                 </tr>
                                             </thead>
 
@@ -160,12 +161,25 @@
                                                 @endphp
                                                 @foreach ($item as $it)
                                                 <tr style="height: 40px!important">
-                                                    <td style="height: 40px!important; padding: 8px 16px!important;">{{ $no }}</td>
-                                                    <td style="height: 40px!important; padding: 8px 16px!important;">{{ $it->name}}</td>
-                                                    <td style="height: 40px!important; padding: 8px 16px!important;"><input type="number" name="score[]" class="form-table" id="">
+                                                    <td style="height: 40px!important; padding: 8px 16px!important;">{{
+                                                        $no }}</td>
+                                                    <td style="height: 40px!important; padding: 8px 16px!important;">{{
+                                                        $it->name}}</td>
+                                                    <td style="height: 40px!important; padding: 8px 16px!important;">
+                                                        <input type="hidden" value="{{$it->id}}" name="items[]">
+                                                        <input type="number" id="{{'score'.$no}}" name="score[]"
+                                                            class="form-table score">
+                                                        <script type="text/javascript">
+                                                            $(document).ready(function() {
+                                                                $("#{{'score'.$no.''}}").keyup(function(e) {
+                                                                   
+                                                                })
+                                                            });
+                                                        </script>
                                                     </td>
-                                                    <td style="height: 40px!important; padding: 8px 16px!important; text-align:center;"  >
-                                                        <h6>A</h6>
+                                                    <td
+                                                        style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
+                                                        <h6 id="grade{{$no}}"></h6>
                                                     </td>
                                                 </tr>
                                                 @php
@@ -174,12 +188,17 @@
                                                 @endforeach
                                                 <tr>
                                                     <td colspan="2">Average</td>
-                                                    <td  style="height: 40px!important; padding: 8px 16px!important;"><input type="number" name="total" class="form-table" readonly id="">
+                                                    <td style="height: 40px!important; padding: 8px 16px!important;">
+                                                        <input type="number" name="total" class="form-table average"
+                                                            readonly id="">
                                                     </td>
-                                                    <td style="height: 40px!important; padding: 8px 16px!important; text-align:center;"><h6>A</h6></td>
+                                                    <td
+                                                        style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
+                                                        <h6 id="gradeAvg"></h6>
+                                                    </td>
                                                 </tr>
                                             </tbody>
-                                           
+
                                         </table>
                                     </div>
                                 </div>
@@ -188,13 +207,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Comment For Student</label>
-                                        <textarea name="" class="form-control" id="" cols="30" rows="3"></textarea>
+                                        <textarea name="comment" class="form-control" id="" cols="30"
+                                            rows="3"></textarea>
                                     </div>
-    
+
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div class="card-action mt-3">
                             <button type="submit" class="btn btn-success">Submit</button>
                             <button type="button" data-toggle="modal" data-target="#mdlCancel"
@@ -228,47 +248,62 @@
 <script>
     $(document).ready(function () {
         $('#summernote').summernote();
+        $(".score").keyup(function(e) {
+           
+           var len = $('.score').length;
+           var avg = 0;
+           var total = 0;
+            for (let index = 1; index <= len; index++) {
+                var v = $("#score"+index).val();
+                $("#grade"+index).text($('#score'+index).val() != ''?getGrade(v):'');
+                var tmpScore = parseInt($('#score'+index).val() != ''? $('#score'+index).val():  0);
+                total += tmpScore;
+            }
+            avg = total / len;
+            var grade = getGrade(avg);
+            console.log(grade);
+            $('.average').val(avg.toFixed(2));
+            $('#gradeAvg').text(grade);
+        });
     });
-    $(document).ready(function () {
-        $('#kandungan').summernote();
-    });
-    $(document).ready(function () {
-        $('#aturan').summernote();
-    });
+   function getGrade(score) {
+    if (score < 50) {
+        return 'E';
+    } else if ( score >= 50 &&score <= 59) {
+        return 'D';
+    } else if ( score >= 60 &&score <= 69) {
+        return 'C';
+    } else if ( score >= 70 &&score <= 85) {
+        return 'B';
+    } else if ( score >= 86 &&score <= 100) {
+        return 'A';
+    }
+   }
+    
 
 </script>
 
-<script>
-    $(document).ready(function () {
-        // Basic
-        $('.dropify').dropify();
-
-
-        // Used events
-        var drEvent = $('#input-file-events').dropify();
-
-        drEvent.on('dropify.beforeClear', function (event, element) {
-            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function (event, element) {
-            alert('File deleted');
-        });
-
-        drEvent.on('dropify.errors', function (event, element) {
-            console.log('Has Errors');
-        });
-
-        var drDestroy = $('#input-file-to-destroy').dropify();
-        drDestroy = drDestroy.data('dropify')
-        $('#toggleDropify').on('click', function (e) {
-            e.preventDefault();
-            if (drDestroy.isDropified()) {
-                drDestroy.destroy();
-            } else {
-                drDestroy.init();
+<script type="text/javascript">
+    $(document).on("click", "#filter", function () {
+        var classes = document.getElementById("class");
+        var student = document.getElementById("student");
+        var test = document.getElementById("test");
+        var date = document.getElementById("date");
+        $.ajax({
+            type: "GET",
+            url: "/score/filterScore?class="+classes+"&student="+student+"&test="+test+"&date="+date,
+            dataType: 'JSON',
+            success: function(res) {
+               
+                // if (res) {
+                //     $("#harga_barang").val(res.harga_jual);
+                //     $("#nama_barang").val(res.nama_barang);
+                //     $('#jumlah').focus();
+                // } else {
+                //     $("#harga_barang").empty();
+                // }
             }
-        })
+        });
     });
 
 </script>
