@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class PointHistory extends Model
 {
     public $timestamps = false;
     use HasFactory;
-    protected $table = 'attendances';
-    protected $fillable = ['price_id', 'date', 'teacher_id', 'activity', 'text_book', 'excercise_book'];
+    protected $table = 'point_histories';
+    protected $fillable = ['student_id', 'date', 'total_point', 'type'];
 }

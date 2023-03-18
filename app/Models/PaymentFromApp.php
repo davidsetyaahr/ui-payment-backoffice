@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class PaymentFromApp extends Model
 {
     public $timestamps = false;
     use HasFactory;
-    protected $table = 'attendances';
-    protected $fillable = ['price_id', 'date', 'teacher_id', 'activity', 'text_book', 'excercise_book'];
+    protected $table = 'payment_from_apps';
+    protected $fillable = ['student_id', 'transaction_id', 'date', 'total', 'status'];
 }

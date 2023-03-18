@@ -41,8 +41,8 @@
                     </a>
 
                 </li>
-                <li class="nav-item {{ Request::segment(1) == 'user' ? 'active' : '' }}">
-                    <a href="{{ url('/user') }}" class="collapsed">
+                <li class="nav-item {{ Request::segment(1) == 'score' ? 'active' : '' }}">
+                    <a href="{{ url('/score/form') }}" class="collapsed">
                         <i class="fas fa-user-alt"></i>
                         <p>Student Score</p>
                     </a>
@@ -92,8 +92,8 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item {{ Request::segment(1) == 'user' ? 'active' : '' }}">
-                    <a href="{{ url('/user') }}" class="collapsed">
+                <li class="nav-item {{ Request::segment(1) == 'reedemPoint' ? 'active' : '' }}">
+                    <a href="{{ url('/reedemPoint') }}" class="collapsed">
                         <i class="fas fa-download"></i>
                         <p>Reedem Point</p>
                     </a>

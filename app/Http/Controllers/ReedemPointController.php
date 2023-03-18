@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PointHistory;
+use App\Models\PointHistoryCategory;
 use App\Models\ReedemItems;
 use App\Models\ReedemPoint;
 use App\Models\Students;
@@ -27,6 +29,7 @@ class ReedemPointController extends Controller
 
     public function store(Request $request)
     {
+        return $request;
         try {
             $tmpTotal = 0;
             for ($i = 0; $i < count($request->item); $i++) {
@@ -45,6 +48,16 @@ class ReedemPointController extends Controller
                         'point' => intval($items->point),
                         'student_id' => $request->student,
                         'qty' => $request->qty[$i],
+                    ]);
+                    $history = PointHistory::create([
+                        'student_id' => $request->student,
+                        'date' => date('Y-m-d'),
+                        'total_point' => intval($items->point),
+                        'type' => 'redeem',
+                    ]);
+                    PointHistoryCategory::create([
+                        'point_history_id' => $history->id,
+                        'point_category_id' =>  $request->item[$i],
                     ]);
                 }
                 $newPoint = intval($request->point) - $subTotal;

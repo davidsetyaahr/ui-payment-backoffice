@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\InfoController;
+use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\StudentController;
 use App\Http\Controllers\API\UsersController;
+use App\Http\Controllers\API\ScoreController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +28,15 @@ Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
 Route::get('announcement', [InfoController::class, 'getAnnouncement']);
 Route::get('advertise', [InfoController::class, 'getAdvertise']);
 Route::get('agenda', [InfoController::class, 'getAgenda']);
+Route::get('myPoint/{studentId}', [StudentController::class, 'getMyPoint']);
+Route::prefix('score')->group(function () {
+    Route::get('/getTestItem', [ScoreController::class, 'getTest']);
+    Route::get('/getScore/{studentId}/{testId}', [ScoreController::class, 'getScoreByTest']);
+});
+Route::prefix('payment')->group(function () {
+    Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
+    Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
+});
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
