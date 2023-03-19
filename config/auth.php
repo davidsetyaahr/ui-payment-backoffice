@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Teacher;
+
 return [
 
     /*
@@ -38,7 +40,16 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'teacher',
+        ],
+        'api' => [
+            'driver' => 'token',
             'provider' => 'users',
+        ],
+
+        'teacher' => [
+          'driver' => 'session',
+          'provider' => 'teacher',
         ],
     ],
 
@@ -60,11 +71,15 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class,
+        // ],
 
+        'teacher' => [
+            'driver' => 'eloquent',
+            'model' => Teacher::class,
+          ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

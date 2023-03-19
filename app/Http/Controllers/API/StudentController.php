@@ -16,15 +16,16 @@ class StudentController extends Controller
         try {
             // return $studentId;
             $query = [];
-            $query = PointHistoryCategory::join('point_histories', 'point_histories.id', 'point_history_categories.point_history_id')
-                ->join('point_categories', 'point_categories.id', 'point_history_categories.point_category_id')
-                ->select('point_histories.date', 'point_histories.total_point', 'point_histories.type', 'point_categories.name')
-                ->where('point_histories.student_id', $studentId);
+            $query = PointHistory::select('date', 'total_point', 'type', 'keterangan')
+                ->where('student_id', $studentId);
             if ($request->start && $request->end) {
-                $query = $query->whereBetween('point_histories.date',  [$request->start, $request->end]);
+                $query = $query->whereBetween('date',  [$request->start, $request->end]);
             }
 
-            $data = $query->orderBy('point_histories.date', 'DESC')->paginate(10);
+            $data = $query->orderBy('date', 'DESC')->cursorPaginate(10);
+            if ($request->start && $request->end) {
+                $data->withPath(url('/api/myPoint/' . $studentId . '?start=' . $request->start . '&end=' . $request->start));
+            }
             return response()->json([
                 'code' => '00',
                 'payload' => $data,

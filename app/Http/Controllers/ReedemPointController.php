@@ -49,16 +49,17 @@ class ReedemPointController extends Controller
                         'student_id' => $request->student,
                         'qty' => $request->qty[$i],
                     ]);
-                    $history = PointHistory::create([
+                    PointHistory::create([
                         'student_id' => $request->student,
                         'date' => date('Y-m-d'),
                         'total_point' => intval($items->point),
                         'type' => 'redeem',
+                        'name' => $items->item,
                     ]);
-                    PointHistoryCategory::create([
-                        'point_history_id' => $history->id,
-                        'point_category_id' =>  $request->item[$i],
-                    ]);
+                    // PointHistoryCategory::create([
+                    //     'point_history_id' => $history->id,
+                    //     'point_category_id' =>  $request->item[$i],
+                    // ]);
                 }
                 $newPoint = intval($request->point) - $subTotal;
                 Students::where('id', $request->student)

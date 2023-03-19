@@ -59,7 +59,7 @@ class ScoreController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         try {
             $scores = StudentScore::create([
                 'test_id' => $request->test,
@@ -77,7 +77,9 @@ class ScoreController extends Controller
             }
             return redirect('/score/form')->with('success', 'Success add Score');
         } catch (\Throwable $th) {
+            return back()->with('error', 'Failed to save data');
             return $th;
+
             //throw $th;
         }
     }
@@ -111,9 +113,26 @@ class ScoreController extends Controller
      * @param  \App\Models\Score  $score
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Score $score)
+    public function update(Request $request, $score)
     {
-        //
+        // return $request;
+        try {
+            StudentScore::where('id', $score)->update([
+                'average_score' => round($request->total),
+                'comment' => $request->comment ?? '-'
+            ]);
+            for ($i = 0; $i < count($request->items); $i++) {
+                StudentScoreDetail::where('id',  $request->idScore[$i])
+                    ->update([
+                        'score' => $request->score[$i],
+                    ]);
+            }
+            return redirect('/score/form')->with('success', 'Success add Score');
+        } catch (\Throwable $th) {
+            return $th;
+            return back()->with('error', 'Failed to update data');
+        }
+        return $request;
     }
 
     /**
@@ -129,6 +148,49 @@ class ScoreController extends Controller
 
     public function filter(Request $request)
     {
+        try {
+            $data = [];
+            $detail = [];
+            $query = StudentScore::where('test_id', $request->test)
+                ->where('student_id', $request->student)
+                ->where('date', $request->date)
+                ->first();
+
+            if ($query) {
+                $detail = StudentScoreDetail::where('student_score_id', $query->id)->get();
+                // return $detail;
+            } else {
+                $detail = [];
+            }
+            $data  = ([
+                'data' => $query,
+                'detail' => $detail,
+            ]);
+            return $data;
+        } catch (\Throwable $th) {
+            return $th;
+            //throw $th;
+        }
         return $request;
+    }
+
+    public function filterStudent(Request $request)
+    {
+        try {
+            $query = [];
+            $query = Students::join('price as p', 'p.id', 'student.priceid')
+                ->select('student.name', 'student.id');
+            if ($request->filter == 'Private') {
+                $query = $query->where('p.program', '==', 'Semi Private');
+            } else {
+                $query = $query->where('p.program', '!=', 'Semi Private')->where('p.program', '!=', 'Private');
+            }
+            $data = $query->get();
+
+            return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $th;
+        }
     }
 }

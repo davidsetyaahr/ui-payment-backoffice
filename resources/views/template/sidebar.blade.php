@@ -10,7 +10,7 @@
                         <span>
                             <!-- {{ session('nama') }} -->
                             Admin UI Payment
-                            <span class="user-level">Adminku</span>
+                            <span class="user-level">{{ Auth::guard('teacher')->user()->name }}</span>
 
                         </span>
                     </a>

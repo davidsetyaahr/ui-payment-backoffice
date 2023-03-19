@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\PointCategories;
+use App\Models\Students;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -14,7 +16,16 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        $title = "Reguler Class / Teem 1B";
+        $data = (object)[
+            'type' => 'create'
+        ];
+        $student = Students::where('priceid', 10)
+            ->where('id_teacher', 10)
+            ->get();
+        $pointCategories = PointCategories::all();
+        // return $student;
+        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories'));
     }
 
     /**

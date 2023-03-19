@@ -51,7 +51,7 @@
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item"data-toggle="modal" data-target="#mdlLogout">Logout</a>
+                                <a class="dropdown-item" data-toggle="modal" data-target="#mdlLogout">Logout</a>
                                 {{-- <a class="dropdown-item" href="{{ url('logout') }}" data-toggle="modal" data-target="#exampleModal">Logout</a> --}}
                             </li>
                         </div>

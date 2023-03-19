@@ -42,9 +42,9 @@
     </div>
 
     <div class="page-inner mt--5">
-        @if (session('status'))
+        @if (session('error'))
         <script>
-            swal("Gagal!", "{{ session('status') }}!", {
+            swal("Gagal!", "{{ session('error') }}!", {
                 icon: "error",
                 buttons: {
                     confirm: {
@@ -55,14 +55,26 @@
 
         </script>
         @endif
+        @if (session('success'))
+        <script>
+            swal("Success!", "{{ session('success') }}!", {
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-success'
+                    }
+                },
+            });
+
+        </script>
+        @endif
         <div class="row">
             <div class="col-md-12">
-                <form action="{{ $data->type == 'create' ? url('score/store') : route('score.update', $data->id) }}"
+                <form action="{{url('score/store')}}" id="formScore" {{-- <form
+                    action="{{ $data->type == 'create' ? url('score/store') : route('score.update', $data->id) }}" --}}
                     method="POST" enctype="multipart/form-data">
                     @csrf
-                    @if ($data->type != 'create')
-                    @method('PUT')
-                    @endif
+
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data' : 'Edit Data'}}</h4>
@@ -94,13 +106,8 @@
                                     <label for="email2">Students</label>
                                     <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
                                         name="student" id="student">
-                                        <option value="">Select Student
-                                        </option>
-                                        @foreach ($students as $st)
+                                        <option value="">Select Student</option>
 
-                                        <option value="{{$st->id}}">{{$st->name}}
-                                        </option>
-                                        @endforeach
                                     </select>
                                     @error('student')
                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
@@ -142,7 +149,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-3">
+                            <div class="row mt-3" id="table-detail-score" style="display: none;">
                                 <div class="col-md-6">
                                     <div class="table-responsive">
                                         <table class="display table table-striped table-bordered">
@@ -167,15 +174,10 @@
                                                         $it->name}}</td>
                                                     <td style="height: 40px!important; padding: 8px 16px!important;">
                                                         <input type="hidden" value="{{$it->id}}" name="items[]">
+                                                        <input type="hidden" value="" name="idScore[]" id="idScore{{$no}}">
                                                         <input type="number" id="{{'score'.$no}}" name="score[]"
-                                                            class="form-table score">
-                                                        <script type="text/javascript">
-                                                            $(document).ready(function() {
-                                                                $("#{{'score'.$no.''}}").keyup(function(e) {
-                                                                   
-                                                                })
-                                                            });
-                                                        </script>
+                                                            required class="form-table score">
+
                                                     </td>
                                                     <td
                                                         style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
@@ -207,7 +209,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Comment For Student</label>
-                                        <textarea name="comment" class="form-control" id="" cols="30"
+                                        <textarea name="comment" class="form-control" id="comment" cols="30"
                                             rows="3"></textarea>
                                     </div>
 
@@ -261,7 +263,6 @@
             }
             avg = total / len;
             var grade = getGrade(avg);
-            console.log(grade);
             $('.average').val(avg.toFixed(2));
             $('#gradeAvg').text(grade);
         });
@@ -285,26 +286,63 @@
 
 <script type="text/javascript">
     $(document).on("click", "#filter", function () {
-        var classes = document.getElementById("class");
-        var student = document.getElementById("student");
-        var test = document.getElementById("test");
-        var date = document.getElementById("date");
+        var student =  $('#student').val();
+        var test =$('#test').val();
+        var date =$('#date').val();
         $.ajax({
             type: "GET",
-            url: "/score/filterScore?class="+classes+"&student="+student+"&test="+test+"&date="+date,
+            // url: "/score/filterScore?student=000002&test=2&date=2023-03-16",
+            url: "/score/filterScore?student="+student+"&test="+test+"&date="+date,
             dataType: 'JSON',
             success: function(res) {
-               
-                // if (res) {
-                //     $("#harga_barang").val(res.harga_jual);
-                //     $("#nama_barang").val(res.nama_barang);
-                //     $('#jumlah').focus();
-                // } else {
-                //     $("#harga_barang").empty();
-                // }
-            }
+                console.log(res);
+                    $('#table-detail-score').css('display', 'block');
+                    if (res.detail != []) {
+                            var len = $('.score').length;
+                            console.log(res.detail);
+                            $('#comment').val(res.data.comment);
+                            for (let index = 0; index < len; index++) {
+                                var idScore = index+1;
+                                $("#score"+idScore).val(res.detail[index].score);
+                                $("#grade"+idScore).text(getGrade(res.detail[index].score));
+                                $('.average').val(res.data.average_score);
+                                $('#gradeAvg').text(getGrade(res.data.average_score));
+                                
+                                $('#idScore'+idScore).val(res.detail[index].id);
+                                $("#myform").attr('action', 'page1.php');
+                            }
+                            $('form').get(0).setAttribute('action', "{{ url('score/update')}}/"+res.data.id);
+                            // $("#formScore").attr('action', "{{  url('score/update/')}}"+res.data.id);
+                    } else {
+                        // $("#formScore").attr('action', "{{  url('score/store')}}");
+                        $('form').get(0).setAttribute('action',  "{{  url('score/store')}}");
+                    }
+                }
+            });
         });
+
+    $(document).ready(function(){
+    $('#class').on('change',function(){
+        var typeClass = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'/score/students/filter?class='+typeClass,
+                dataType: 'JSON',
+                success:function(data){
+                    var $student = $('#student');
+                    $student.empty();
+                    $student.append('<option value="">Select Student</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $student.append('<option id=' + data[i].id + ' value=' + data[i].id + '>' + data[i].name + '</option>');
+                    }
+                    $student.change();
+                    
+                }
+            }); 
     });
+    
+    
+});
 
 </script>
 @endsection
