@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Price;
 use App\Models\Teacher;
 use App\Models\User;
 use Facade\FlareClient\View;
@@ -17,8 +18,18 @@ class UsersController extends Controller
      */
     public function index()
     {
-        // $date = Price
-        return view('dashboard.index',);
+        $class = Price::all();
+        $private = [];
+        $general = [];
+        foreach ($class as $key => $value) {
+            if ($value->level == 'Private') {
+                array_push($private, $value);
+            } else {
+                array_push($general, $value);
+            }
+            
+        }
+        return view('dashboard.index', compact('private', 'general'));
     }
 
     public function viewLogin()

@@ -34,14 +34,50 @@
                         <h4 class="card-title">Reguler Class</h4>
                     </div>
                     <div class="card-body">
-                      
+                        <div class="row">
+                            @foreach ($general as $item)
+                            <div class="col-sm-6 col-md-4 ">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i> {{$item->program}}</span>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div></div>
+                                            <a href="{{ url('attendance/form/'.$item->id)}}" class="btn btn-xs btn-primary">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Private Class</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach ($private as $item)
+                            <div class="col-sm-6 col-md-4 ">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i> {{$item->program}}</span>
 
-
-
-
+                                        <div class="d-flex justify-content-between">
+                                            <div></div>
+                                            <a href="{{ url('attendance/form/'.$item->id)}}" class="btn btn-xs btn-primary">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 

@@ -102,15 +102,18 @@
                                                     <td style="">{{
                                                         $it->name}}</td>
                                                     <td class=" text-center" scope="col" style="width:3px!important;">
-                                                        <input type="checkbox"
-                                                            aria-label="Checkbox for following text input">
+                                                        <input type="checkbox" class="form-check-input cekBox"
+                                                            id="cbAbsent{{$no}}"
+                                                            aria-label="Checkbox for following text input"
+                                                            name="isAbsent[]">
                                                     </td>
                                                     <td class="text-center" style="">
-                                                        <h5>0</h5>
+                                                        <h5 id="inPointAbsent{{$no}}">0</h5>
                                                     </td>
                                                     <td style="">
                                                         <select class="form-control select2 select2-hidden-accessible"
-                                                            style="width:100%;" name="student[]" multiple="">
+                                                            style="width:100%;" name="categories{{$no}}[]"
+                                                            id="categories{{$no}}" multiple="">
 
                                                             @foreach ($pointCategories as $st)
 
@@ -120,7 +123,9 @@
                                                         </select>
                                                     </td>
                                                     <td class="text-center" style="">
-                                                        <h5>0</h5>
+                                                        <input type="hidden" name="totalPoint[]"
+                                                            id="inpTotalPoint{{$no}}" readonly>
+                                                        <h5 id="totalPoint{{$no}}">0</h5>
                                                     </td>
 
                                                 </tr>
@@ -201,7 +206,25 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('#summernote').summernote();
+        var len = $('.cekBox').length;
+        
+        for (let i = 1; i <= len; i++) {
+            var totalPoint = parseInt($("#totalPoint"+i).text());
+            $('#cbAbsent'+i).click('change', function(){
+                if($(this).is(':checked')){
+                    $("#inPointAbsent"+i).text(parseInt(10));
+                    $("#totalPoint"+i).text(parseInt($("#totalPoint"+i).text()) + 10);
+                    $("#inpTotalPoint"+i).val(parseInt($("#inpTotalPoint"+i).val() != '' ? $("#inpTotalPoint"+i).val():0) + 10);
+                } else {
+                    $("#totalPoint"+i).text(parseInt($("#totalPoint"+i).text()) - 10);
+                    $("#inpTotalPoint"+i).val(parseInt($("#inpTotalPoint"+i).val() != '' ? $("#inpTotalPoint"+i).val():0) - 10);
+                    $("#inPointAbsent"+i).text(0);
+                }
+            });
+            
+            
+        }
+       
     });
     $(document).ready(function () {
         $('#kandungan').summernote();
@@ -213,37 +236,7 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        // Basic
-        $('.dropify').dropify();
 
-
-        // Used events
-        var drEvent = $('#input-file-events').dropify();
-
-        drEvent.on('dropify.beforeClear', function (event, element) {
-            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function (event, element) {
-            alert('File deleted');
-        });
-
-        drEvent.on('dropify.errors', function (event, element) {
-            console.log('Has Errors');
-        });
-
-        var drDestroy = $('#input-file-to-destroy').dropify();
-        drDestroy = drDestroy.data('dropify')
-        $('#toggleDropify').on('click', function (e) {
-            e.preventDefault();
-            if (drDestroy.isDropified()) {
-                drDestroy.destroy();
-            } else {
-                drDestroy.init();
-            }
-        })
-    });
 
 </script>
 @endsection

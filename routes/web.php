@@ -50,7 +50,7 @@ Route::middleware(['web'])->group(function () {
         Route::post('/update/{score}', [ScoreController::class, 'update']);
     });
     Route::prefix('attendance')->group(function () {
-        Route::get('/form', [AttendanceController::class, 'index']);
+        Route::get('/form/{priceId}', [AttendanceController::class, 'create']);
         Route::get('/filterScore', [ScoreController::class, 'filter']);
 
         Route::post('/store', [ScoreController::class, 'store']);
