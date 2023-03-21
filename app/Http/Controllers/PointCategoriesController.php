@@ -29,6 +29,7 @@ class PointCategoriesController extends Controller
         $data = (object)[
             'id' => 0,
             'name' => '',
+            'point' => '',
             'type' => 'create',
         ];
         return view('pointCategories.form', compact('data', 'title'));
@@ -44,10 +45,12 @@ class PointCategoriesController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'point' => 'required|numeric',
         ]);
        
 
         $input['name'] = $request['name'];
+        $input['point'] = $request['point'];
 
         try {
             PointCategories::create($input);
@@ -81,6 +84,7 @@ class PointCategoriesController extends Controller
         $data = (object)[
             'id' => $pointCategory->id,
             'name' =>  $pointCategory->name,
+            'point' =>  $pointCategory->point,
             'type' => 'edit',
         ];
         return view('pointCategories.form', compact('data', 'title'));
@@ -97,9 +101,10 @@ class PointCategoriesController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            
+            'point' => 'required|numeric',
         ]);
         $input['name'] = $request['name'];
+        $input['point'] = $request['point'];
        
 
         try {

@@ -10,5 +10,5 @@ class PointCategories extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'point_categories';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'point'];
 }

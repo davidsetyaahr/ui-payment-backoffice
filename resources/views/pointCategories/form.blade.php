@@ -71,6 +71,17 @@
                                     </div>
 
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email2">Point</label>
+                                        <input type="number" class="form-control @error('point') is-invalid @enderror"
+                                            value="{{ $data->point }}" name="point" placeholder="point">
+                                        @error('point')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                        @enderror
+                                    </div>
+
+                                </div>
 
                             </div>
 

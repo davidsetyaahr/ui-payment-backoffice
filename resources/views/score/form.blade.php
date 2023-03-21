@@ -299,7 +299,7 @@
                     $('#table-detail-score').css('display', 'block');
                     if (res.detail != []) {
                             var len = $('.score').length;
-                            console.log(res.detail);
+                            
                             $('#comment').val(res.data.comment);
                             for (let index = 0; index < len; index++) {
                                 var idScore = index+1;

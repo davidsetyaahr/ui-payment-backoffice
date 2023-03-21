@@ -54,6 +54,7 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th>Point</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -62,6 +63,7 @@
                                     <tr>
 
                                         <td>{{ $item->name }}</td>
+                                        <td>{{ $item->point }}</td>
                                         <td class=" d-flex">
                                             <form action="{{ route('pointCategories.destroy',$item->id) }}" method="POST"
                                                 class="form-inline">

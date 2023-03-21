@@ -61,7 +61,7 @@
         <div class="row">
             <div class="col-md-12">
                 <form
-                    action="{{ $data->type == 'create' ? route('announces.store') : route('announces.update', $data->id) }}"
+                    action="{{ $data->type == 'create' ? url('attendance/store') : route('announces.update', $data->id) }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
                     @if ($data->type != 'create')
@@ -102,18 +102,19 @@
                                                     <td style="">{{
                                                         $it->name}}</td>
                                                     <td class=" text-center" scope="col" style="width:3px!important;">
+                                                        <input type="hidden" name="isAbsent[{{$no}}][]" value="0">
                                                         <input type="checkbox" class="form-check-input cekBox"
-                                                            id="cbAbsent{{$no}}"
+                                                            id="cbAbsent{{$no}}" value="1"
                                                             aria-label="Checkbox for following text input"
-                                                            name="isAbsent[]">
+                                                            name="isAbsent[{{$no}}][]">
                                                     </td>
                                                     <td class="text-center" style="">
                                                         <h5 id="inPointAbsent{{$no}}">0</h5>
                                                     </td>
                                                     <td style="">
                                                         <select class="form-control select2 select2-hidden-accessible"
-                                                            style="width:100%;" name="categories{{$no}}[]"
-                                                            id="categories{{$no}}" multiple="">
+                                                            style="width:100%;" name="categories[{{$no}}][]"
+                                                            id="categories{{$no}}" multiple="multiple">
 
                                                             @foreach ($pointCategories as $st)
 
@@ -124,7 +125,7 @@
                                                     </td>
                                                     <td class="text-center" style="">
                                                         <input type="hidden" name="totalPoint[]"
-                                                            id="inpTotalPoint{{$no}}" readonly>
+                                                            id="inpTotalPoint{{$no}}" value="0" readonly>
                                                         <h5 id="totalPoint{{$no}}">0</h5>
                                                     </td>
 
@@ -206,6 +207,8 @@
 </div>
 <script>
     $(document).ready(function () {
+        var dataCtgr = JSON.parse('{!! $pointCategories!!}');
+        
         var len = $('.cekBox').length;
         
         for (let i = 1; i <= len; i++) {
@@ -222,16 +225,24 @@
                 }
             });
             
-            
+            $('#categories'+i).change(function() {
+                var tmpTotalPoint = 0;
+                var getVal =$('#categories'+i).val();
+                dataCtgr.forEach(element => {
+                    getVal.forEach(x => {
+                        if (element.id.toString() == x.toString()) {
+                            tmpTotalPoint += element.point;
+                        }
+                    })
+                });
+                
+                $("#totalPoint"+i).text(tmpTotalPoint + parseInt($("#inPointAbsent"+i).text()));
+                
+            });
         }
        
     });
-    $(document).ready(function () {
-        $('#kandungan').summernote();
-    });
-    $(document).ready(function () {
-        $('#aturan').summernote();
-    });
+   
 
 </script>
 

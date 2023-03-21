@@ -53,7 +53,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/form/{priceId}', [AttendanceController::class, 'create']);
         Route::get('/filterScore', [ScoreController::class, 'filter']);
 
-        Route::post('/store', [ScoreController::class, 'store']);
+        Route::post('/store', [AttendanceController::class, 'store']);
     });
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
