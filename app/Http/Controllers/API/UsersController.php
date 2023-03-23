@@ -29,7 +29,7 @@ class UsersController extends Controller
                 if ($generate) {
                     return response()->json([
                         'code' => '00',
-                        'message' => 'Success',
+                        'message' => $message,
                     ], 200);
                 } else {
                     return response()->json([

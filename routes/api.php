@@ -21,26 +21,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('signin', [UsersController::class, 'getOtp']);
 Route::post('authenticate', [UsersController::class, 'authenticate']);
-// Route::post('signin', [UsersController::class, 'getOtp']);
 Route::post('submit-otp', [UsersController::class, 'submitOtp']);
 
 
-Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
-Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
-Route::get('announcement', [InfoController::class, 'getAnnouncement']);
-Route::get('advertise', [InfoController::class, 'getAdvertise']);
-Route::get('agenda', [InfoController::class, 'getAgenda']);
-Route::get('myPoint/{studentId}', [StudentController::class, 'getMyPoint']);
-Route::prefix('score')->group(function () {
-    Route::get('/getTestItem', [ScoreController::class, 'getTest']);
-    Route::get('/getScore/{studentId}/{testId}', [ScoreController::class, 'getScoreByTest']);
-});
-Route::prefix('payment')->group(function () {
-    Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
-    Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
-});
-Route::group(['middleware' => ['jwt.auth']], function() {
+Route::group(['middleware' => ['jwt.auth']], function () {
     // Route::get('logout', [ApiController::class, 'logout']);
     Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
     Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
+
+    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
+    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
+    Route::get('announcement', [InfoController::class, 'getAnnouncement']);
+    Route::get('advertise', [InfoController::class, 'getAdvertise']);
+    Route::get('agenda', [InfoController::class, 'getAgenda']);
+    Route::get('myPoint/{studentId}', [StudentController::class, 'getMyPoint']);
+    Route::prefix('score')->group(function () {
+        Route::get('/getTestItem', [ScoreController::class, 'getTest']);
+        Route::get('/getScore/{studentId}/{testId}', [ScoreController::class, 'getScoreByTest']);
+    });
+    Route::prefix('payment')->group(function () {
+        Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
+        Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
+    });
 });
