@@ -12,7 +12,8 @@ class Helper
             'number' => $phone,
             'message' => $message,
         ]);
-        return $response;
+        return true;
+        // return $response;
     }
 
     public static function getGrade($score)

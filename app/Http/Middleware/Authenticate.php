@@ -18,6 +18,8 @@ class Authenticate extends Middleware
         if (Auth::guard('teacher')->check()) {
 
             return redirect('/dashboard');
+        } if (Auth::guard('teacher')->check()){
+            
         } else {
 
             return redirect('/');

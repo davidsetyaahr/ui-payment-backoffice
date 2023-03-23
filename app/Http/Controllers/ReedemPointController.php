@@ -54,7 +54,7 @@ class ReedemPointController extends Controller
                         'date' => date('Y-m-d'),
                         'total_point' => intval($items->point),
                         'type' => 'redeem',
-                        'name' => $items->item,
+                        'keterangan' => $items->item,
                     ]);
                     // PointHistoryCategory::create([
                     //     'point_history_id' => $history->id,

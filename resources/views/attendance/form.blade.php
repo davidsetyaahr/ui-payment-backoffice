@@ -61,18 +61,17 @@
         <div class="row">
             <div class="col-md-12">
                 <form
-                    action="{{ $data->type == 'create' ? url('attendance/store') : route('announces.update', $data->id) }}"
+                    action="{{ $data->type == 'create' ? url('attendance/store') : url('attendance/update', $data->id) }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
-                    @if ($data->type != 'create')
-                    @method('PUT')
-                    @endif
+                  
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data' : 'Edit Data'}}</h4>
                         </div>
                         <div class="card-body">
-
+                            <input type="hidden" readonly name="priceId" value="{{$data->id}}">
+                            <input type="hidden" readonly name="attendanceId" value="{{$data->attendanceId}}">
 
                             <div class="row mt-3">
                                 <div class="col-md-12">
@@ -101,32 +100,71 @@
                                                         $no }}</td>
                                                     <td style="">{{
                                                         $it->name}}</td>
+                                                    <input type="hidden" readonly name="studentId[]"
+                                                        value="{{$it->id}}">
                                                     <td class=" text-center" scope="col" style="width:3px!important;">
                                                         <input type="hidden" name="isAbsent[{{$no}}][]" value="0">
+                                                        @php
+                                                        $isChecked = false;
+                                                        if ($data->type == 'create') {
+                                                            $isChecked = false;
+                                                        } else {
+                                                            if ($data->students[$no-1]->student_id == $it->id &&
+                                                                $data->students[$no-1]->is_absent == '1') {
+                                                                $isChecked = true;
+                                                            }
+                                                        }
+
+                                                        @endphp
                                                         <input type="checkbox" class="form-check-input cekBox"
-                                                            id="cbAbsent{{$no}}" value="1"
-                                                            aria-label="Checkbox for following text input"
-                                                            name="isAbsent[{{$no}}][]">
+                                                            id="cbAbsent{{$no}}" value="1" {{ $isChecked ? 'checked' : ''}}
+                                                        aria-label="Checkbox for following text input"
+                                                        name="isAbsent[{{$no}}][]">
                                                     </td>
                                                     <td class="text-center" style="">
-                                                        <h5 id="inPointAbsent{{$no}}">0</h5>
+                                                        @php
+                                                            $isAbsent = false;
+                                                             if ($data->type == 'create') {
+                                                                $isAbsent = false;
+                                                            } else {
+                                                                if ($data->students[$no-1]->student_id == $it->id && $data->type) {
+                                                                    $isAbsent = true;
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        <h5 id="inPointAbsent{{$no}}">{{ $isAbsent ? '10' : '0'}}</h5>
                                                     </td>
                                                     <td style="">
                                                         <select class="form-control select2 select2-hidden-accessible"
                                                             style="width:100%;" name="categories[{{$no}}][]"
-                                                            id="categories{{$no}}" multiple="multiple">
+                                                            placeholder="Select Category" id="categories{{$no}}"
+                                                            multiple="multiple">
 
                                                             @foreach ($pointCategories as $st)
-
-                                                            <option value="{{$st->id}}">{{$st->name}}
-                                                            </option>
+                                                            
+                                                                <option value="{{$st->id}}" {{ $data->type == 'update' &&
+                                                                    in_array(intval($st->id), $data->students[$no-1]->category) ?
+                                                                    'selected' : ''}}>{{$st->name}}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                     <td class="text-center" style="">
+                                                        @php
+                                                            $totalPoint = 0;
+                                                            if ($data->type == 'create') {
+                                                                $totalPoint = 0;
+                                                            } else {
+                                                                if ( $data->students[$no-1]->student_id == $it->id) {
+                                                                    $totalPoint = $data->students[$no-1]->total_point;
+                                                                }
+                                                            }
+                                                        @endphp
                                                         <input type="hidden" name="totalPoint[]"
-                                                            id="inpTotalPoint{{$no}}" value="0" readonly>
-                                                        <h5 id="totalPoint{{$no}}">0</h5>
+                                                            id="inpTotalPoint{{$no}}"
+                                                            value="{{ $totalPoint}}"
+                                                            readonly>
+                                                        <h5 id="totalPoint{{$no}}">{{ $totalPoint}}</h5>
                                                     </td>
 
                                                 </tr>
@@ -147,7 +185,7 @@
                                     <div class="form-group">
                                         <label for="">Comment For Student</label>
                                         <textarea name="comment" class="form-control" id="" cols="30"
-                                            rows="3"></textarea>
+                                            rows="3">{{$data->type == 'update' ? $data->comment : '' }}</textarea>
                                     </div>
 
                                 </div>
@@ -157,7 +195,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Text Book</label>
-                                        <input type="text" class="form-control" name="textBook">
+                                        <input type="text" class="form-control"
+                                            value="{{$data->type == 'update' ? $data->textBook : '' }}" name="textBook">
                                     </div>
 
                                 </div>
@@ -167,7 +206,10 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Excercise Book</label>
-                                        <input type="text" class="form-control" name="excerciseBook">
+                                        <input type="text" class="form-control"
+                                            value="{{$data->type == 'update' ? $data->excerciseBook : '' }}"
+                                            name="excerciseBook">
+
                                     </div>
 
                                 </div>
@@ -207,6 +249,7 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('#categories'+i).val(0);
         var dataCtgr = JSON.parse('{!! $pointCategories!!}');
         
         var len = $('.cekBox').length;
@@ -227,7 +270,7 @@
             
             $('#categories'+i).change(function() {
                 var tmpTotalPoint = 0;
-                var getVal =$('#categories'+i).val();
+                var getVal = $('#categories'+i).val();
                 dataCtgr.forEach(element => {
                     getVal.forEach(x => {
                         if (element.id.toString() == x.toString()) {
@@ -237,6 +280,7 @@
                 });
                 
                 $("#totalPoint"+i).text(tmpTotalPoint + parseInt($("#inPointAbsent"+i).text()));
+                $("#inpTotalPoint"+i).val(tmpTotalPoint + parseInt($("#inPointAbsent"+i).text()));
                 
             });
         }

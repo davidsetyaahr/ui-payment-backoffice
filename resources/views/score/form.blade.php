@@ -312,9 +312,7 @@
                                 $("#myform").attr('action', 'page1.php');
                             }
                             $('form').get(0).setAttribute('action', "{{ url('score/update')}}/"+res.data.id);
-                            // $("#formScore").attr('action', "{{  url('score/update/')}}"+res.data.id);
                     } else {
-                        // $("#formScore").attr('action', "{{  url('score/store')}}");
                         $('form').get(0).setAttribute('action',  "{{  url('score/store')}}");
                     }
                 }

@@ -8,9 +8,13 @@ use App\Models\ParentStudents;
 use App\Models\StudentScore;
 use Helper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UsersController extends Controller
 {
+
     public function getOtp(Request $request)
     {
         try {
@@ -18,11 +22,11 @@ class UsersController extends Controller
             if ($data) {
                 $otp = substr(str_shuffle("0123456789"), 0, 4);
 
-                Parents::where('no_hp', $request->phone)->update(['otp' => $otp]);
+                $generate = Parents::where('no_hp', $request->phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
                 $message = 'Your verification code is: ' . $otp;
 
                 $sendOTP =  Helper::sendMessage($request->phone, $message);
-                if ($sendOTP['status']) {
+                if ($generate) {
                     return response()->json([
                         'code' => '00',
                         'message' => 'Success',
@@ -40,12 +44,58 @@ class UsersController extends Controller
                 ], 200);
             }
         } catch (\Throwable $th) {
-
+            return $th;
             return response()->json([
                 'code' => '400',
                 'error' => 'internal server error', 'message' => $th,
             ], 403);
         }
+    }
+
+    public function authenticate(Request $request)
+    {
+        $credentials = ([
+            'no_hp' => $request->phone,
+            'password' => $request->otp,
+        ]);
+
+        // return $credentials;
+        $data = Parents::where('no_hp', $request->phone)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if ($data) {
+            if ($token = JWTAuth::attempt($credentials)) {
+                // return $this->respondWithToken($token, 'parent');
+                return response()->json([
+                    'code' => '00',
+                    'data' => $data,
+                    'token' => $this->respondWithToken($token),
+                ]);
+            }
+        } else {
+            return response()->json([
+                'code' => '10',
+                'message' => 'Login credentials are invalid.',
+            ], 400);
+        }
+
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'code' => '10',
+                    'message' => 'Login credentials are invalid.',
+                ], 400);
+            }
+        } catch (JWTException $e) {
+            return $credentials;
+            return response()->json([
+                'code' => '00',
+                'message' => 'Could not create token.',
+            ], 500);
+        }
+
+
     }
 
     public function submitOtp(Request $request)
@@ -113,5 +163,13 @@ class UsersController extends Controller
                 'message' => $th,
             ], 403);
         }
+    }
+
+    protected function respondWithToken($token)
+    {
+        return ([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+        ]);
     }
 }

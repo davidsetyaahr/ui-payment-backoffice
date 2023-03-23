@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Parents;
 use App\Models\Teacher;
 
 return [
@@ -16,7 +17,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'parent',
         'passwords' => 'users',
     ],
 
@@ -42,14 +43,15 @@ return [
             'driver' => 'session',
             'provider' => 'teacher',
         ],
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
+       
+        'teacher' => [
+            'driver' => 'session',
+            'provider' => 'teacher',
         ],
 
-        'teacher' => [
-          'driver' => 'session',
-          'provider' => 'teacher',
+        'parent' => [
+            'driver' => 'jwt',
+            'provider' => 'parents',
         ],
     ],
 
@@ -79,7 +81,13 @@ return [
         'teacher' => [
             'driver' => 'eloquent',
             'model' => Teacher::class,
-          ],
+        ],
+        'parents' => [
+            'driver' => 'eloquent',
+            'model' => Parents::class,
+            'hash' => false,
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

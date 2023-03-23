@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('signin', [UsersController::class, 'getOtp']);
+Route::post('authenticate', [UsersController::class, 'authenticate']);
+// Route::post('signin', [UsersController::class, 'getOtp']);
 Route::post('submit-otp', [UsersController::class, 'submitOtp']);
 
 
@@ -37,6 +39,8 @@ Route::prefix('payment')->group(function () {
     Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
     Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
 });
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['jwt.auth']], function() {
+    // Route::get('logout', [ApiController::class, 'logout']);
+    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
+    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
 });
