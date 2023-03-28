@@ -7,6 +7,7 @@ use App\Models\HistoryBilling;
 use App\Models\PaymentBillDetail;
 use App\Models\PaymentFromApp;
 use App\Models\PaymentFromAppDetail;
+use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -85,8 +86,8 @@ class PaymentController extends Controller
     {
         try {
             $uniqCode = substr($request->total_payment, 0, -3) . rand(111, 999);
-            $code = 'PB'.date('ymd').rand(1,9);
-            
+            $code = 'PB' . date('ymd') . rand(1, 9);
+
             $history = HistoryBilling::create([
                 'amount' => $uniqCode,
                 'unique_code' => $code,
@@ -108,8 +109,44 @@ class PaymentController extends Controller
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error',
+                'message' => $th,
+            ], 403);
             return $th;
+        }
+    }
+
+    public function verifyPayment($transId)
+    {
+        try {
+            $data = HistoryBilling::where('unique_code', $transId)->first();
+            $student = PaymentBillDetail::join('student', 'student.id', 'payment_bill_detail.student_id')
+                ->select('student.name')
+                ->where('payment_bill_detail.unique_code', $transId)->first();
+            $amount =  "Rp " . number_format($data->amount, 0, ',', '.');
+            $message = $student->name . "melakukan pembayaran dengan nominal *" . $amount . "* dengan kode pembayaran *" . $data->unique_code . "*";
+
+            $send = Helper::sendMessage(env('ADMIN_PHONE'), $message);
+            
+            if ($send) {
+                return response()->json([
+                    'code' => '00',
+                    'payload' => 'Success',
+                ], 200);
+            } else {
+                return response()->json([
+                    'code' => '10',
+                    'message' => 'Failed verify payment, please try again later',
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error',
+                'message' => $th,
+            ], 403);
         }
     }
 }

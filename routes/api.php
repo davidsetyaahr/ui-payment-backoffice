@@ -44,5 +44,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
         Route::get('/billing/{studentId}', [PaymentController::class, 'listBill']);
         Route::post('/checkout', [PaymentController::class, 'checkout']);
+        Route::get('/verify/{transId}', [PaymentController::class, 'verifyPayment']);
     });
 });
