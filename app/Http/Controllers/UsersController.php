@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announces;
+use App\Models\Parents;
 use App\Models\Price;
+use App\Models\Students;
 use App\Models\Teacher;
 use App\Models\User;
 use Facade\FlareClient\View;
@@ -18,18 +21,18 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $class = Price::all();
-        $private = [];
-        $general = [];
-        foreach ($class as $key => $value) {
-            if ($value->level == 'Private') {
-                array_push($private, $value);
-            } else {
-                array_push($general, $value);
-            }
-            
-        }
-        return view('dashboard.index', compact('private', 'general'));
+        $student = Students::count();
+        $parent = Parents::count();
+        $teacher = Teacher::count();
+        $announces = Announces::orderBy('id', 'DESC')->first();
+        $data = (object)([
+            'student' => $student,
+            'parent' => $parent,
+            'teacher' => $teacher,
+            'announces' => $announces,
+        ]);
+        
+        return view('dashboard.index', compact('data'));
     }
 
     public function viewLogin()

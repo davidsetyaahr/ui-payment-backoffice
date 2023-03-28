@@ -27,61 +27,92 @@
 
         </script>
         @endif
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Reguler Class</h4>
-                    </div>
+        <div class="row mt--2">
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-warning card-round">
                     <div class="card-body">
                         <div class="row">
-                            @foreach ($general as $item)
-                            <div class="col-sm-6 col-md-4 ">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i> {{$item->program}}</span>
-
-                                        <div class="d-flex justify-content-between">
-                                            <div></div>
-                                            <a href="{{ url('attendance/form/'.$item->id)}}" class="btn btn-xs btn-primary">View</a>
-                                        </div>
-                                    </div>
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="flaticon-users"></i>
                                 </div>
                             </div>
-                            @endforeach
+                            <div class="col-7 col-stats">
+                                <div class="numbers">
+                                    <p class="card-category">Student</p>
+                                    <h4 class="card-title">{{$data->student}}</h4>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-info card-round">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 col-stats">
+                                <div class="numbers">
+                                    <p class="card-category">Parent</p>
+                                    <h4 class="card-title">{{$data->parent}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-success card-round">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 col-stats">
+                                <div class="numbers">
+                                    <p class="card-category">Teacher </p>
+                                    <h4 class="card-title">{{$data->teacher}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Private Class</h4>
+                        <h4 class="card-title">Announcement</h4>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            @foreach ($private as $item)
-                            <div class="col-sm-6 col-md-4 ">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i> {{$item->program}}</span>
-
-                                        <div class="d-flex justify-content-between">
-                                            <div></div>
-                                            <a href="{{ url('attendance/form/'.$item->id)}}" class="btn btn-xs btn-primary">View</a>
-                                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <img style="width: 100%; height: 300px;" src="{{$data->announces->description}}" alt="">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p>{{$data->announces->description}}</p>
                                     </div>
                                 </div>
+                                
                             </div>
-                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
     </div>
 </div>
+
 @endsection

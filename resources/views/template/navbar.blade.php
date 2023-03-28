@@ -1,6 +1,6 @@
 <div class="main-header">
     <!-- Logo Header -->
-    <div class="logo-header" data-background-color="blue2">
+    <div class="logo-header" data-background-color="blue">
 
         <a href="{{ url('/dashboard') }}" class="logo">
             <img src="" alt="navbar brand" class="navbar-brand">

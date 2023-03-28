@@ -1,4 +1,4 @@
-<div class="sidebar sidebar-style-2" data-background-color="blue">
+<div class="sidebar sidebar-style-2" >
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <div class="user">
@@ -35,7 +35,7 @@
 
 
                 <li class="nav-item {{ Request::segment(1) == 'user' ? 'active' : '' }}">
-                    <a href="{{ url('/user') }}" class="collapsed">
+                    <a href="{{ url('/attendance/class') }}" class="collapsed">
                         <i class="fas fa-book"></i>
                         <p>Attendance</p>
                     </a>

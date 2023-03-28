@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Parents;
 use App\Models\ParentStudents;
+use App\Models\PaymentBillDetail;
 use App\Models\StudentScore;
 use Helper;
 use Illuminate\Http\Request;
@@ -94,8 +95,6 @@ class UsersController extends Controller
                 'message' => 'Could not create token.',
             ], 500);
         }
-
-
     }
 
     public function submitOtp(Request $request)
@@ -139,15 +138,26 @@ class UsersController extends Controller
                 ->where('parent_students.parent_id', $parentId)
                 ->get();
             foreach ($data as $key => $val) {
+
                 $score = StudentScore::where('student_id', $val->id)
                     ->select('average_score')
                     ->orderBy('id', 'DESC')
                     ->first();
-                if ($score) {
-                    $student = array_merge($val->toArray(), $score->toArray());
+                $billing = PaymentBillDetail::where('student_id', $val->id)->sum('price');
+                
+                if ($score && $billing) {
+                    $student = array_merge($val->toArray(), ([
+                        'student_id' => str_pad($val->id, 6, '0', STR_PAD_LEFT),
+                        $score,
+                        $billing,
+                    ]));
                     array_push($students, $student);
                 } else {
-                    $student = array_merge($val->toArray(), (['average_score' => 0]));
+                    $student = array_merge($val->toArray(), ([
+                        'student_id' => str_pad($val->id, 6, '0', STR_PAD_LEFT),
+                        'average_score' => 0,
+                        'price' => 0,
+                    ]));
                     array_push($students, $student);
                 }
             }
@@ -170,6 +180,7 @@ class UsersController extends Controller
         return ([
             'access_token' => $token,
             'token_type' => 'bearer',
+            // 'expires_in' =>  env('JWT_TTL', 60*24*365),
         ]);
     }
 }

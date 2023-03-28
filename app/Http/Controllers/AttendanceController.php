@@ -21,16 +21,18 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        $title = "Reguler Class / Teem 1B";
-        $data = (object)[
-            'type' => 'create'
-        ];
-        $student = Students::where('priceid', 10)
-            ->get();
-
-        $pointCategories = PointCategories::all();
-        // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories'));
+        $class = Price::all();
+        $private = [];
+        $general = [];
+        foreach ($class as $key => $value) {
+            if ($value->level == 'Private') {
+                array_push($private, $value);
+            } else {
+                array_push($general, $value);
+            }
+            
+        }
+        return view('attendance.index', compact('private', 'general'));
     }
 
     /**
@@ -75,6 +77,7 @@ class AttendanceController extends Controller
             $data = (object)[
                 'type' => 'create',
                 'id' => $class->id,
+                'attendanceId' => 0,
                 'comment' => '',
                 'textBook' => '',
                 'excerciseBook' => '',

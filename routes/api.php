@@ -42,5 +42,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::prefix('payment')->group(function () {
         Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
         Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
+        Route::get('/billing/{studentId}', [PaymentController::class, 'listBill']);
+        Route::post('/checkout', [PaymentController::class, 'checkout']);
     });
 });
