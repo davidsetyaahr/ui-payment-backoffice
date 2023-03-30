@@ -176,7 +176,7 @@ class PaymentController extends Controller
         $height = 18 / 2.54 * 72;
         $customPaper = array(0, 0, $height, $width);
         $pdf = PDF::loadview('report.print', ['data' => $data, 'detail' => $detail])->setPaper($customPaper, 'landscape');
-        // return $pdf->download($fileName);
-        return  $pdf->stream($fileName);
+        return $pdf->download($fileName);
+        // return  $pdf->stream($fileName);
     }
 }
