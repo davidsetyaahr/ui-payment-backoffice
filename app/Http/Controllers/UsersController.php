@@ -165,4 +165,9 @@ class UsersController extends Controller
     {
         //
     }
+
+    public function print()
+    {
+        return view('report.print');
+    }
 }

@@ -22,7 +22,7 @@ class StudentController extends Controller
                 $query = $query->whereBetween('date',  [$request->start, $request->end]);
             }
 
-            $data = $query->orderBy('date', 'DESC')->cursorPaginate(10);
+            $data = $query->orderBy('date', 'DESC')->paginate($request->perpage);
             if ($request->start && $request->end) {
                 $data->withPath(url('/api/myPoint/' . $studentId . '?start=' . $request->start . '&end=' . $request->start));
             }
