@@ -100,7 +100,6 @@ class PaymentController extends Controller
                 PaymentBillDetail::where('id', $request->id_bill[$i])
                     ->update([
                         'unique_code' => $code,
-                        'status' => 'To Be Confirm'
                     ]);
             }
             $data = ([
@@ -128,6 +127,10 @@ class PaymentController extends Controller
             $student = PaymentBillDetail::join('student', 'student.id', 'payment_bill_detail.student_id')
                 ->select('student.name')
                 ->where('payment_bill_detail.unique_code', $transId)->first();
+            PaymentBillDetail::where('unique_code', $transId)
+                ->update([
+                    'status' => 'To Be Confirm'
+                ]);
             $amount =  "Rp " . number_format($data->amount, 0, ',', '.');
             $message = $student->name . "melakukan pembayaran dengan nominal *" . $amount . "* dengan kode pembayaran *" . $data->unique_code . "*";
 
@@ -170,9 +173,9 @@ class PaymentController extends Controller
             ->orderBy('payment_from_app_details.id', 'ASC')
             ->get();
         $detail = PaymentFromApp::where('id', $paymentId)->first();
-        
+
         $fileName = "invoice_payment_" . $paymentId . ".pdf";
-        
+
         $width = 5.5 / 2.54 * 72;
         $height = 18 / 2.54 * 72;
         $customPaper = array(0, 0, $height, $width);
