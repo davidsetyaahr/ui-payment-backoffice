@@ -19,14 +19,24 @@ class UsersController extends Controller
     public function getOtp(Request $request)
     {
         try {
-            $data = Parents::where('no_hp', $request->phone)->first();
+            $phone = "";
+
+            if (substr($request->phone, 0, 2) == '08') {
+                $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
+            } else if (substr($request->phone, 0, 3) == '+62') {
+                $phone = str_replace(substr($request->phone, 0, 3), '62', $request->phone);
+            } else {
+                $phone = $request->phone;
+            }
+
+            $data = Parents::where('no_hp', $phone)->first();
             if ($data) {
                 $otp = substr(str_shuffle("0123456789"), 0, 4);
 
-                $generate = Parents::where('no_hp', $request->phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
+                $generate = Parents::where('no_hp', $phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
                 $message = 'Your verification code is: ' . $otp;
 
-                $sendOTP =  Helper::sendMessage($request->phone, $message);
+                $sendOTP =  Helper::sendMessage($phone, $message);
                 if ($generate) {
                     return response()->json([
                         'code' => '00',
@@ -55,19 +65,28 @@ class UsersController extends Controller
 
     public function authenticate(Request $request)
     {
+        $phone = "";
+
+        if (substr($request->phone, 0, 2) == '08') {
+            $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
+        } else if (substr($request->phone, 0, 3) == '+62') {
+            $phone = str_replace(substr($request->phone, 0, 3), '62', $request->phone);
+        } else {
+            $phone = $request->phone;
+        }
         $credentials = ([
-            'no_hp' => $request->phone,
+            'no_hp' => $phone,
             'password' => $request->otp,
         ]);
 
-        // return $credentials;
-        $data = Parents::where('no_hp', $request->phone)
+
+        $data = Parents::where('no_hp', $phone)
             ->where('otp', $request->otp)
             ->first()->toArray();
-        $students = ParentStudents::join('student','parent_students.student_id','student.id')->where('parent_id',$data['id'])->first();
+        $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
         $data['default_student_id'] = $students->student_id;
         $data['default_student_name'] = $students->name;
-        
+
 
         if ($data) {
             if ($token = JWTAuth::attempt($credentials)) {
@@ -148,7 +167,7 @@ class UsersController extends Controller
                     ->orderBy('id', 'DESC')
                     ->first();
                 $billing = PaymentBillDetail::where('student_id', $val->id)->sum('price');
-                
+
                 if ($score && $billing) {
                     $student = array_merge($val->toArray(), ([
                         'student_id' => str_pad($val->id, 6, '0', STR_PAD_LEFT),
