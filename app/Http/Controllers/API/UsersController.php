@@ -63,14 +63,18 @@ class UsersController extends Controller
         // return $credentials;
         $data = Parents::where('no_hp', $request->phone)
             ->where('otp', $request->otp)
-            ->first();
+            ->first()->toArray();
+        $students = ParentStudents::join('student','parent_students.student_id','student.id')->where('parent_id',$data['id'])->first();
+        $data['default_student_id'] = $students->student_id;
+        $data['default_student_name'] = $students->name;
+        
 
         if ($data) {
             if ($token = JWTAuth::attempt($credentials)) {
                 // return $this->respondWithToken($token, 'parent');
                 return response()->json([
                     'code' => '00',
-                    'data' => $data,
+                    'data' => (object)$data,
                     'token' => $this->respondWithToken($token),
                 ]);
             }
