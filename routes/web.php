@@ -3,6 +3,7 @@
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AdvertisesController;
 use App\Http\Controllers\AnnouncesController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\PointCategoriesController;
@@ -28,7 +29,8 @@ Route::get('/', [UsersController::class, 'viewLogin']);
 Route::post('/login', [UsersController::class, 'login']);
 Route::get('/logout', [UsersController::class, 'logout']);
 
-
+Route::get('/print', [UsersController::class,'print']);
+Route::get('/printInvoice/{paymentId}', [PaymentController::class,'printInvoice']);
 
 
 Route::middleware(['web'])->group(function () {
