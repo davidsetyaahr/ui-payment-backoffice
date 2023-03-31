@@ -31,7 +31,7 @@ class UsersController extends Controller
             'teacher' => $teacher,
             'announces' => $announces,
         ]);
-        
+
         return view('dashboard.index', compact('data'));
     }
 
@@ -53,6 +53,8 @@ class UsersController extends Controller
             if (Auth::guard('teacher')->attempt(['username' => $request->email, 'password' => $request->password])) {
                 // if successful, then redirect to their intended location
                 return redirect()->intended('/dashboard');
+            } else {
+                return redirect()->intended('/');
             }
         } catch (\Throwable $th) {
             //throw $th;

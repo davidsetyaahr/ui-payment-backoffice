@@ -52,7 +52,7 @@
                 <form action="{{ url('login') }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="username" class="placeholder"><b>Email</b></label>
+                        <label for="username" class="placeholder"><b>Username</b></label>
                         <input id="username" name="email" type="text"
                             class="form-control @error('email') is-invalid @enderror" required>
                         @error('email')
