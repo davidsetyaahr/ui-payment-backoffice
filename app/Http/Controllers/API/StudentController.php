@@ -23,9 +23,31 @@ class StudentController extends Controller
             }
 
             $data = $query->orderBy('date', 'DESC')->paginate($request->perpage);
+            return response()->json([
+                'code' => '00',
+                'payload' => $data,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error', 'message' => $th,
+            ], 403);
+        }
+    }
+
+    public function getAttendance(Request $request, $studentId)
+    {
+        try {
+            $query = [];
+            $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
+                ->join('student as st', 'st.id', 'attendance_details.student_id')
+                ->join('price as pr', 'pr.id', 'atd.price_id')
+                ->select('st.name', 'pr.program', 'atd.id as attendance_id', 'attendance_details.*', 'atd.date')
+                ->where('attendance_details.student_id', $studentId);
             if ($request->start && $request->end) {
-                $data->withPath(url('/api/myPoint/' . $studentId . '?start=' . $request->start . '&end=' . $request->start));
+                $query = $query->whereBetween('date',  [$request->start, $request->end]);
             }
+            $data = $query->orderBy('atd.date', 'DESC')->paginate($request->perpage);
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
