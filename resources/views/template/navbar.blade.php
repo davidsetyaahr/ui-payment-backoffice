@@ -1,9 +1,9 @@
 <div class="main-header">
     <!-- Logo Header -->
-    <div class="logo-header" data-background-color="blue">
+    <div class="logo-header justify-content-center" data-background-color="blue">
 
         <a href="{{ url('/dashboard') }}" class="logo">
-            <img src="" alt="navbar brand" class="navbar-brand">
+            <img src="https://primtech-sistem.com/ui/assets/dist/img/ui4.jpg" width="100px" alt="navbar brand" class="navbar-brand">
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
             data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
