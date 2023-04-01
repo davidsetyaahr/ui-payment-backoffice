@@ -24,7 +24,7 @@ class StudentController extends Controller
 
             $data = $query->orderBy('date', 'DESC')->paginate($request->perpage);
             $point = Students::where('id', $studentId)->select('total_point')->first();
-            $data['total_point'] = $point->total_point;
+            
             return response()->json([
                 'code' => '00',
                 'total_point' =>  $point->total_point,
