@@ -99,7 +99,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <img style="width: 100%; height: 300px;" src="{{$data->announces->description}}" alt="">
+                                        <img style="width: 100%; height: 300px;" src="{{url('/storage').'/'.$data->announces->banner}}" alt="">
                                     </div>
                                     <div class="col-md-12">
                                         <p>{{$data->announces->description}}</p>

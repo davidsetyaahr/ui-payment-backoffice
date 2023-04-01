@@ -98,8 +98,9 @@
             <br> 031-58204040/58207070
         </p>
         <hr>
-        <p class="centered p2 subtitle">{{$detail->date}} <br>
-            Front Desk 2 </p>
+        <p class="centered p2 subtitle">
+            {{$detail->unique_code}} <br>
+            {{$detail->date}} </p>
         <hr>
         <p class="centered p2">INVOICE</p>
 
@@ -168,7 +169,7 @@
                 </div>
 
                 <div class="box2">
-                    <span>{{$item->description}}</span>
+                    <span>{{$item->payment}}</span>
                 </div>
             </div>
             <div class="not-a-flexbox">
@@ -178,12 +179,12 @@
 
                 <div class="box2">
                     <span>Rp. {{
-                        number_format($item->total,0,',','.').",00"}}</span>
+                        number_format($item->price,0,',','.').",00"}}</span>
                 </div>
             </div>
         </div>
         @php
-            $total += $item->total;
+        $total += $item->price;
         @endphp
         @endforeach
 
@@ -194,7 +195,7 @@
 
             <div class="box2">
                 <span style="font-weight: bolder;">Rp. {{
-                    number_format($detail->total,0,',','.').",00"}}</span>
+                    number_format($detail->amount,0,',','.').",00"}}</span>
             </div>
         </div>
         {{-- <div class="not-a-flexbox" style="margin-top: 8px;">

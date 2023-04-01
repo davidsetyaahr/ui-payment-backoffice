@@ -18,14 +18,15 @@ class PaymentController extends Controller
     public function getHistory(Request $request, $studentId)
     {
         try {
+
             $query = [];
-            // $query = HistoryBilling::join('')
-            $query = PaymentBillDetail::join('history_billing as hb', 'hb.unique_code', 'payment_bill_detail.unique_code')
-                ->select('hb.*')
-                ->where('payment_bill_detail.student_id', $studentId);
-            // $query = PaymentFromApp::orderBy('date', 'DESC');
+            $query = HistoryBilling::join('payment_bill_detail as pbd', 'pbd.unique_code', 'history_billing.unique_code')
+                ->select('history_billing.*')
+                ->where('pbd.student_id', $studentId)
+                ->distinct();
+
             if ($request->start && $request->end) {
-                $query = $query->whereBetween('hb.created_at',  [$request->start, $request->end]);
+                $query = $query->whereBetween('history_billing.created_at',  [$request->start, $request->end]);
             }
             $data = $query->paginate($request->perpage);
             return response()->json([
@@ -45,12 +46,15 @@ class PaymentController extends Controller
     public function getDetailHistory($idPayment)
     {
         try {
-            $data = PaymentFromAppDetail::join('payment_from_apps as pfa', 'pfa.id', 'payment_from_app_details.payment_from_app_id')
-                ->join('student as st', 'st.id', 'pfa.student_id')
-                ->select('st.name', 'payment_from_app_details.*')
-                ->where('payment_from_app_details.payment_from_app_id', $idPayment)
-                ->orderBy('payment_from_app_details.id', 'ASC')
-                ->get();
+            // $data = PaymentFromAppDetail::join('payment_from_apps as pfa', 'pfa.id', 'payment_from_app_details.payment_from_app_id')
+            //     ->join('student as st', 'st.id', 'pfa.student_id')
+            //     ->select('st.name', 'payment_from_app_details.*')
+            //     ->where('payment_from_app_details.payment_from_app_id', $idPayment)
+            //     ->orderBy('payment_from_app_details.id', 'ASC')
+            //     ->get();
+            $data = PaymentBillDetail::join('student as st', 'st.id', 'payment_bill_detail.student_id')
+                ->select('payment_bill_detail.*', 'st.name')
+                ->where('payment_bill_detail.unique_code', $idPayment)->get();
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
@@ -170,15 +174,20 @@ class PaymentController extends Controller
         // INNER JOIN payment py ON pd.paymentid = py.id
         // WHERE pd.paymentid = ?
         // GROUP BY pd.studentid', [$paymentId]);
-        $data = PaymentFromAppDetail::join('payment_from_apps as pfa', 'pfa.id', 'payment_from_app_details.payment_from_app_id')
-            ->join('student as st', 'st.id', 'pfa.student_id')
+        // $data = PaymentFromAppDetail::join('payment_from_apps as pfa', 'pfa.id', 'payment_from_app_details.payment_from_app_id')
+        //     ->join('student as st', 'st.id', 'pfa.student_id')
+        //     ->join('price as pr', 'pr.id', 'st.priceid')
+        //     ->select('st.name', 'st.id as student_id', 'pr.program', 'payment_from_app_details.*')
+        //     ->where('payment_from_app_details.payment_from_app_id', $paymentId)
+        //     ->orderBy('payment_from_app_details.id', 'ASC')
+        //     ->get();
+        $data = PaymentBillDetail::join('student as st', 'st.id', 'payment_bill_detail.student_id')
             ->join('price as pr', 'pr.id', 'st.priceid')
-            ->select('st.name', 'st.id as student_id', 'pr.program', 'payment_from_app_details.*')
-            ->where('payment_from_app_details.payment_from_app_id', $paymentId)
-            ->orderBy('payment_from_app_details.id', 'ASC')
-            ->get();
-        $detail = PaymentFromApp::where('id', $paymentId)->first();
+            ->select('payment_bill_detail.*', 'st.name', 'pr.program')
+            ->where('payment_bill_detail.unique_code', $paymentId)->get();
+        $detail = HistoryBilling::where('unique_code', $paymentId)->first();
 
+        // return $data;
         $fileName = "invoice_payment_" . $paymentId . ".pdf";
 
         $width = 5.5 / 2.54 * 72;
