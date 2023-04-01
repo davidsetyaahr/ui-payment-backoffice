@@ -36,7 +36,7 @@ class UsersController extends Controller
                 $generate = Parents::where('no_hp', $phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
                 $message = 'Your verification code is: ' . $otp;
 
-                $sendOTP =  Helper::sendMessage($phone, $message);
+                // $sendOTP =  Helper::sendMessage($phone, $message);
                 if ($generate) {
                     return response()->json([
                         'code' => '00',
@@ -45,7 +45,7 @@ class UsersController extends Controller
                 } else {
                     return response()->json([
                         'code' => '10',
-                        'message' => $sendOTP['msg'],
+                        'message' => 'error',
                     ], 200);
                 }
             } else {
@@ -171,8 +171,8 @@ class UsersController extends Controller
                 if ($score && $billing) {
                     $student = array_merge($val->toArray(), ([
                         'student_id' => str_pad($val->id, 6, '0', STR_PAD_LEFT),
-                        $score,
-                        $billing,
+                        'average_score' => $score->average_score,
+                        'price' => $billing,
                     ]));
                     array_push($students, $student);
                 } else {
