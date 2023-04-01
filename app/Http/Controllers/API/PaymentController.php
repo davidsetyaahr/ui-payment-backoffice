@@ -19,9 +19,13 @@ class PaymentController extends Controller
     {
         try {
             $query = [];
-            $query = PaymentFromApp::orderBy('date', 'DESC');
+            // $query = HistoryBilling::join('')
+            $query = PaymentBillDetail::join('history_billing as hb', 'hb.unique_code', 'payment_bill_detail.unique_code')
+                ->select('hb.*')
+                ->where('payment_bill_detail.student_id', $studentId);
+            // $query = PaymentFromApp::orderBy('date', 'DESC');
             if ($request->start && $request->end) {
-                $query = $query->whereBetween('date',  [$request->start, $request->end]);
+                $query = $query->whereBetween('hb.created_at',  [$request->start, $request->end]);
             }
             $data = $query->paginate($request->perpage);
             return response()->json([
@@ -29,6 +33,7 @@ class PaymentController extends Controller
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
+            return $th;
             return response()->json([
                 'code' => '400',
                 'error' => 'internal server error',

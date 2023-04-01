@@ -33,7 +33,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
     Route::get('announcement', [InfoController::class, 'getAnnouncement']);
     Route::get('advertise', [InfoController::class, 'getAdvertise']);
-    Route::get('agenda', [InfoController::class, 'getAgenda']);
+    Route::get('agenda/{studentId}', [InfoController::class, 'getAgenda']);
     Route::get('myPoint/{studentId}', [StudentController::class, 'getMyPoint']);
     Route::get('attendace/{studentId}', [StudentController::class, 'getAttendance']);
     Route::prefix('score')->group(function () {

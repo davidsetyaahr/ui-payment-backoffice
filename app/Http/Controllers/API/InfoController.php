@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Advertises;
 use App\Models\Announces;
 use App\Models\Attendance;
+use App\Models\AttendanceDetail;
 use Illuminate\Http\Request;
 
 class InfoController extends Controller
@@ -13,7 +14,7 @@ class InfoController extends Controller
     public function getAdvertise()
     {
         try {
-            $result = Advertises::orderBy('id','DESC')->take(5)->get();
+            $result = Advertises::orderBy('id', 'DESC')->take(5)->get();
             return response()->json([
                 'code' => '00',
                 'payload' => $result,
@@ -30,7 +31,7 @@ class InfoController extends Controller
     {
         try {
             $result = Announces::orderBy('id', 'desc')
-            ->first();
+                ->first();
             return response()->json([
                 'code' => '00',
                 'payload' => $result,
@@ -43,12 +44,15 @@ class InfoController extends Controller
         }
     }
 
-    public function getAgenda()
+    public function getAgenda($studentId)
     {
         try {
-            $result = Attendance::select('activity')
-                ->orderBy('id', 'desc')
+            $result = AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
+                ->select('attendances.activity')
+                ->where('attendance_details.student_id', $studentId)
+                ->orderBy('attendance_details.id', 'DESC')
                 ->first();
+
             return response()->json([
                 'code' => '00',
                 'payload' => $result,
