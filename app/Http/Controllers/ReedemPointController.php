@@ -29,7 +29,7 @@ class ReedemPointController extends Controller
 
     public function store(Request $request)
     {
-        return $request;
+        // return $request;
         try {
             $tmpTotal = 0;
             for ($i = 0; $i < count($request->item); $i++) {

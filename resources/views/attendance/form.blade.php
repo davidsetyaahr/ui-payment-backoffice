@@ -127,7 +127,7 @@
                                                              if ($data->type == 'create') {
                                                                 $isAbsent = false;
                                                             } else {
-                                                                if ($data->students[$no-1]->student_id == $it->id && $data->type) {
+                                                                if ($data->students[$no-1]->student_id == $it->id && $data->students[$no-1]->is_absent) {
                                                                     $isAbsent = true;
                                                                 }
                                                             }

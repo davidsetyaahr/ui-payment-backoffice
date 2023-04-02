@@ -50,8 +50,8 @@ class AttendanceController extends Controller
         $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Reguler Class ' . $class->program;
         if ($cek) {
             $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
-            $points = [];
             foreach ($detail as $key => $id) {
+                $points = [];
                 $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $id->id)
                     ->select('point_category_id')
                     ->get();

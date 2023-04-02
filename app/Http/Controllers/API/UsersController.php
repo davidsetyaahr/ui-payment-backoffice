@@ -36,8 +36,8 @@ class UsersController extends Controller
                 $generate = Parents::where('no_hp', $phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
                 $message = 'Your verification code is: ' . $otp;
 
-                // $sendOTP =  Helper::sendMessage($phone, $message);
-                if ($generate) {
+                $sendOTP =  Helper::sendMessage($phone, $message);
+                if ($generate && $sendOTP) {
                     return response()->json([
                         'code' => '00',
                         'message' => $message,
