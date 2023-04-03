@@ -30,7 +30,6 @@ class AttendanceController extends Controller
             } else {
                 array_push($general, $value);
             }
-            
         }
         return view('attendance.index', compact('private', 'general'));
     }
@@ -130,7 +129,7 @@ class AttendanceController extends Controller
                         'date' => date('Y-m-d'),
                         'total_point' =>  10,
                         'type' => 'in',
-                        'keterangan' => 'Absent',
+                        'keterangan' => 'Attendance',
                     ]);
                 }
                 if ($request->categories) {
