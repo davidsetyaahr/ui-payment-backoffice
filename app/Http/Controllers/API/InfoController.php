@@ -31,7 +31,7 @@ class InfoController extends Controller
     {
         try {
             $result = Announces::orderBy('id', 'desc')
-                ->first();
+                ->take(5)->get();
             return response()->json([
                 'code' => '00',
                 'payload' => $result,
@@ -48,10 +48,10 @@ class InfoController extends Controller
     {
         try {
             $result = AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
-                ->select('attendances.activity')
+                ->select('attendances.activity', 'attendances.date')
                 ->where('attendance_details.student_id', $studentId)
                 ->orderBy('attendance_details.id', 'DESC')
-                ->first();
+                ->take(5)->get();
 
             return response()->json([
                 'code' => '00',
