@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Price;
 use App\Models\Score;
+use App\Models\Students;
 use App\Models\StudentScore;
 use App\Models\StudentScoreDetail;
 use App\Models\Tests;
@@ -29,6 +31,41 @@ class ScoreController extends Controller
         }
     }
 
+    public function getResult($studentId)
+    {
+        try {
+            $sc = StudentScore::where('student_id', $studentId)->get();
+            $class = Students::join('price', 'price.id', 'student.priceid')
+                        ->select('price.program')
+                        ->where('student.id', $studentId)->first();
+            $test = Tests::count();
+            $totalScore = 0;
+            $totalTest = 0;
+            foreach ($sc as $s) {
+                $totalScore += $s->average_score;
+                $totalTest += 1;
+            }
+            $total = $totalScore / $totalTest;
+            $data = ([
+                'total_score' => $total,
+                'class' => $class->program,
+                'grade' => Helper::getGrade($total),
+                'total_test' => $test,
+                'total_test_passed' => $totalTest,
+            ]);
+            return response()->json([
+                'code' => '00',
+                'payload' => $data,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error',
+                'message' => $th,
+            ], 403);
+        }
+    }
+
     public function getScoreByTest($studentId, $testId)
     {
         try {
@@ -44,8 +81,8 @@ class ScoreController extends Controller
             $score['grade'] = Helper::getGrade($score->average_score);
             $items = [];
             foreach ($item as $value) {
-               $value['grade'] = Helper::getGrade($value->score);
-               array_push($items, $value);
+                $value['grade'] = Helper::getGrade($value->score);
+                array_push($items, $value);
             }
             $data = ([
                 'score' => $score,

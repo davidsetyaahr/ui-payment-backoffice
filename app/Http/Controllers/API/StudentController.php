@@ -27,10 +27,13 @@ class StudentController extends Controller
 
             $data = $query->orderBy('date', 'DESC')->paginate($request->perpage);
             $point = Students::where('id', $studentId)->select('total_point')->first();
-
+            $class = Students::join('price', 'price.id', 'student.priceid')
+                ->select('price.program')
+                ->where('student.id', $studentId)->first();
             return response()->json([
                 'code' => '00',
                 'total_point' =>  $point->total_point,
+                'class' =>  $class->program,
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
@@ -44,6 +47,9 @@ class StudentController extends Controller
     public function getAttendance(Request $request, $studentId)
     {
         try {
+            $class = Students::join('price', 'price.id', 'student.priceid')
+                ->select('price.program')
+                ->where('student.id', $studentId)->first();
             $query = [];
             $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
                 ->join('student as st', 'st.id', 'attendance_details.student_id')
@@ -56,6 +62,7 @@ class StudentController extends Controller
             $data = $query->orderBy('atd.date', 'DESC')->paginate($request->perpage);
             return response()->json([
                 'code' => '00',
+                'class' =>  $class->program,
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
