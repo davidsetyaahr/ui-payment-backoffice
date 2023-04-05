@@ -81,6 +81,7 @@ class StudentController extends Controller
                 ->join('price as p', 'p.id', 'attendances.price_id')
                 ->select('p.program', 'p.id')
                 ->where('ad.student_id', $studentId)
+                ->groupBy('attendances.price_id')
                 ->get();
             return response()->json([
                 'code' => '00',
