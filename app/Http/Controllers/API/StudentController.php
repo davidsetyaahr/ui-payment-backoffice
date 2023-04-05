@@ -101,16 +101,18 @@ class StudentController extends Controller
                 ->select('average_score')
                 ->orderBy('id', 'DESC')
                 ->first();
+
             $billing = PaymentBillDetail::where('student_id', $studentId)->where('status', 'Waiting')->sum('price');
             $point = Students::where('id', $studentId)->select('total_point')->first();
-            $data['score'] = $score->average_score;
-            $data['billing'] = $billing;
-            $data['point'] = $point->total_point;
+            $data['score'] = $score ? $score->average_score : 0;
+            $data['billing'] = $billing ? $billing : 0;
+            $data['point'] = $point ? $point->total_point : 0;
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
+            return $th;
             return response()->json([
                 'code' => '400',
                 'error' => 'internal server error', 'message' => $th,
