@@ -7,6 +7,7 @@ use App\Models\HistoryBilling;
 use App\Models\PaymentBillDetail;
 use App\Models\PaymentFromApp;
 use App\Models\PaymentFromAppDetail;
+use App\Models\Students;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,9 @@ class PaymentController extends Controller
                 $query = $query->whereBetween('history_billing.created_at',  [$request->start, $request->end]);
             }
             $data = $query->paginate($request->perpage);
+            $class = Students::join('price', 'price.id', 'student.priceid')
+                ->select('price.program')
+                ->where('student.id', $studentId)->first();
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
@@ -57,6 +61,7 @@ class PaymentController extends Controller
                 ->where('payment_bill_detail.unique_code', $idPayment)->get();
             return response()->json([
                 'code' => '00',
+                'class' =>  $class->program,
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
@@ -81,8 +86,12 @@ class PaymentController extends Controller
                 $value->student_id = str_pad($value->student_id, 6, '0', STR_PAD_LEFT);
                 array_push($data, $value);
             }
+            $class = Students::join('price', 'price.id', 'student.priceid')
+                ->select('price.program')
+                ->where('student.id', $studentId)->first();
             return response()->json([
                 'code' => '00',
+                'class' =>  $class->program,
                 'payload' => $data,
             ], 200);
         } catch (\Throwable $th) {
