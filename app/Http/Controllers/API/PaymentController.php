@@ -61,6 +61,8 @@ class PaymentController extends Controller
             $data = PaymentBillDetail::join('student as st', 'st.id', 'payment_bill_detail.student_id')
                 ->select('payment_bill_detail.*', 'st.name')
                 ->where('payment_bill_detail.unique_code', $idPayment)->get();
+            $class = Students::join('price','student.priceid','price.id')->where('student.id',$studentId)->first();
+
             return response()->json([
                 'code' => '00',
                 'class' =>  $class->program,
