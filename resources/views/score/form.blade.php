@@ -84,17 +84,29 @@
                                 <div class="col-md-3">
 
                                     <label for="email2">Class</label>
-                                    <select class="form-control" style="width:100%;" name="class" id="class">
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="class" id="class">
+                                        <option value="">Select class</option>
+                                        @foreach ($class as $st)
+
+                                        <option value="{{$st->id}}">{{$st->program}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    @error('student')
+                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+                                    {{-- <select class="form-control" style="width:100%;" name="class" id="class">
                                         <option value="">Select Class
                                         </option>
                                         <option value="Private">Private</option>
                                         <option value="General">General</option>
-                                        {{-- @foreach ($class as $st)
+                                        @foreach ($class as $st)
 
                                         <option value="{{$st->id}}">{{$st->name}}
                                         </option>
-                                        @endforeach --}}
-                                    </select>
+                                        @endforeach
+                                    </select> --}}
                                     @error('class')
                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                     @enderror
@@ -174,7 +186,8 @@
                                                         $it->name}}</td>
                                                     <td style="height: 40px!important; padding: 8px 16px!important;">
                                                         <input type="hidden" value="{{$it->id}}" name="items[]">
-                                                        <input type="hidden" value="" name="idScore[]" id="idScore{{$no}}">
+                                                        <input type="hidden" value="" name="idScore[]"
+                                                            id="idScore{{$no}}">
                                                         <input type="number" id="{{'score'.$no}}" name="score[]"
                                                             required class="form-table score">
 
@@ -327,6 +340,7 @@
                 url:'{{url('')}}/score/students/filter?class='+typeClass,
                 dataType: 'JSON',
                 success:function(data){
+                    console.log(data);
                     var $student = $('#student');
                     $student.empty();
                     $student.append('<option value="">Select Student</option>');

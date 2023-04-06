@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Price;
 use App\Models\Score;
 use App\Models\Students;
 use App\Models\StudentScore;
@@ -30,12 +31,12 @@ class ScoreController extends Controller
                 ->get();
             $test = ModelsTests::all();
             $item = TestItems::orderBy('id', 'ASC')->get();
-
+            $class = Price::all();
             $title = 'Input Score';
             $data = (object)[
                 'type' => 'create',
             ];
-            return view('score.form', compact('data', 'title', 'test', 'item', 'students'));
+            return view('score.form', compact('data', 'title', 'test', 'item', 'students', 'class'));
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -176,18 +177,13 @@ class ScoreController extends Controller
 
     public function filterStudent(Request $request)
     {
+        
         try {
             $query = [];
-            $query = Students::join('price as p', 'p.id', 'student.priceid')
-                ->select('student.name', 'student.id');
-            if ($request->filter == 'Private') {
-                $query = $query->where('p.program', '==', 'Semi Private');
-            } else {
-                $query = $query->where('p.program', '!=', 'Semi Private')->where('p.program', '!=', 'Private');
-            }
-            $data = $query->get();
+            $query = Students::where('priceid', $request->class)->get();
+            return $query;
 
-            return $data;
+            // return $data;
         } catch (\Throwable $th) {
             //throw $th;
             return $th;
