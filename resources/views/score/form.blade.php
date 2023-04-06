@@ -292,7 +292,7 @@
         $.ajax({
             type: "GET",
             // url: "/score/filterScore?student=000002&test=2&date=2023-03-16",
-            url: "/score/filterScore?student="+student+"&test="+test+"&date="+date,
+            url: "{{url()}}score/filterScore?student="+student+"&test="+test+"&date="+date,
             dataType: 'JSON',
             success: function(res) {
                 console.log(res);
@@ -324,7 +324,7 @@
         var typeClass = $(this).val();
             $.ajax({
                 type:'GET',
-                url:'/score/students/filter?class='+typeClass,
+                url:'{{url()}}score/students/filter?class='+typeClass,
                 dataType: 'JSON',
                 success:function(data){
                     var $student = $('#student');
