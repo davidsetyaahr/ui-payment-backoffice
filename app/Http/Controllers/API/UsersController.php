@@ -67,44 +67,43 @@ class UsersController extends Controller
     {
         $phone = "";
 
-        if (substr($request->phone, 0, 2) == '08') {
-            $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
-        } else if (substr($request->phone, 0, 3) == '+62') {
-            $phone = str_replace(substr($request->phone, 0, 3), '62', $request->phone);
-        } else {
-            $phone = $request->phone;
-        }
-        $credentials = ([
-            'no_hp' => $phone,
-            'password' => $request->otp,
-        ]);
 
-
-        $data = Parents::where('no_hp', $phone)
-            ->where('otp', $request->otp)
-            ->first()->toArray();
-        $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
-        $data['default_student_id'] = $students->student_id;
-        $data['default_student_name'] = $students->name;
-
-
-        if ($data) {
-            if ($token = JWTAuth::attempt($credentials)) {
-                // return $this->respondWithToken($token, 'parent');
-                return response()->json([
-                    'code' => '00',
-                    'data' => (object)$data,
-                    'token' => $this->respondWithToken($token),
-                ]);
-            }
-        } else {
-            return response()->json([
-                'code' => '10',
-                'message' => 'Login credentials are invalid.',
-            ], 400);
-        }
 
         try {
+            if (substr($request->phone, 0, 2) == '08') {
+                $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
+            } else if (substr($request->phone, 0, 3) == '+62') {
+                $phone = str_replace(substr($request->phone, 0, 3), '62', $request->phone);
+            } else {
+                $phone = $request->phone;
+            }
+            $credentials = ([
+                'no_hp' => $phone,
+                'password' => $request->otp,
+            ]);
+
+            $data = Parents::where('no_hp', $phone)
+                ->where('otp', $request->otp)
+                ->first();
+
+            if ($data) {
+                $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
+                $data['default_student_id'] = $students->student_id;
+                $data['default_student_name'] = $students->name;
+                if ($token = JWTAuth::attempt($credentials)) {
+                    // return $this->respondWithToken($token, 'parent');
+                    return response()->json([
+                        'code' => '00',
+                        'data' => (object)$data,
+                        'token' => $this->respondWithToken($token),
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'code' => '10',
+                    'message' => 'Login credentials are invalid.',
+                ], 400);
+            }
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json([
                     'code' => '10',
@@ -112,7 +111,6 @@ class UsersController extends Controller
                 ], 400);
             }
         } catch (JWTException $e) {
-            return $credentials;
             return response()->json([
                 'code' => '00',
                 'message' => 'Could not create token.',
