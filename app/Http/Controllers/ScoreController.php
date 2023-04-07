@@ -177,7 +177,7 @@ class ScoreController extends Controller
 
     public function filterStudent(Request $request)
     {
-        
+
         try {
             $query = [];
             $query = Students::where('priceid', $request->class)->get();

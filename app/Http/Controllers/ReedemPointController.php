@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PointHistory;
 use App\Models\PointHistoryCategory;
+use App\Models\Price;
 use App\Models\ReedemItems;
 use App\Models\ReedemPoint;
 use App\Models\Students;
@@ -14,14 +15,13 @@ class ReedemPointController extends Controller
     public function create()
     {
         try {
+            $class = Price::all();
             $students = Students::join('price as p', 'p.id', 'student.priceid')
                 ->select('student.name', 'student.id', 'student.total_point')
-                ->where('p.program', '!=', 'Private')
-                ->limit(5)
                 ->get();
             $item = ReedemItems::all();
             $title = 'Reedem Point';
-            return view('reedemPoint.form', compact('students', 'title', 'item'));
+            return view('reedemPoint.form', compact('students','title', 'item', 'class'));
         } catch (\Throwable $th) {
             //throw $th;
         }

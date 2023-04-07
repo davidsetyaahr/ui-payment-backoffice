@@ -96,17 +96,7 @@
                                     @error('student')
                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                     @enderror
-                                    {{-- <select class="form-control" style="width:100%;" name="class" id="class">
-                                        <option value="">Select Class
-                                        </option>
-                                        <option value="Private">Private</option>
-                                        <option value="General">General</option>
-                                        @foreach ($class as $st)
-
-                                        <option value="{{$st->id}}">{{$st->name}}
-                                        </option>
-                                        @endforeach
-                                    </select> --}}
+                                  
                                     @error('class')
                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                     @enderror

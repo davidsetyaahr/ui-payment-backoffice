@@ -61,7 +61,43 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+
+                                    <label for="email2">Class</label>
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="class" id="class">
+                                        <option value="">Select class</option>
+                                        @foreach ($class as $st)
+
+                                        <option value="{{$st->id}}">{{$st->program}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    @error('student')
+                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+                                    @error('class')
+                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+
+                                </div>
+                                <div class="col-md-3">
+
+                                    <label for="email2">Students</label>
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="student" id="student">
+                                        <option value="">Select Student</option>
+
+                                    </select>
+                                    @error('student')
+                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+
+                                </div>
+                                {{-- <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="email2">Students</label>
                                         <select class="form-control select2 select2-hidden-accessible"
@@ -77,7 +113,7 @@
                                         <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                         @enderror
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
                                 <div class="col-md-4"></div>
@@ -173,6 +209,7 @@
             var idStudent = $('select[name=student] option').filter(':selected').val();
             jQuery.each(dataStudent, function(index, item) {
                 if (item.id == idStudent) {
+                    
                     $("#point_show").css("display", "block");
                     $("#target").css("display", "block");
                     $(".button-add").css("display", "block");
@@ -215,37 +252,27 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        // Basic
-        $('.dropify').dropify();
-
-
-        // Used events
-        var drEvent = $('#input-file-events').dropify();
-
-        drEvent.on('dropify.beforeClear', function (event, element) {
-            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function (event, element) {
-            alert('File deleted');
-        });
-
-        drEvent.on('dropify.errors', function (event, element) {
-            console.log('Has Errors');
-        });
-
-        var drDestroy = $('#input-file-to-destroy').dropify();
-        drDestroy = drDestroy.data('dropify')
-        $('#toggleDropify').on('click', function (e) {
-            e.preventDefault();
-            if (drDestroy.isDropified()) {
-                drDestroy.destroy();
-            } else {
-                drDestroy.init();
-            }
-        })
+    $(document).ready(function(){
+    $('#class').on('change',function(){
+        var typeClass = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'{{url('')}}/score/students/filter?class='+typeClass,
+                dataType: 'JSON',
+                success:function(data){
+                    console.log(data);
+                    var $student = $('#student');
+                    $student.empty();
+                    $student.append('<option value="">Select Student</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $student.append('<option id=' + data[i].id + ' value=' + data[i].id + '>' + data[i].name + '</option>');
+                    }
+                    $student.change();
+                    
+                }
+            }); 
     });
+});
 
 </script>
 @endsection
