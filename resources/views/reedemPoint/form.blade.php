@@ -260,7 +260,7 @@
                 url:'{{url('')}}/score/students/filter?class='+typeClass,
                 dataType: 'JSON',
                 success:function(data){
-                    console.log(data);
+                    
                     var $student = $('#student');
                     $student.empty();
                     $student.append('<option value="">Select Student</option>');
