@@ -129,7 +129,7 @@ class AttendanceController extends Controller
                         'date' => date('Y-m-d'),
                         'total_point' =>  10,
                         'type' => 'in',
-                        'keterangan' => 'Attendance',
+                        'keterangan' => 'Present',
                     ]);
                 }
                 if ($request->categories) {
