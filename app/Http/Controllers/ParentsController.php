@@ -27,6 +27,7 @@ class ParentsController extends Controller
             'id' => 0,
             'name' => '',
             'no_hp' => '',
+            'gender' => '',
             'type' => 'create',
         ];
         return view('parents.form', compact('data', 'title'));
@@ -48,6 +49,7 @@ class ParentsController extends Controller
 
         $input['name'] = $request['name'];
         $input['no_hp'] = $request['no_hp'];
+        $input['gender'] = $request['gender'];
         $input['otp'] = '1111';
 
         try {
@@ -106,6 +108,7 @@ class ParentsController extends Controller
             'id' => $parent->id,
             'name' =>  $parent->name,
             'no_hp' =>  $parent->no_hp,
+            'gender' =>  $parent->gender,
             'type' => 'edit',
         ];
         return view('parents.form', compact('data', 'title'));
@@ -128,6 +131,7 @@ class ParentsController extends Controller
         ]);
         $input['name'] = $request['name'];
         $input['no_hp'] = $request['no_hp'];
+        $input['gender'] = $request['gender'];
 
 
         try {

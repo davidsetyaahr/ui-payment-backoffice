@@ -55,12 +55,12 @@
                     @endif
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data'  : 'Edit Data'}}</h4>
+                            <h4 class="card-title">{{$data->type == 'create' ? 'Tambah Data' : 'Edit Data'}}</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="email2">Name</label>
                                         <input type="text" class="form-control @error('name') is-invalid @enderror"
@@ -71,12 +71,29 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="email2">Phone Number</label>
                                         <input type="text" class="form-control @error('no_hp') is-invalid @enderror"
                                             value="{{ $data->no_hp }}" name="no_hp" placeholder="Phone Number">
                                         @error('no_hp')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                        @enderror
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="email2">Gender</label>
+                                        <select name="gender" class="form-control @error('gender') is-invalid @enderror"
+                                            id="">
+                                            <option value="">Select Gender</option>
+                                            <option value="Male" {{$data->gender == 'Male' ? 'selected' : ''}}>Male
+                                            </option>
+                                            <option value="Female" {{$data->gender == 'Female' ? 'selected' :''}}>Female
+                                            </option> 
+                                        </select>
+                                        @error('gender')
                                         <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                         @enderror
                                     </div>
@@ -88,79 +105,14 @@
                         </div>
                         <div class="card-action mt-3">
                             <button type="submit" class="btn btn-success">Submit</button>
-                            <button type="button" data-toggle="modal" data-target="#mdlCancel"
-                                class="btn btn-danger">Cancel</button>
+
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="modal" id="mdlCancel" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Konfirmasi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah anda yakin ingin membatalkan proses?</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ url('/advertise') }}"><button type="button" class="btn btn-success">Ya</button></a>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
-<script>
-    $(document).ready(function () {
-        $('#summernote').summernote();
-    });
-    $(document).ready(function () {
-        $('#kandungan').summernote();
-    });
-    $(document).ready(function () {
-        $('#aturan').summernote();
-    });
 
-</script>
-
-<script>
-    $(document).ready(function () {
-        // Basic
-        $('.dropify').dropify();
-
-
-        // Used events
-        var drEvent = $('#input-file-events').dropify();
-
-        drEvent.on('dropify.beforeClear', function (event, element) {
-            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function (event, element) {
-            alert('File deleted');
-        });
-
-        drEvent.on('dropify.errors', function (event, element) {
-            console.log('Has Errors');
-        });
-
-        var drDestroy = $('#input-file-to-destroy').dropify();
-        drDestroy = drDestroy.data('dropify')
-        $('#toggleDropify').on('click', function (e) {
-            e.preventDefault();
-            if (drDestroy.isDropified()) {
-                drDestroy.destroy();
-            } else {
-                drDestroy.init();
-            }
-        })
-    });
-
-</script>
 @endsection
