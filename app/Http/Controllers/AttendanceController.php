@@ -11,6 +11,7 @@ use App\Models\Price;
 use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -39,12 +40,18 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($priceId)
+    public function create($priceId, Request $request)
     {
+        $reqDay = $request->day;
+        $reqTime = $request->time;
+        $reqAmpm = $request->ampm;
+        $student = "";
+        $day = DB::table('day')->get();
         $cek = Attendance::where('price_id', $priceId)
             ->where('date', date('Y-m-d'))
             ->orderBy('id', 'DESC')
             ->first();
+
         $class = Price::where('id', $priceId)->first();
         $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Reguler Class ' . $class->program;
         if ($cek) {
@@ -85,12 +92,14 @@ class AttendanceController extends Controller
         }
 
 
-        $student = Students::where('priceid', $class->id)
-            ->get();
+        if ($reqDay) {
+            $student = Students::where('priceid', $class->id)->where('day1', $reqDay)->where('course_time', $reqTime . " " . $reqAmpm)
+                ->get();
+        }
 
         $pointCategories = PointCategories::all();
         // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories'));
+        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day'));
     }
 
     /**
