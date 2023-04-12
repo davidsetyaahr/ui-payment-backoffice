@@ -1,4 +1,4 @@
-<div class="sidebar sidebar-style-2" >
+<div class="sidebar sidebar-style-2">
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <div class="user">
@@ -50,7 +50,7 @@
                 </li>
 
                 <li
-                    class="nav-item {{  Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'active' : '' }} submenu">
+                    class="nav-item {{ Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'active' : '' }} submenu">
                     <a data-toggle="collapse" href="#tables">
                         <i class="fas fa-th-large"></i>
                         <p>Master Data</p>
@@ -96,6 +96,13 @@
                     <a href="{{ url('/reedemPoint') }}" class="collapsed">
                         <i class="fas fa-download"></i>
                         <p>Reedem Point</p>
+                    </a>
+
+                </li>
+                <li class="nav-item {{ Request::segment(1) == 'schedule-class' ? 'active' : '' }}">
+                    <a href="{{ url('/schedule-class') }}" class="collapsed">
+                        <i class="fas fa-calendar"></i>
+                        <p>Schedule Class</p>
                     </a>
 
                 </li>
