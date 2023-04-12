@@ -9,6 +9,7 @@ use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\PointCategoriesController;
 use App\Http\Controllers\ReedemItemsController;
 use App\Http\Controllers\ReedemPointController;
+use App\Http\Controllers\ScheduleClassController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\TestItemsController;
 use App\Models\Attendance;
@@ -29,8 +30,8 @@ Route::get('/', [UsersController::class, 'viewLogin']);
 Route::post('/login', [UsersController::class, 'login']);
 Route::get('/logout', [UsersController::class, 'logout']);
 
-Route::get('/print', [UsersController::class,'print']);
-Route::get('/printInvoice/{paymentId}', [PaymentController::class,'printInvoice']);
+Route::get('/print', [UsersController::class, 'print']);
+Route::get('/printInvoice/{paymentId}', [PaymentController::class, 'printInvoice']);
 
 
 Route::middleware(['web'])->group(function () {
@@ -43,6 +44,7 @@ Route::middleware(['web'])->group(function () {
     Route::resource('/pointCategories', PointCategoriesController::class);
     Route::resource('/tests', TestItemsController::class);
     Route::resource('/parents', ParentsController::class);
+    Route::resource('/schedule-class', ScheduleClassController::class);
     Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
     Route::prefix('score')->group(function () {
         Route::get('/form', [ScoreController::class, 'index']);
@@ -56,7 +58,6 @@ Route::middleware(['web'])->group(function () {
         Route::get('/class', [AttendanceController::class, 'index']);
         Route::post('/store', [AttendanceController::class, 'store']);
         Route::post('/update/{attendance}', [AttendanceController::class, 'update']);
-
     });
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
