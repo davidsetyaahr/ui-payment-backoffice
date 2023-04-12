@@ -41,16 +41,20 @@ class ScheduleClassController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
         try {
+            DB::table('student')
+                ->where('day1', $request->day)
+                ->update(['day1' => null]);
             DB::transaction(function () use ($request) {
-                foreach ($request->upcls as $key => $value) {
-                    // DB::table('student')
-                    //     ->where('id', $value)
-                    //     ->update(['day1' => null]);
-                    DB::table('student')
-                        ->where('id', $value)
-                        ->update(['day1' => $request->day]);
+                if ($request->upcls) {
+                    foreach ($request->upcls as $key => $value) {
+                        // DB::table('student')
+                        //     ->where('id', $value)
+                        //     ->update(['day1' => null]);
+                        DB::table('student')
+                            ->where('id', $value)
+                            ->update(['day1' => $request->day]);
+                    }
                 }
             });
             return redirect()->back()->with('message', 'Schedule student update');
