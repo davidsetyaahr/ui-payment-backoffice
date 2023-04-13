@@ -44,6 +44,7 @@ Route::middleware(['web'])->group(function () {
     Route::resource('/pointCategories', PointCategoriesController::class);
     Route::resource('/tests', TestItemsController::class);
     Route::resource('/parents', ParentsController::class);
+    Route::delete('/schedule-class/delete', [ScheduleClassController::class,'delete']);
     Route::resource('/schedule-class', ScheduleClassController::class);
     Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
     Route::prefix('score')->group(function () {

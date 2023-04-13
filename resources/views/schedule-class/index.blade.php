@@ -16,7 +16,7 @@
         <div class="page-inner mt--5">
             @if (session('message'))
                 <script>
-                    swal("Login Berhasil", "{{ session('message') }}!", {
+                    swal("Success", "{{ session('message') }}!", {
                         icon: "success",
                         buttons: {
                             confirm: {

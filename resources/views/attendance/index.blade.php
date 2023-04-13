@@ -16,7 +16,7 @@
     <div class="page-inner mt--5">
         @if (session('message'))
         <script>
-            swal("Login Berhasil", "{{ session('message') }}!", {
+            swal("Success", "{{ session('message') }}!", {
                         icon: "success",
                         buttons: {
                             confirm: {
@@ -35,13 +35,31 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            @foreach ($general as $item)
+                            @foreach ($general as $key => $item)
                             <div class="col-sm-6 col-md-4 ">
                                 <div class="card">
                                     <div class="card-body">
-                                        <span style="font-size: 16px"> 
-                                            <i class="fa fas fa-angle-right"></i>
-                                            <b> {{$item->program}}</b>
+                                        <span style="font-size: 16px">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <i class="fa fas fa-angle-right"></i>
+                                                    <b> {{$item->program}}</b>
+                                                </div>
+                                                <div>
+                                                    <form action="{{ url('schedule-class/delete') }}" method="POST"
+                                                        class="form-inline">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <input type="hidden" name="priceid" value="{{$item->priceid}}">
+                                                        <input type="hidden" name="day1" value="{{$item->day1}}">
+                                                        <input type="hidden" name="day2" value="{{$item->day2}}">
+                                                        <input type="hidden" name="course_time" value="{{$item->course_time}}">
+                                                        <input type="hidden" name="id_teacher" value="{{$item->id_teacher}}">
+                                                        <button type="submit" onclick="return confirm('apakah anda yakin ingin menghapus data ??')" class="btn btn-xs btn-danger"><i
+                                                                class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div> 
                                             <br>
                                             <b>{{$item->day_one}} & {{$item->day_two}}</b>
                                             <br>
@@ -72,9 +90,27 @@
                             <div class="col-sm-6 col-md-4 ">
                                 <div class="card">
                                     <div class="card-body">
-                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i>
-                                            <b> {{$item->program}}</b>
-                                            <br>
+                                        <span style="font-size: 16px">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <b> {{$item->program}}</b>
+                                                    <br>
+                                                </div>
+                                                <div>
+                                                    <form action="{{ url('schedule-class/delete') }}" method="POST"
+                                                        class="form-inline">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <input type="hidden" name="priceid" value="{{$item->priceid}}">
+                                                        <input type="hidden" name="day1" value="{{$item->day1}}">
+                                                        <input type="hidden" name="day2" value="{{$item->day2}}">
+                                                        <input type="hidden" name="course_time" value="{{$item->course_time}}">
+                                                        <input type="hidden" name="id_teacher" value="{{$item->id_teacher}}">
+                                                        <button type="submit" onclick="return confirm('apakah anda yakin ingin menghapus data ??')" class="btn btn-xs btn-danger"><i
+                                                                class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div> <i class="fa fas fa-angle-right"></i>
                                             <b>{{$item->day_one}} & {{$item->day_two}}</b>
                                             <br>
                                             <b>{{$item->course_time}}</b>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Students;
 
 class ScheduleClassController extends Controller
 {
@@ -69,6 +70,28 @@ class ScheduleClassController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
         }
+    }
+
+    public function delete(Request $request)
+    {
+        try {
+            DB::transaction(function () use ($request) {
+                $update = [
+                    'day1' => null,
+                    'day2' => null,
+                    'course_time' => null,
+                    'id_teacher' => null,
+                ];
+                Students::where('priceid',$request->priceid)->where('day1',$request->day1)->where('day2',$request->day2)->where('course_time',$request->course_time)->where('id_teacher',$request->id_teacher)->update($update);
+            });
+
+            return redirect()->back()->with('message', 'Berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
+
     }
 
     /**
