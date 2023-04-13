@@ -83,14 +83,14 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label for="">Time</label>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <input type="number" class="form-control" name="time" id="time"
-                                                        value="{{ Request::get('time') ? Request::get('time') : '' }}">
+                                                <div class="col-md-12">
+                                                    <input id="time" type="time" class="form-control" name="time"
+                                                    value="{{ Request::get('time') ? Request::get('time') : '' }}" required>
                                                 </div>
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <select name="ampm" id="ampm" class="form-control select2">
                                                         <option value="AM"
                                                             {{ Request::get('ampm') == 'AM' ? 'selected' : '' }}>AM
@@ -99,7 +99,7 @@
                                                             {{ Request::get('ampm') == 'PM' ? 'selected' : '' }}>PM
                                                         </option>
                                                     </select>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-2 mt-3">
@@ -340,16 +340,17 @@
         function filter() {
             var day = $('#day').val();
             var time = $('#time').val();
-            var ampm = $('#ampm').val();
+            // var ampm = $('#ampm').val();
             if (day == '') {
                 alert("Day is required")
             } else if (time == '') {
                 alert("Time is required")
-            } else if (ampm == '') {
-                alert("AM/PM is required")
-            } else {
-                window.location.href = "{{ url('/attendance/form/1') }}?day=" + day + "&time=" + time + "&ampm=" +
-                    ampm;
+            } 
+            // else if (ampm == '') {
+            //     alert("AM/PM is required")
+            // } 
+            else {
+                window.location.href = "{{ url('/attendance/form/'.$data->id) }}?day=" + day + "&time=" + time;
             }
         }
     </script>

@@ -16,11 +16,12 @@ class ScheduleClassController extends Controller
     {
         $day = DB::table('day')->get();
         $class = DB::table('price')->get();
+        $teacher = DB::table('teacher')->get();
         $data = '';
         if ($request->class) {
             $data = DB::table('student')->where('priceid', $request->class)->get();
         }
-        return view('schedule-class.index', compact('day', 'class', 'data'));
+        return view('schedule-class.index', compact('day', 'class', 'data','teacher'));
     }
 
     /**
@@ -43,17 +44,22 @@ class ScheduleClassController extends Controller
     {
         try {
             DB::table('student')
-                ->where('day1', $request->day)
-                ->update(['day1' => null]);
+                ->where('priceid', $request->class)
+                ->where('id_teacher', $request->teacher)
+                ->where('day1', $request->day1)
+                ->where('day2', $request->day2)
+                ->where('course_time', $request->time)
+                ->update(['day1' => null, 'day2' => null, 'id_teacher' => null, 'course_time' => null]);
             DB::transaction(function () use ($request) {
                 if ($request->upcls) {
                     foreach ($request->upcls as $key => $value) {
                         // DB::table('student')
                         //     ->where('id', $value)
                         //     ->update(['day1' => null]);
+                        $update = ['day1' => $request->day1, 'day2' => $request->day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time];
                         DB::table('student')
                             ->where('id', $value)
-                            ->update(['day1' => $request->day]);
+                            ->update($update);
                     }
                 }
             });

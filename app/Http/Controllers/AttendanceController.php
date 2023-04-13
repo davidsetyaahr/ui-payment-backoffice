@@ -44,11 +44,13 @@ class AttendanceController extends Controller
     {
         $reqDay = $request->day;
         $reqTime = $request->time;
-        $reqAmpm = $request->ampm;
+        // $reqAmpm = $request->ampm;
         $student = "";
         $day = DB::table('day')->get();
         $cek = Attendance::where('price_id', $priceId)
             ->where('date', date('Y-m-d'))
+            ->where('day_id', $request->day)
+            ->where('course_time', $request->time)
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -93,8 +95,9 @@ class AttendanceController extends Controller
 
 
         if ($reqDay) {
-            $student = Students::where('priceid', $class->id)->where('day1', $reqDay)->where('course_time', $reqTime . " " . $reqAmpm)
+            $student = Students::where('priceid', $class->id)->whereRaw("(day1 = '$reqDay' or day2 = '$reqDay')")->where('course_time', $reqTime)->where('id_teacher',Auth::guard('teacher')->user()->id)
                 ->get();
+
         }
 
         $pointCategories = PointCategories::all();
@@ -113,14 +116,17 @@ class AttendanceController extends Controller
         // return $request;
         try {
             $pointCategories = PointCategories::all();
-            $attendance = Attendance::create([
+            $createAttendance = [
                 'price_id' => $request->priceId,
+                'day_id' => (int)$request->day,
+                'course_time' => $request->time,
                 'date' => date('Y-m-d'),
                 'teacher_id' => Auth::guard('teacher')->user()->id,
                 'activity' => $request->comment,
                 'text_book' => $request->textBook,
                 'excercise_book' => $request->excerciseBook,
-            ]);
+            ];
+            $attendance = Attendance::create($createAttendance);
             for ($i = 0; $i < count($request->totalPoint); $i++) {
                 $detail = AttendanceDetail::create([
                     'attendance_id' => $attendance->id,

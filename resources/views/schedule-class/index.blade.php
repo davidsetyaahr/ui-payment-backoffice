@@ -36,7 +36,7 @@
                         <div class="card-body">
                             <form action="" method="get">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-12 mb-3">
                                         <label for="">Class</label>
                                         <select name="class" id="" class="form-control select2" required>
                                             <option value="">---Select Class---</option>
@@ -47,45 +47,72 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="">Day</label>
-                                        <select name="day" id="" class="form-control select2" required>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="">Teacher</label>
+                                        <select name="teacher" id="" class="form-control select2" required>
+                                            <option value="">---Select Teacher---</option>
+                                            @foreach ($teacher as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ Request::get('teacher') == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="">Day 1</label>
+                                        <select name="day1" id="" class="form-control select2" required>
                                             <option value="">---Select Day---</option>
                                             @foreach ($day as $itema)
                                                 <option
-                                                    value="{{ $itema->id }}"{{ Request::get('day') == $itema->id ? 'selected' : '' }}>
+                                                    value="{{ $itema->id }}"{{ Request::get('day1') == $itema->id ? 'selected' : '' }}>
                                                     {{ $itema->day }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="">Day 2</label>
+                                        <select name="day2" id="" class="form-control select2" required>
+                                            <option value="">---Select Day---</option>
+                                            @foreach ($day as $itema)
+                                                <option
+                                                    value="{{ $itema->id }}"{{ Request::get('day2') == $itema->id ? 'selected' : '' }}>
+                                                    {{ $itema->day }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
                                         <label for="">Time</label>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <input type="number" class="form-control" name="time"
+                                                <input type="time" class="form-control" name="time"
                                                     value="{{ Request::get('time') ? Request::get('time') : '' }}" required>
                                             </div>
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <select name="ampm" id="" class="form-control select2" required>
                                                     <option value="AM"
                                                         {{ Request::get('ampm') == 'AM' ? 'selected' : '' }}>AM</option>
                                                     <option value="PM"
                                                         {{ Request::get('ampm') == 'PM' ? 'selected' : '' }}>PM</option>
-                                                </select>
+                                                </select> --}}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2 mt-3">
-                                        <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
-                                            Filter</button>
+                                        <div class="col-md-2 mt-3">
+                                            <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
+                                                Filter</button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <hr>
-                        @if (Request::get('class') && Request::get('day') && Request::get('time') && Request::get('ampm'))
+                        @if (Request::get('teacher') && Request::get('class') && Request::get('day2') && Request::get('day1') && Request::get('time'))
                             <form action="{{ url('/schedule-class') }}" method="POST">
                                 @csrf
+                                <input type="hidden" name="class" value="{{Request::get('class')}}">
+                                <input type="hidden" name="teacher" value="{{Request::get('teacher')}}">
+                                <input type="hidden" name="day1" value="{{Request::get('day1')}}">
+                                <input type="hidden" name="day2" value="{{Request::get('day2')}}">
+                                <input type="hidden" name="time" value="{{Request::get('time')}}">
                                 <div class="card-body">
                                     <div class="row mt-3">
                                         <div class="col-md-12">
@@ -110,9 +137,7 @@
                                                                     <input type="checkbox" name="upcls[]"
                                                                         class="updateCheck" id="upCls{{ $key++ }}"
                                                                         value="{{ $item->id }}"
-                                                                        {{ Request::get('day') == $item->day1 ? 'checked' : '' }}>
-                                                                    <input type="hidden" name="day"
-                                                                        value="{{ Request::get('day') }}">
+                                                                        {{ Request::get('day1') == $item->day1 && Request::get('day2') == $item->day2 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
                                                                 </td>
                                                                 <td>
                                                                     {{ $item->name }}
