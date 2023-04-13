@@ -95,7 +95,7 @@ class AttendanceController extends Controller
 
 
         if ($reqDay) {
-            $student = Students::where('priceid', $class->id)->whereRaw("(day1 = '$reqDay' or day2 = '$reqDay')")->where('course_time', $reqTime)->where('id_teacher',Auth::guard('teacher')->user()->id)
+            $student = Students::where('priceid', $class->id)->whereRaw("(day1 = '$reqDay' or day2 = '$reqDay')")->where('course_time', $reqTime)
                 ->get();
 
         }
