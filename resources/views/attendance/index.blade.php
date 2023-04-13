@@ -39,12 +39,18 @@
                             <div class="col-sm-6 col-md-4 ">
                                 <div class="card">
                                     <div class="card-body">
-                                        <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i>
-                                            {{$item->program}}</span>
+                                        <span style="font-size: 16px"> 
+                                            <i class="fa fas fa-angle-right"></i>
+                                            <b> {{$item->program}}</b>
+                                            <br>
+                                            <b>{{$item->day_one}} & {{$item->day_two}}</b>
+                                            <br>
+                                            <b>{{$item->course_time}}</b>
+                                        </span>
 
-                                        <div class="d-flex justify-content-between">
-                                            <div></div>
-                                            <a href="{{ url('attendance/form/'.$item->id)}}"
+                                        <div class="d-flex justify-content-between mt-4">
+                                            <div class="fw-bold">{{$item->teacher_name}}</div>
+                                            <a href="{{ url('attendance/form/'.$item->priceid."?day1=".$item->day1."&day2=".$item->day2."&time=".$item->course_time)}}"
                                                 class="btn btn-xs btn-primary">View</a>
                                         </div>
                                     </div>
@@ -67,11 +73,16 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <span style="font-size: 16px"> <i class="fa fas fa-angle-right"></i>
-                                            {{$item->program}}</span>
+                                            <b> {{$item->program}}</b>
+                                            <br>
+                                            <b>{{$item->day_one}} & {{$item->day_two}}</b>
+                                            <br>
+                                            <b>{{$item->course_time}}</b>
+                                        </span>
 
-                                        <div class="d-flex justify-content-between">
-                                            <div></div>
-                                            <a href="{{ url('attendance/form/'.$item->id)}}"
+                                        <div class="d-flex justify-content-between mt-4">
+                                            <div class="fw-bold">{{$item->teacher_name}}</div>
+                                            <a href="{{ url('attendance/form/'.$item->priceid."?day1=".$item->day1."&day2=".$item->day2."&time=".$item->course_time)}}"
                                                 class="btn btn-xs btn-primary">View</a>
                                         </div>
                                     </div>

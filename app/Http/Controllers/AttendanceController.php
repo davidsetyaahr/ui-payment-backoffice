@@ -22,7 +22,8 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        $class = Price::all();
+        // $class = Price::all();
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null;");
         $private = [];
         $general = [];
         foreach ($class as $key => $value) {
@@ -42,15 +43,17 @@ class AttendanceController extends Controller
      */
     public function create($priceId, Request $request)
     {
-        $reqDay = $request->day;
+        $reqDay1 = $request->day1;
+        $reqDay2 = $request->day2;
         $reqTime = $request->time;
         // $reqAmpm = $request->ampm;
         $student = "";
         $day = DB::table('day')->get();
         $cek = Attendance::where('price_id', $priceId)
             ->where('date', date('Y-m-d'))
-            ->where('day_id', $request->day)
-            ->where('course_time', $request->time)
+            ->where('day1', $reqDay1)
+            ->where('day2', $reqDay2)
+            ->where('course_time', $reqTime)
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -94,11 +97,13 @@ class AttendanceController extends Controller
         }
 
 
-        if ($reqDay) {
-            $student = Students::where('priceid', $class->id)->whereRaw("(day1 = '$reqDay' or day2 = '$reqDay')")->where('course_time', $reqTime)
-                ->get();
+        $student = Students::where('priceid', $class->id)
+        ->where("day1",$reqDay1)
+        ->where("day2",$reqDay2)
+        ->where('course_time', $reqTime)
+        // ->where('id_teacher',Auth::guard('teacher')->user()->id)
+            ->get();
 
-        }
 
         $pointCategories = PointCategories::all();
         // return $student;
@@ -118,7 +123,8 @@ class AttendanceController extends Controller
             $pointCategories = PointCategories::all();
             $createAttendance = [
                 'price_id' => $request->priceId,
-                'day_id' => (int)$request->day,
+                'day1' => (int)$request->day1,
+                'day2' => (int)$request->day2,
                 'course_time' => $request->time,
                 'date' => date('Y-m-d'),
                 'teacher_id' => Auth::guard('teacher')->user()->id,
@@ -179,7 +185,7 @@ class AttendanceController extends Controller
                     }
                 }
             }
-            return redirect('/dashboard');
+            return redirect()->back();
         } catch (\Throwable $th) {
             return $th;
         }
@@ -283,7 +289,7 @@ class AttendanceController extends Controller
                     }
                 }
             }
-            return redirect('/dashboard');
+            return redirect()->back();
         } catch (\Throwable $th) {
             return $th;
         }

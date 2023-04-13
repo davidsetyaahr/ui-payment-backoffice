@@ -69,7 +69,10 @@
                             <div class="card-header">
                                 <h4 class="card-title">{{ $data->type == 'create' ? 'Tambah Data' : 'Edit Data' }}</h4>
                             </div>
-                            <div class="card-body">
+                            <input type="hidden" name="day1" value="{{request()->get('day1')}}">
+                            <input type="hidden" name="day2" value="{{request()->get('day2')}}">
+                            <input type="hidden" name="time" value="{{request()->get('time')}}">
+                            {{-- <div class="card-body">
                                 <form action="" method="get">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -90,16 +93,6 @@
                                                     <input id="time" type="time" class="form-control" name="time"
                                                     value="{{ Request::get('time') ? Request::get('time') : '' }}" required>
                                                 </div>
-                                                {{-- <div class="col-md-6">
-                                                    <select name="ampm" id="ampm" class="form-control select2">
-                                                        <option value="AM"
-                                                            {{ Request::get('ampm') == 'AM' ? 'selected' : '' }}>AM
-                                                        </option>
-                                                        <option value="PM"
-                                                            {{ Request::get('ampm') == 'PM' ? 'selected' : '' }}>PM
-                                                        </option>
-                                                    </select>
-                                                </div> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-2 mt-3">
@@ -109,8 +102,8 @@
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                            @if (Request::get('day'))
+                            </div> --}}
+                            {{-- @if (Request::get('day')) --}}
                                 <div class="card-body">
                                     <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
                                     <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
@@ -269,7 +262,7 @@
                                     <button type="button" data-toggle="modal" data-target="#mdlCancel"
                                         class="btn btn-danger">Cancel</button>
                                 </div>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </form>
                 </div>
