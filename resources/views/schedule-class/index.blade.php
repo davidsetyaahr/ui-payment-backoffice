@@ -80,12 +80,13 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label for="">Time</label>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <input type="time" class="form-control" name="time"
-                                                    value="{{ Request::get('time') ? Request::get('time') : '' }}" required>
+                                                    value="{{ Request::get('time') ? Request::get('time') : '' }}"
+                                                    required>
                                             </div>
                                             {{-- <div class="col-md-6">
                                                 <select name="ampm" id="" class="form-control select2" required>
@@ -94,74 +95,91 @@
                                                     <option value="PM"
                                                         {{ Request::get('ampm') == 'PM' ? 'selected' : '' }}>PM</option>
                                                 </select> --}}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 mt-3">
-                                            <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
-                                                Filter</button>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="">Staff</label>
+                                        <select name="staff" id="" class="form-control select2" required>
+                                            <option value="">---Select Staff---</option>
+                                            @foreach ($staff as $items)
+                                                <option value="{{ $items->id }}"
+                                                    {{ Request::get('staff') == $items->id ? 'selected' : '' }}>
+                                                    {{ $items->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
+                                            Filter</button>
+                                    </div>
                                 </div>
-                            </form>
                         </div>
-                        <hr>
-                        @if (Request::get('teacher') && Request::get('class') && Request::get('day2') && Request::get('day1') && Request::get('time'))
-                            <form action="{{ url('/schedule-class') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="class" value="{{Request::get('class')}}">
-                                <input type="hidden" name="teacher" value="{{Request::get('teacher')}}">
-                                <input type="hidden" name="day1" value="{{Request::get('day1')}}">
-                                <input type="hidden" name="day2" value="{{Request::get('day2')}}">
-                                <input type="hidden" name="time" value="{{Request::get('time')}}">
-                                <div class="card-body">
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <div class="">
-                                                <table
-                                                    class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
-                                                    <thead>
+                        </form>
+                    </div>
+                    <hr>
+                    @if (Request::get('teacher') &&
+                            Request::get('class') &&
+                            Request::get('day2') &&
+                            Request::get('day1') &&
+                            Request::get('time'))
+                        <form action="{{ url('/schedule-class') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="class" value="{{ Request::get('class') }}">
+                            <input type="hidden" name="teacher" value="{{ Request::get('teacher') }}">
+                            <input type="hidden" name="staff" value="{{ Request::get('staff') }}">
+                            <input type="hidden" name="day1" value="{{ Request::get('day1') }}">
+                            <input type="hidden" name="day2" value="{{ Request::get('day2') }}">
+                            <input type="hidden" name="time" value="{{ Request::get('time') }}">
+                            <div class="card-body">
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="">
+                                            <table
+                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" width="10px"><input type="checkbox"
+                                                                id="checkAll">
+                                                        </th>
+                                                        <th class="text-center">Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $key = 0;
+                                                    @endphp
+                                                    @foreach ($data as $item)
                                                         <tr>
-                                                            <th class="text-center" width="10px"><input type="checkbox"
-                                                                    id="checkAll">
-                                                            </th>
-                                                            <th class="text-center">Name</th>
+                                                            <td>
+                                                                <input type="checkbox" name="upcls[]" class="updateCheck"
+                                                                    id="upCls{{ $key++ }}"
+                                                                    value="{{ $item->id }}"
+                                                                    {{ Request::get('day1') == $item->day1 && Request::get('day2') == $item->day2 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
+                                                            </td>
+                                                            <td>
+                                                                {{ $item->name }}
+                                                            </td>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php
-                                                            $key = 0;
-                                                        @endphp
-                                                        @foreach ($data as $item)
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox" name="upcls[]"
-                                                                        class="updateCheck" id="upCls{{ $key++ }}"
-                                                                        value="{{ $item->id }}"
-                                                                        {{ Request::get('day1') == $item->day1 && Request::get('day2') == $item->day2 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    {{ $item->name }}
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-action mt-3">
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                </div>
-                            </form>
-                        @endif
-                    </div>
+                            </div>
+                            <div class="card-action mt-3">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
-
-
-
         </div>
+
+
+
+    </div>
     </div>
     <script>
         $('#checkAll').change(function() {

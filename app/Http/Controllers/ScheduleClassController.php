@@ -18,11 +18,12 @@ class ScheduleClassController extends Controller
         $day = DB::table('day')->get();
         $class = DB::table('price')->get();
         $teacher = DB::table('teacher')->get();
+        $staff = DB::table('staff')->get();
         $data = '';
         if ($request->class) {
             $data = DB::table('student')->where('priceid', $request->class)->get();
         }
-        return view('schedule-class.index', compact('day', 'class', 'data','teacher'));
+        return view('schedule-class.index', compact('day', 'class', 'data', 'teacher', 'staff'));
     }
 
     /**
@@ -50,14 +51,14 @@ class ScheduleClassController extends Controller
                 ->where('day1', $request->day1)
                 ->where('day2', $request->day2)
                 ->where('course_time', $request->time)
-                ->update(['day1' => null, 'day2' => null, 'id_teacher' => null, 'course_time' => null]);
+                ->update(['day1' => null, 'day2' => null, 'id_teacher' => null, 'course_time' => null, 'id_staff' => null]);
             DB::transaction(function () use ($request) {
                 if ($request->upcls) {
                     foreach ($request->upcls as $key => $value) {
                         // DB::table('student')
                         //     ->where('id', $value)
                         //     ->update(['day1' => null]);
-                        $update = ['day1' => $request->day1, 'day2' => $request->day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time];
+                        $update = ['day1' => $request->day1, 'day2' => $request->day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff];
                         DB::table('student')
                             ->where('id', $value)
                             ->update($update);
@@ -82,7 +83,7 @@ class ScheduleClassController extends Controller
                     'course_time' => null,
                     'id_teacher' => null,
                 ];
-                Students::where('priceid',$request->priceid)->where('day1',$request->day1)->where('day2',$request->day2)->where('course_time',$request->course_time)->where('id_teacher',$request->id_teacher)->update($update);
+                Students::where('priceid', $request->priceid)->where('day1', $request->day1)->where('day2', $request->day2)->where('course_time', $request->course_time)->where('id_teacher', $request->id_teacher)->update($update);
             });
 
             return redirect()->back()->with('message', 'Berhasil dihapus');
@@ -91,7 +92,6 @@ class ScheduleClassController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
         }
-
     }
 
     /**
