@@ -21,7 +21,7 @@ class ReedemPointController extends Controller
                 ->get();
             $item = ReedemItems::all();
             $title = 'Reedem Point';
-            return view('reedemPoint.form', compact('students','title', 'item', 'class'));
+            return view('reedemPoint.form', compact('students', 'title', 'item', 'class'));
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -29,8 +29,8 @@ class ReedemPointController extends Controller
 
     public function store(Request $request)
     {
-        // return $request;
         try {
+            $student = $request->student == null && $request->id_student != null ? $request->id_student : $request->student;
             $tmpTotal = 0;
             for ($i = 0; $i < count($request->item); $i++) {
                 $items = ReedemItems::where('id', $request->item[$i])->first();
@@ -46,11 +46,11 @@ class ReedemPointController extends Controller
                     ReedemPoint::create([
                         'item_id' => $request->item[$i],
                         'point' => intval($items->point),
-                        'student_id' => $request->student,
+                        'student_id' => $student,
                         'qty' => $request->qty[$i],
                     ]);
                     PointHistory::create([
-                        'student_id' => $request->student,
+                        'student_id' => $student,
                         'date' => date('Y-m-d'),
                         'total_point' => intval($items->point),
                         'type' => 'redeem',
@@ -62,7 +62,7 @@ class ReedemPointController extends Controller
                     // ]);
                 }
                 $newPoint = intval($request->point) - $subTotal;
-                Students::where('id', $request->student)
+                Students::where('id', $student)
                     ->update([
                         'total_point' =>  $newPoint,
                     ]);
@@ -77,7 +77,7 @@ class ReedemPointController extends Controller
     public function getStudent(Request $request)
     {
         try {
-            // $data = 
+            // $data =
         } catch (\Throwable $th) {
             //throw $th;
         }

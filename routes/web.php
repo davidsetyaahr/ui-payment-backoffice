@@ -44,16 +44,18 @@ Route::middleware(['web'])->group(function () {
     Route::resource('/pointCategories', PointCategoriesController::class);
     Route::resource('/tests', TestItemsController::class);
     Route::resource('/parents', ParentsController::class);
-    Route::delete('/schedule-class/delete', [ScheduleClassController::class,'delete']);
+    Route::delete('/schedule-class/delete', [ScheduleClassController::class, 'delete']);
     Route::resource('/schedule-class', ScheduleClassController::class);
     Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
     Route::prefix('score')->group(function () {
         Route::get('/form', [ScoreController::class, 'index']);
+        Route::get('/form-create', [ScoreController::class, 'formCreate']);
         Route::get('/students/filter', [ScoreController::class, 'filterStudent']);
         Route::get('/filterScore', [ScoreController::class, 'filter']);
         Route::post('/store', [ScoreController::class, 'store']);
         Route::post('/update/{score}', [ScoreController::class, 'update']);
     });
+    Route::get('/history-test', [ScoreController::class, 'historyTest']);
     Route::prefix('attendance')->group(function () {
         Route::get('/form/{priceId}', [AttendanceController::class, 'create']);
         Route::get('/class', [AttendanceController::class, 'index']);

@@ -98,10 +98,10 @@ class AttendanceController extends Controller
 
 
         $student = Students::where('priceid', $class->id)
-        ->where("day1",$reqDay1)
-        ->where("day2",$reqDay2)
-        ->where('course_time', $reqTime)
-        // ->where('id_teacher',Auth::guard('teacher')->user()->id)
+            ->where("day1", $reqDay1)
+            ->where("day2", $reqDay2)
+            ->where('course_time', $reqTime)
+            // ->where('id_teacher',Auth::guard('teacher')->user()->id)
             ->get();
 
 

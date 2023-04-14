@@ -59,7 +59,7 @@
                                                                 class="fas fa-trash"></i></button>
                                                     </form>
                                                 </div>
-                                            </div> 
+                                            </div>
                                             <br>
                                             <b>{{$item->day_one}} & {{$item->day_two}}</b>
                                             <br>

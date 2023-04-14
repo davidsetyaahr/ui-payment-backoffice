@@ -10,6 +10,7 @@ use App\Models\StudentScoreDetail;
 use App\Models\TestItems;
 use App\Models\Tests as ModelsTests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Test;
 use SebastianBergmann\CodeCoverage\Report\Xml\Tests;
 
@@ -25,18 +26,23 @@ class ScoreController extends Controller
     public function index()
     {
         try {
-            $students = Students::join('price as p', 'p.id', 'student.priceid')
-                ->select('student.name', 'student.id')
-                ->where('p.program', '!=', 'Private')
-                ->get();
-            $test = ModelsTests::all();
-            $item = TestItems::orderBy('id', 'ASC')->get();
-            $class = Price::all();
-            $title = 'Input Score';
-            $data = (object)[
-                'type' => 'create',
-            ];
-            return view('score.form', compact('data', 'title', 'test', 'item', 'students', 'class'));
+            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null;");
+            $test = ModelsTests::get();
+            return view('score.form', compact('class', 'test'));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function formCreate(Request $request)
+    {
+        try {
+            $reqTest = $request->test;
+            $test = ModelsTests::find($reqTest);
+            $testItem = TestItems::get();
+            $reqClass = $request->class;
+            $students = Students::where('priceid', $reqClass)->paginate(10);
+            return view('score.form-index', compact('test', 'testItem', 'students'));
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -49,7 +55,18 @@ class ScoreController extends Controller
      */
     public function create()
     {
-        //
+        $students = Students::join('price as p', 'p.id', 'student.priceid')
+            ->select('student.name', 'student.id')
+            ->where('p.program', '!=', 'Private')
+            ->get();
+        $test = ModelsTests::all();
+        $item = TestItems::orderBy('id', 'ASC')->get();
+        $class = Price::all();
+        $title = 'Input Score';
+        $data = (object)[
+            'type' => 'create',
+        ];
+        return view('score.form-create', compact('class', 'test', 'title', 'data', 'item'));
     }
 
     /**
@@ -187,6 +204,27 @@ class ScoreController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             return $th;
+        }
+    }
+
+    public function historyTest(Request $request)
+    {
+        try {
+            $date = $request->date;
+            // $students = Students::join('price as p', 'p.id', 'student.priceid')
+            // ->select('student.name', 'student.id')
+            // ->where('p.program', '!=', 'Private')
+            //     ->get();
+            // $test = ModelsTests::all();
+            // $item = TestItems::orderBy('id', 'ASC')->get();
+            // $class = Price::all();
+            // $title = 'Input Score';
+            // $data = (object)[
+            //     'type' => 'create',
+            // ];
+            return view('score.history');
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 }
