@@ -94,6 +94,24 @@
 
 
                                 </div>
+                                <div class="col-md-3">
+
+                                    <label for="email2">Class</label>
+                                    <select class="form-control select2 select2-hidden-accessible class" style="width:100%;"
+                                        name="class" id="price">
+                                        <option value="">Select Class</option>
+                                        @foreach ($price as $itemc)
+                                            <option value="{{ $itemc->id }}"
+                                                {{ Request::get('class') == $itemc->id ? 'selected' : '' }}>
+                                                {{ $itemc->program }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('class')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+
+                                </div>
                                 <div class="col-md-3" style="margin-top:20px">
                                     <button type="submit" class="btn btn-primary" onclick="filter()"><i
                                             class="fas fa-filter"></i>
@@ -112,19 +130,29 @@
                                                         <th class="text-center">Kelas</th>
                                                         <th class="text-center">Average Score</th>
                                                         <th class="text-center">Average Grade</th>
-                                                        <th class="text-center">Action</th>
+                                                        {{-- <th class="text-center">Action</th> --}}
                                                     </tr>
                                                 </thead>
 
                                                 <tbody>
                                                     @php
                                                         $no = 1;
+                                                        $score = '';
                                                     @endphp
                                                     @foreach ($data as $item)
+                                                        @php
+                                                            $score = DB::table('student_scores')
+                                                                ->where('student_id', $item->student_id)
+                                                                ->where('price_id', $item->price_id)
+                                                                ->first();
+                                                        @endphp
                                                         <tr>
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $item->program }}</td>
-                                                            {{-- <td>{{ $item->program }}</td> --}}
+                                                            <td>{{ $score != null ? $score->average_score : '-' }}
+                                                            </td>
+                                                            <td>{{ $score != null ? Helper::getGrade($score->average_score) : '-' }}
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -147,15 +175,17 @@
         function filter() {
             var student1 = $('#student1').val();
             var student2 = $('#student2').val();
+            var price = $('#price').val();
             var student = '';
             if (student1 != '' && student2 == '') {
                 student = student1
             } else if (student1 != '' && student2 != '') {
                 student = student2
+                // alert('Pilih salah satu dari student atau id student')
             } else {
                 student = student2
             }
-            window.location = " {{ url('mutasi?student=') }}" + student;
+            window.location = " {{ url('mutasi?student=') }}" + student + '&class=' + price;
         }
     </script>
 @endsection

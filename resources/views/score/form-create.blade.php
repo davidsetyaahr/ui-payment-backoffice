@@ -86,7 +86,7 @@
                                 <div class="col-md-3">
 
                                     <label for="email2">Class</label>
-                                    <input type="hidden" name="class" value="{{ Request::get('class') }}">
+                                    <input type="hidden" name="classt" value="{{ Request::get('class') }}">
                                     <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
                                         name="class" id="class" disabled>
                                         <option value="">Select class</option>
@@ -244,6 +244,11 @@
 
                                 </div>
                             </div>
+                            {{-- Tambahan --}}
+                            <input type="hidden" name="day1" value="{{ Request::get('day1') }}">
+                            <input type="hidden" name="day2" value="{{ Request::get('day2') }}">
+                            <input type="hidden" name="teacher" value="{{ Request::get('teacher') }}">
+                            <input type="hidden" name="time" value="{{ Request::get('time') }}">
                         </div>
 
                         <div class="card-action mt-3">

@@ -345,6 +345,7 @@ class AttendanceController extends Controller
     {
         $studentId = $request->student;
         $student = Students::get();
+        $price = Price::get();
         $class = Students::join('price', 'price.id', 'student.priceid')
             ->select('price.program')
             ->where('student.id', $studentId)->first();
@@ -352,14 +353,14 @@ class AttendanceController extends Controller
         $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
             ->join('student as st', 'st.id', 'attendance_details.student_id')
             ->join('price as pr', 'pr.id', 'atd.price_id')
-            ->select('st.name', 'pr.program', 'atd.id as attendance_id1', 'attendance_details.*', 'atd.date')
+            ->select('st.name', 'pr.program', 'atd.id as attendance_id1', 'attendance_details.*', 'atd.date', 'st.id as student_id1', 'pr.id as price_id')
             ->where('attendance_details.student_id', $studentId);
         if ($request->class) {
             $query = $query->where('atd.price_id',  $request->class);
         }
         $data = $query->orderBy('atd.date', 'DESC')->groupBy('pr.program')->paginate(10);
         // return $data;
-        return view('attendance.mutasi', compact('data', 'student'));
+        return view('attendance.mutasi', compact('data', 'student', 'price'));
         // if ($request->class) {
         //     $query = $query->where('atd.price_id',  $request->class);
         // }

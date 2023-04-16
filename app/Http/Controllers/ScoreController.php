@@ -76,13 +76,14 @@ class ScoreController extends Controller
     {
         // return $request->all();
         try {
-            $scores = StudentScore::create([
-                'test_id' => $request->test,
-                'student_id' => $request->student,
-                'average_score' => round($request->total),
-                'comment' => $request->comment ?? '-',
-                'date' => $request->date,
-            ]);
+            $scores = new StudentScore;
+            $scores->test_id = $request->test;
+            $scores->student_id = $request->student;
+            $scores->average_score = round($request->total);
+            $scores->comment = $request->comment ?? '-';
+            $scores->price_id = $request->classt;
+            $scores->date = $request->date;
+            $scores->save();
             for ($i = 0; $i < count($request->items); $i++) {
                 StudentScoreDetail::create([
                     'student_score_id' => $scores->id,
@@ -90,7 +91,7 @@ class ScoreController extends Controller
                     'score' => $request->score[$i],
                 ]);
             }
-            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->class)->with('success', 'Success add Score');
+            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
         } catch (\Throwable $th) {
             return back()->with('error', 'Failed to save data');
             return $th;
@@ -130,11 +131,12 @@ class ScoreController extends Controller
      */
     public function update(Request $request, $score)
     {
-        // return $request;
+        // return $request->all();
         try {
             StudentScore::where('id', $score)->update([
                 'average_score' => round($request->total),
-                'comment' => $request->comment ?? '-'
+                'comment' => $request->comment ?? '-',
+                'price_id' => $request->classt,
             ]);
             for ($i = 0; $i < count($request->items); $i++) {
                 StudentScoreDetail::where('id',  $request->idScore[$i])
@@ -142,7 +144,7 @@ class ScoreController extends Controller
                         'score' => $request->score[$i],
                     ]);
             }
-            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->class)->with('success', 'Success add Score');
+            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
         } catch (\Throwable $th) {
             return $th;
             return back()->with('error', 'Failed to update data');
