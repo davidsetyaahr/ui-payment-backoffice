@@ -10,4 +10,14 @@ class Students extends Model
     public $timestamps = false;
     protected $table = 'student';
     use HasFactory;
+
+    /**
+     * Get all of the comments for the Students
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function score()
+    {
+        return $this->hasMany(StudentScore::class, 'student_id');
+    }
 }

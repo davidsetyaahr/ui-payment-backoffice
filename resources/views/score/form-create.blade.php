@@ -68,164 +68,190 @@
             @endif
             <div class="row">
                 <div class="col-md-12">
-                    <form action="{{ url('score/store') }}" id="formScore" {{-- <form
-                    action="{{ $data->type == 'create' ? url('score/store') : route('score.update', $data->id) }}" --}} method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
+                    @if (Request::get('type') == 'create')
+                        <form action="{{ url('score/store') }}" id="formScore" method="POST" enctype="multipart/form-data">
+                        @else
+                            <form action="{{ url('score/update') . '/' . Request::get('id_test') }}" id="formScore"
+                                method="POST" enctype="multipart/form-data">
+                    @endif
+                    @csrf
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">{{ $data->type == 'create' ? 'Tambah Data' : 'Edit Data' }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">{{ Request::get('type') == 'create' ? 'Tambah Data' : 'Edit Data' }}
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
 
-                                        <label for="email2">Class</label>
-                                        <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                            name="class" id="class">
-                                            <option value="">Select class</option>
-                                            @foreach ($class as $st)
-                                                <option value="{{ $st->id }}">{{ $st->program }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('student')
-                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                        @enderror
-
-                                        @error('class')
-                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                        @enderror
-
-
-                                    </div>
-                                    <div class="col-md-3">
-
-                                        <label for="email2">Students</label>
-                                        <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                            name="student" id="student">
-                                            <option value="">Select Student</option>
-
-                                        </select>
-                                        @error('student')
-                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                        @enderror
-
-
-                                    </div>
-                                    <div class="col-md-3">
-
-                                        <label for="email2">Test</label>
-                                        <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                            name="test" id="test">
-                                            <option value="">Select Test
+                                    <label for="email2">Class</label>
+                                    <input type="hidden" name="class" value="{{ Request::get('class') }}">
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="class" id="class" disabled>
+                                        <option value="">Select class</option>
+                                        @foreach ($class as $st)
+                                            <option value="{{ $st->id }}"
+                                                {{ Request::get('class') == $st->id ? 'selected' : '' }}>
+                                                {{ $st->program }}
                                             </option>
-                                            @foreach ($test as $st)
-                                                <option value="{{ $st->id }}">{{ $st->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('test')
-                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                        @enderror
+                                        @endforeach
+                                    </select>
+                                    @error('student')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+                                    @error('class')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
 
 
-                                    </div>
-                                    <div class="col-md-2">
-
-                                        <label for="email2">Date</label>
-                                        <input type="date" class="form-control" name="date" id="date"
-                                            placeholder="Date" />
-                                        @error('date')
-                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                        @enderror
-
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" onclick="" id="filter"
-                                            class="btn btn-sm btn-primary mt-4">Filter</button>
-                                    </div>
                                 </div>
+                                <div class="col-md-3">
 
-                                <div class="row mt-3" id="table-detail-score" style="display: none;">
-                                    <div class="col-md-6">
-                                        <div class="table-responsive">
-                                            <table class="display table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Item</th>
-                                                        <th>Score</th>
-                                                        <th>Grade</th>
-                                                    </tr>
-                                                </thead>
+                                    <label for="email2">Students</label>
+                                    <input type="hidden" name="student" value="{{ Request::get('student') }}">
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="student" id="student" disabled>
+                                        <option value="">Select Student</option>
+                                        @foreach ($students as $stu)
+                                            <option value="{{ $stu->id }}"
+                                                {{ Request::get('student') == $stu->id ? 'selected' : '' }}>
+                                                {{ $stu->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('student')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
 
-                                                <tbody>
+
+                                </div>
+                                <div class="col-md-3">
+
+                                    <label for="email2">Test</label>
+                                    <input type="hidden" name="test" value="{{ Request::get('test') }}">
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="test" id="test" disabled>
+                                        <option value="">Select Test
+                                        </option>
+                                        @foreach ($test as $st)
+                                            <option value="{{ $st->id }}"
+                                                {{ Request::get('test') == $st->id ? 'selected' : '' }}>
+                                                {{ $st->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('test')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+
+                                </div>
+                                <div class="col-md-2">
+
+                                    <label for="email2">Date</label>
+                                    <input type="date" class="form-control" name="date" id="date"
+                                        placeholder="Date" value="{{ Request::get('date') }}" required />
+                                    @error('date')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            <div class="row mt-3" id="table-detail-score">
+                                <div class="col-md-6">
+                                    <div class="table-responsive">
+                                        <table class="display table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Item</th>
+                                                    <th>Score</th>
+                                                    <th>Grade</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @php
+                                                    $no = 1;
+                                                    $detail = '';
+                                                    $score = '';
+                                                @endphp
+                                                @if (Request::get('type') == 'edit')
                                                     @php
-                                                        $no = 1;
+                                                        $score = DB::table('student_scores')
+                                                            ->where('id', Request::get('id_test'))
+                                                            ->first();
+                                                        $detail = DB::table('student_score_details')
+                                                            ->where('student_score_id', Request::get('id_test'))
+                                                            ->get();
                                                     @endphp
-                                                    @foreach ($item as $it)
-                                                        <tr style="height: 40px!important">
-                                                            <td
-                                                                style="height: 40px!important; padding: 8px 16px!important;">
-                                                                {{ $no }}</td>
-                                                            <td
-                                                                style="height: 40px!important; padding: 8px 16px!important;">
-                                                                {{ $it->name }}</td>
-                                                            <td
-                                                                style="height: 40px!important; padding: 8px 16px!important;">
-                                                                <input type="hidden" value="{{ $it->id }}"
-                                                                    name="items[]">
-                                                                <input type="hidden" value="" name="idScore[]"
-                                                                    id="idScore{{ $no }}">
-                                                                <input type="number" id="{{ 'score' . $no }}"
-                                                                    name="score[]" required class="form-table score">
-
-                                                            </td>
-                                                            <td
-                                                                style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
-                                                                <h6 id="grade{{ $no }}"></h6>
-                                                            </td>
-                                                        </tr>
-                                                        @php
-                                                            $no++;
-                                                        @endphp
-                                                    @endforeach
-                                                    <tr>
-                                                        <td colspan="2">Average</td>
+                                                @endif
+                                                @foreach ($item as $itKey => $itValue)
+                                                    <tr style="height: 40px!important">
                                                         <td style="height: 40px!important; padding: 8px 16px!important;">
-                                                            <input type="number" name="total" class="form-table average"
-                                                                readonly id="">
+                                                            {{ $no }}</td>
+                                                        <td style="height: 40px!important; padding: 8px 16px!important;">
+                                                            {{ $itValue->name }}</td>
+                                                        <td style="height: 40px!important; padding: 8px 16px!important;">
+                                                            <input type="hidden" value="{{ $itValue->id }}"
+                                                                name="items[]">
+                                                            <input type="hidden" name="idScore[]"
+                                                                id="idScore{{ $no }}"
+                                                                value="{{ $detail != null ? $detail[$itKey]->id : '' }}">
+                                                            <input type="number" id="{{ 'score' . $no }}" name="score[]"
+                                                                required class="form-table score"
+                                                                value="{{ $detail != null ? $detail[$itKey]->score : '' }}">
+
                                                         </td>
                                                         <td
                                                             style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
-                                                            <h6 id="gradeAvg"></h6>
+                                                            <h6 id="grade{{ $no }}">
+                                                                {{ $detail != null ? Helper::getGrade($detail[$itKey]->score) : '' }}
+                                                            </h6>
                                                         </td>
                                                     </tr>
-                                                </tbody>
+                                                    @php
+                                                        $no++;
+                                                    @endphp
+                                                @endforeach
+                                                <tr>
+                                                    <td colspan="2">Average</td>
+                                                    <td style="height: 40px!important; padding: 8px 16px!important;">
+                                                        <input type="number" name="total" class="form-table average"
+                                                            readonly id=""
+                                                            value="{{ $score == null ? '' : $score->average_score }}">
+                                                    </td>
+                                                    <td
+                                                        style="height: 40px!important; padding: 8px 16px!important; text-align:center;">
+                                                        <h6 id="gradeAvg"></h6>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
 
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Comment For Student</label>
-                                            <textarea name="comment" class="form-control" id="comment" cols="30" rows="3"></textarea>
-                                        </div>
-
+                                        </table>
                                     </div>
                                 </div>
                             </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Comment For Student</label>
+                                        <textarea name="comment" class="form-control" id="comment" cols="30" rows="3">{{ $score == null ? '' : $score->comment }}</textarea>
+                                    </div>
 
-                            <div class="card-action mt-3">
-                                <button type="submit" class="btn btn-success">Submit</button>
-                                <button type="button" data-toggle="modal" data-target="#mdlCancel"
-                                    class="btn btn-danger">Cancel</button>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="card-action mt-3">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="button" data-toggle="modal" data-target="#mdlCancel"
+                                class="btn btn-danger">Cancel</button>
+                        </div>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -287,7 +313,7 @@
         }
     </script>
 
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         $(document).on("click", "#filter", function() {
             var student = $('#student').val();
             var test = $('#test').val();
@@ -348,5 +374,5 @@
 
 
         });
-    </script>
+    </script> --}}
 @endsection

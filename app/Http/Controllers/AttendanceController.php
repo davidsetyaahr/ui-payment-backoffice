@@ -305,4 +305,64 @@ class AttendanceController extends Controller
     {
         //
     }
+
+    public function reminder(Request $request)
+    {
+        $arrAbsent = [];
+        $students = Students::get();
+        foreach ($students as $key => $value) {
+            $ttlApha = 0;
+            $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
+                ->join('price as p', 'p.id', 'st.priceid')
+                ->select('attendance_details.*', 'st.name', 'p.program')
+                ->where('student_id', $value->id)->orderBy('attendance_details.id', 'desc')->limit(2)->get();
+            $countA = count($attendance);
+            if ($countA != 0) {
+                foreach ($attendance as $keya => $valuea) {
+                    if ($valuea->is_absent == '0') {
+                        $ttlApha++;
+                    }
+                }
+            }
+            if ($ttlApha >= 2) {
+                array_push($arrAbsent, $attendance);
+            }
+        }
+        $data = $arrAbsent;
+        $page = !empty($request->page) ? (int) $request->page : 1;
+        $total = count($data); //total items in array
+        $limit = 10; //per page
+        $totalPages = ceil($total / $limit); //calculate total pages
+        $page = max($page, 1); //get 1 page when $request->page <= 0
+        $page = min($page, $totalPages); //get last page when $request->page > $totalPages
+        $offset = ($page - 1) * $limit;
+        if ($offset < 0) $offset = 0;
+        $data = array_slice($data, $offset, $limit);
+        return view('attendance.reminder', compact('data', 'totalPages'));
+    }
+
+    public function mutasi(Request $request)
+    {
+        $studentId = $request->student;
+        $student = Students::get();
+        $class = Students::join('price', 'price.id', 'student.priceid')
+            ->select('price.program')
+            ->where('student.id', $studentId)->first();
+        $query = [];
+        $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
+            ->join('student as st', 'st.id', 'attendance_details.student_id')
+            ->join('price as pr', 'pr.id', 'atd.price_id')
+            ->select('st.name', 'pr.program', 'atd.id as attendance_id1', 'attendance_details.*', 'atd.date')
+            ->where('attendance_details.student_id', $studentId);
+        if ($request->class) {
+            $query = $query->where('atd.price_id',  $request->class);
+        }
+        $data = $query->orderBy('atd.date', 'DESC')->groupBy('pr.program')->paginate(10);
+        // return $data;
+        return view('attendance.mutasi', compact('data', 'student'));
+        // if ($request->class) {
+        //     $query = $query->where('atd.price_id',  $request->class);
+        // }
+        // $data = $query->orderBy('atd.date', 'DESC')->paginate($request->perpage);
+    }
 }

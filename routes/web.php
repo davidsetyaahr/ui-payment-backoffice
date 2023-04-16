@@ -50,6 +50,7 @@ Route::middleware(['web'])->group(function () {
     Route::prefix('score')->group(function () {
         Route::get('/form', [ScoreController::class, 'index']);
         Route::get('/form-create', [ScoreController::class, 'formCreate']);
+        Route::get('/create', [ScoreController::class, 'create']);
         Route::get('/students/filter', [ScoreController::class, 'filterStudent']);
         Route::get('/filterScore', [ScoreController::class, 'filter']);
         Route::post('/store', [ScoreController::class, 'store']);
@@ -61,7 +62,9 @@ Route::middleware(['web'])->group(function () {
         Route::get('/class', [AttendanceController::class, 'index']);
         Route::post('/store', [AttendanceController::class, 'store']);
         Route::post('/update/{attendance}', [AttendanceController::class, 'update']);
+        Route::get('/reminder', [AttendanceController::class, 'reminder']);
     });
+    Route::get('/mutasi', [AttendanceController::class, 'mutasi']);
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
 });

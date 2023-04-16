@@ -57,6 +57,18 @@
                     });
                 </script>
             @endif
+            @if (session('success'))
+                <script>
+                    swal("Success!", "{{ session('success') }}!", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    });
+                </script>
+            @endif
             <div class="row">
 
                 <div class="col-md-12">
@@ -90,24 +102,47 @@
                                                 @php
                                                     $no = 1;
                                                 @endphp
-                                                @foreach ($students as $itemS)
+                                                @foreach ($students as $itemSKey => $itemSValue)
                                                     @php
                                                         $average = DB::table('student_scores')
-                                                            ->where('student_id', $itemS->id)
+                                                            ->where('student_id', $itemSValue->id)
                                                             ->where('test_id', Request::get('test'))
-                                                            ->get();
+                                                            ->orderBy('id', 'ASC')
+                                                            ->limit(1)
+                                                            ->first();
                                                     @endphp
                                                     <tr>
                                                         <td>{{ $no++ }}</td>
-                                                        <td>{{ $itemS->name }}</td>
-                                                        @foreach ($testItem as $a)
-                                                            <td>{{ $a->name }}</td>
+                                                        <td>{{ $itemSValue->name }}</td>
+                                                        @foreach ($testItem as $itemTestKey => $itemTestValue)
+                                                            @php
+                                                                $detail = null;
+                                                                if ($average != null) {
+                                                                    $detail = DB::table('student_score_details');
+                                                                    $detail = $detail->where('student_score_id', $average->id);
+                                                                    $detail = $detail->where('test_item_id', $itemTestValue->id)->first();
+                                                                }
+                                                            @endphp
+                                                            <td>{{ $detail != null ? $detail->score : '' }}</td>
                                                         @endforeach
-                                                        {{-- <td>{{ $average[$keyS]->average_score }}</td> --}}
-                                                        <td>Grade</td>
-                                                        <td>Comment For Student</td>
-                                                        <td>Date Test</td>
-                                                        <td>Action</td>
+                                                        <td>{{ $average != null ? $average->average_score : '' }}
+                                                        </td>
+                                                        <td>{{ $average != null ? Helper::getGrade($average->average_score) : '' }}
+                                                        </td>
+                                                        <td>{{ $average != null ? $average->comment : '' }}
+                                                        </td>
+                                                        <td>{{ $average != null ? $average->date : '' }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($average != null)
+                                                                <a href="{{ url('score/create?type=edit&class=') . Request::get('class') . '&student=' . $itemSValue->id . '&test=' . Request::get('test') . '&id_test=' . $average->id . '&date=' . $average->date }}"
+                                                                    target="_blank" class="btn btn-sm btn-primary">Edit</a>
+                                                            @else
+                                                                <a href="{{ url('score/create?type=create&class=') . Request::get('class') . '&student=' . $itemSValue->id . '&test=' . Request::get('test') }}"
+                                                                    target="_blank"
+                                                                    class="btn btn-sm btn-primary">Create</a>
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

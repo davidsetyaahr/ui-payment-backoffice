@@ -26,11 +26,11 @@ class ScoreController extends Controller
     public function index()
     {
         try {
-            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null;");
+            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, student.id_teacher as teacher_id, student.day1 as d1, student.day2 as d2  from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null;");
             $test = ModelsTests::get();
             return view('score.form', compact('class', 'test'));
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
         }
     }
 
@@ -41,7 +41,7 @@ class ScoreController extends Controller
             $test = ModelsTests::find($reqTest);
             $testItem = TestItems::get();
             $reqClass = $request->class;
-            $students = Students::where('priceid', $reqClass)->paginate(10);
+            $students = Students::with('score')->where('priceid', $reqClass)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)->get();
             return view('score.form-index', compact('test', 'testItem', 'students'));
         } catch (\Throwable $th) {
             //throw $th;
@@ -55,10 +55,7 @@ class ScoreController extends Controller
      */
     public function create()
     {
-        $students = Students::join('price as p', 'p.id', 'student.priceid')
-            ->select('student.name', 'student.id')
-            ->where('p.program', '!=', 'Private')
-            ->get();
+        $students = Students::get();
         $test = ModelsTests::all();
         $item = TestItems::orderBy('id', 'ASC')->get();
         $class = Price::all();
@@ -66,7 +63,7 @@ class ScoreController extends Controller
         $data = (object)[
             'type' => 'create',
         ];
-        return view('score.form-create', compact('class', 'test', 'title', 'data', 'item'));
+        return view('score.form-create', compact('class', 'test', 'title', 'data', 'item', 'students'));
     }
 
     /**
@@ -77,7 +74,7 @@ class ScoreController extends Controller
      */
     public function store(Request $request)
     {
-
+        // return $request->all();
         try {
             $scores = StudentScore::create([
                 'test_id' => $request->test,
@@ -93,7 +90,7 @@ class ScoreController extends Controller
                     'score' => $request->score[$i],
                 ]);
             }
-            return redirect('/score/form')->with('success', 'Success add Score');
+            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->class)->with('success', 'Success add Score');
         } catch (\Throwable $th) {
             return back()->with('error', 'Failed to save data');
             return $th;
@@ -145,7 +142,7 @@ class ScoreController extends Controller
                         'score' => $request->score[$i],
                     ]);
             }
-            return redirect('/score/form')->with('success', 'Success add Score');
+            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->class)->with('success', 'Success add Score');
         } catch (\Throwable $th) {
             return $th;
             return back()->with('error', 'Failed to update data');
@@ -210,18 +207,6 @@ class ScoreController extends Controller
     public function historyTest(Request $request)
     {
         try {
-            $date = $request->date;
-            // $students = Students::join('price as p', 'p.id', 'student.priceid')
-            // ->select('student.name', 'student.id')
-            // ->where('p.program', '!=', 'Private')
-            //     ->get();
-            // $test = ModelsTests::all();
-            // $item = TestItems::orderBy('id', 'ASC')->get();
-            // $class = Price::all();
-            // $title = 'Input Score';
-            // $data = (object)[
-            //     'type' => 'create',
-            // ];
             return view('score.history');
         } catch (\Throwable $th) {
             //throw $th;

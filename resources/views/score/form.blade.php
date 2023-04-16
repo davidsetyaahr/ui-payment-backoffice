@@ -64,7 +64,7 @@
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             @foreach ($test as $itemt)
                                                                 <a class="dropdown-item"
-                                                                    href="{{ url('score/form-create?test=') . $itemt->id . '&class=' . $item->priceid }}">{{ $itemt->name }}</a>
+                                                                    href="{{ url('score/form-create?test=') . $itemt->id . '&class=' . $item->priceid . '&day1=' . $item->d1 . '&day2=' . $item->d2 . '&teacher=' . $item->teacher_id . '&time=' . $item->course_time }}">{{ $itemt->name }}</a>
                                                             @endforeach
                                                         </div>
                                                     </div>

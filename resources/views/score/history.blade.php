@@ -82,11 +82,6 @@
                                                     $no = 1;
                                                 @endphp
                                                 @foreach ($studentScore as $item)
-                                                    @php
-                                                        $detail = DB::table('student_score_details')
-                                                            ->where('student_score_id', $item->id)
-                                                            ->get();
-                                                    @endphp
                                                     <tr>
                                                         <td>{{ $no++ }}</td>
                                                         <td>{{ $item->name }}</td>

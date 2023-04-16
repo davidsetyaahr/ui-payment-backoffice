@@ -106,9 +106,16 @@
                     </a>
 
                 </li>
+                <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
+                    <a href="{{ url('/attendance/reminder') }}" class="collapsed">
+                        <i class="fas fa-bell"></i>
+                        <p>Reminder</p>
+                    </a>
+
+                </li>
                 <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
                     <a href="{{ url('/history-test') }}" class="collapsed">
-                        <i class="fas fa-calendar"></i>
+                        <i class="fas fa-book"></i>
                         <p>History Test</p>
                     </a>
 
