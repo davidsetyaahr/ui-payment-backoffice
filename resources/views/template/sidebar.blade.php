@@ -9,7 +9,7 @@
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>
                             <!-- {{ session('nama') }} -->
-                            Admin UI Payment
+                            {{-- Admin UI Payment --}}
                             <span class="user-level">{{ Auth::guard('teacher')->user()->name }}</span>
 
                         </span>
