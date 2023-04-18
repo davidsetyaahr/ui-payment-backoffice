@@ -61,21 +61,44 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Mutasi Siswa</h4>
+                            @php
+                                $getStudent = DB::table('student')
+                                    ->where('id', Request::get('student'))
+                                    ->first();
+                            @endphp
+                            <h4 class="card-title">Mutasi Siswa {{ Request::get('student') ? $getStudent->name : '' }}</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3">
 
-                                    <label for="email2">Students</label>
-                                    <select class="form-control select2 select2-hidden-accessible student"
-                                        style="width:100%;" name="student" id="student1">
-                                        <option value="">Select Student</option>
-                                        @foreach ($student as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ Request::get('student') == $item->id ? 'selected' : '' }}>
-                                                {{ $item->name }}</option>
+                                    <label for="email2">Class</label>
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="price" id="price">
+                                        <option value="">Select class</option>
+                                        @foreach ($price as $st)
+                                            <option value="{{ $st->id }}"
+                                                {{ Request::get('class') == $st->id ? 'selected' : '' }}>{{ $st->program }}
+                                            </option>
                                         @endforeach
+                                    </select>
+                                    @error('student')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+                                    @error('class')
+                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                    @enderror
+
+
+                                </div>
+                                <div class="col-md-3">
+
+                                    <label for="email2">Students</label>
+                                    <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                        name="student1" id="student1">
+                                        <option value="">Select Student</option>
+
                                     </select>
                                     @error('student')
                                         <label class="mt-1" style="color: red!important">{{ $message }}</label>
@@ -86,7 +109,7 @@
                                 <div class="col-md-3">
 
                                     <label for="email2">Id Student</label>
-                                    <input type="number" name="student" id="student2" class="form-control student"
+                                    <input type="number" name="student2" id="student2" class="form-control"
                                         value="{{ Request::get('student') }}">
                                     @error('student')
                                         <label class="mt-1" style="color: red!important">{{ $message }}</label>
@@ -94,26 +117,8 @@
 
 
                                 </div>
-                                <div class="col-md-3">
-
-                                    <label for="email2">Class</label>
-                                    <select class="form-control select2 select2-hidden-accessible class" style="width:100%;"
-                                        name="class" id="price">
-                                        <option value="">Select Class</option>
-                                        @foreach ($price as $itemc)
-                                            <option value="{{ $itemc->id }}"
-                                                {{ Request::get('class') == $itemc->id ? 'selected' : '' }}>
-                                                {{ $itemc->program }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('class')
-                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                    @enderror
-
-
-                                </div>
                                 <div class="col-md-3" style="margin-top:20px">
-                                    <button type="submit" class="btn btn-primary" onclick="filter()"><i
+                                    <button type="submit" class="btn btn-primary" onclick="filter()" id="filter"><i
                                             class="fas fa-filter"></i>
                                         Filter</button>
                                 </div>
@@ -171,6 +176,38 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            function getStudent() {
+                var typeClass = $('#price').val();
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url('') }}/score/students/filter?class=' + typeClass,
+                    dataType: 'JSON',
+                    success: function(data) {
+
+                        var $student = $('#student1');
+                        $student.empty();
+                        $student.append('<option value="">Select Student</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            $student.append(
+                                `<option id='${data[i].id}' value='${data[i].id}' ${data[i].id == "{{ Request::get('student') }}" ? 'selected' : ''}>${data[i].name}</option>`
+                            );
+                        }
+                        $student.change();
+
+                    }
+                });
+            }
+            getStudent();
+            $('#price').on('change', function() {
+                getStudent()
+            });
+            $('#student1').on('change', function() {
+                $('#student2').val('');
+            });
+        });
+    </script>
     <script>
         function filter() {
             var student1 = $('#student1').val();

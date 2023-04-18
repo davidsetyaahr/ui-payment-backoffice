@@ -214,7 +214,6 @@
         $(document).ready(function() {
             $('#student').on('change', function() {
                 var idStudent = $('select[name=student] option').filter(':selected').val();
-                console.log(idStudent);
                 jQuery.each(dataStudent, function(index, item) {
                     if (item.id == idStudent) {
 
