@@ -309,12 +309,13 @@ class AttendanceController extends Controller
     public function reminder(Request $request)
     {
         $arrAbsent = [];
-        $students = Students::get();
+        $students = Students::limit(100)->get();
         foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
                 ->join('price as p', 'p.id', 'st.priceid')
-                ->select('attendance_details.*', 'st.name', 'p.program')
+                ->leftJoin('teacher as t', 't.id', 'st.id_teacher')
+                ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher')
                 ->where('student_id', $value->id)->orderBy('attendance_details.id', 'desc')->limit(2)->get();
             $countA = count($attendance);
             if ($countA != 0) {

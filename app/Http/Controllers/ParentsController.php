@@ -25,8 +25,7 @@ class ParentsController extends Controller
         $title = 'Add Parents';
         $data = (object)[
             'id' => 0,
-            'name' => '',
-            'no_hp' => '',
+            'no_hp' => 62,
             'gender' => '',
             'type' => 'create',
         ];
@@ -42,12 +41,9 @@ class ParentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
             'no_hp' => 'required',
         ]);
 
-
-        $input['name'] = $request['name'];
         $input['no_hp'] = $request['no_hp'];
         $input['gender'] = $request['gender'];
         $input['otp'] = '1111';
@@ -70,11 +66,10 @@ class ParentsController extends Controller
                     'student_id' => $value,
                 ]);
             }
-            return redirect('/parents/'.$request->parent_id)->with('status', 'Berhasil menambah data');
+            return redirect('/parents/' . $request->parent_id)->with('status', 'Berhasil menambah data');
         } catch (\Throwable $th) {
             return back()->with('status', 'Gagal menambah data');
         }
-        
     }
 
     /**
@@ -106,7 +101,6 @@ class ParentsController extends Controller
         $title = 'Edit Parents';
         $data = (object)[
             'id' => $parent->id,
-            'name' =>  $parent->name,
             'no_hp' =>  $parent->no_hp,
             'gender' =>  $parent->gender,
             'type' => 'edit',
@@ -125,11 +119,9 @@ class ParentsController extends Controller
     {
 
         $request->validate([
-            'name' => 'required',
             'no_hp' => 'required',
 
         ]);
-        $input['name'] = $request['name'];
         $input['no_hp'] = $request['no_hp'];
         $input['gender'] = $request['gender'];
 

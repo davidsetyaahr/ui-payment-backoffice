@@ -67,4 +67,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/mutasi', [AttendanceController::class, 'mutasi']);
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
+    Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
 });

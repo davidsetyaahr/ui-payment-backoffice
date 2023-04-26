@@ -52,7 +52,7 @@ class UsersController extends Controller
         try {
             if (Auth::guard('teacher')->attempt(['username' => $request->email, 'password' => $request->password])) {
                 // if successful, then redirect to their intended location
-                return redirect()->intended('/dashboard');
+                return redirect('/dashboard')->with('message', 'Need to follow up');
             } else {
                 return redirect()->intended('/');
             }

@@ -36,7 +36,18 @@
                         <div class="card-body">
                             <form action="" method="get">
                                 <div class="row">
-                                    <div class="col-md-10 mb-3">
+                                    <div class="col-md-5 mb-3">
+                                        <label for="">Student</label>
+                                        <select name="student" id="" class="form-control select2">
+                                            <option value="">---Choose Student---</option>
+                                            @foreach ($students as $student)
+                                                <option value="{{ $student->id }}"
+                                                    {{ $student->id == Request::get('student') ? 'selected' : '' }}>
+                                                    {{ $student->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5 mb-3">
                                         <label for="">Date</label>
                                         <input type="date" name="date" class="form-control"
                                             value="{{ Request::get('date') }}">
@@ -57,55 +68,92 @@
                                     ->join('student', 'student.id', 'student_scores.student_id')
                                     ->join('tests', 'tests.id', 'student_scores.test_id')
                                     ->where('date', Request::get('date'))
+                                    ->where('student_id', Request::get('student'))
                                     ->get();
                             @endphp
-                            <div class=" mt-3">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table
-                                            class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">No</th>
-                                                    <th class="text-center">Name</th>
-                                                    <th class="text-center">Test</th>
-                                                    @foreach ($testItem as $itemTest)
-                                                        <th class="text-center">{{ $itemTest->name }}</th>
-                                                    @endforeach
-                                                    <th class="text-center">Average</th>
-                                                    <th class="text-center">Grade</th>
-                                                    <th class="text-center">Comment For Student</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php
-                                                    $no = 1;
-                                                @endphp
-                                                @foreach ($studentScore as $item)
+                            @if (count($studentScore) != 0)
+                                <div class=" mt-3">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table
+                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                                <thead>
                                                     <tr>
-                                                        <td>{{ $no++ }}</td>
-                                                        <td>{{ $item->name }}</td>
-                                                        <td>{{ $item->test_name }}</td>
-                                                        @foreach ($testItem as $itemTestKey => $itemTestValue)
-                                                            @php
-                                                                $detail = DB::table('student_score_details')
-                                                                    ->where('student_score_id', $item->id)
-                                                                    ->where('test_item_id', $itemTestValue->id)
-                                                                    ->first();
-                                                            @endphp
-                                                            <td>{{ $detail->score }}</td>
+                                                        <th class="text-center">No</th>
+                                                        <th class="text-center">Name</th>
+                                                        <th class="text-center">Test</th>
+                                                        @foreach ($testItem as $itemTest)
+                                                            <th class="text-center">{{ $itemTest->name }}</th>
                                                         @endforeach
-                                                        <td>{{ $item->average_score }}</td>
-                                                        <td>{{ Helper::getGrade($item->average_score) }}</td>
-                                                        <td>{{ $item->comment }}</td>
+                                                        <th class="text-center">Average</th>
+                                                        <th class="text-center">Grade</th>
+                                                        <th class="text-center">Comment For Student</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $no = 1;
+                                                    @endphp
+                                                    @foreach ($studentScore as $item)
+                                                        <tr>
+                                                            <td>{{ $no++ }}</td>
+                                                            <td>{{ $item->name }}</td>
+                                                            <td>{{ $item->test_name }}</td>
+                                                            @foreach ($testItem as $itemTestKey => $itemTestValue)
+                                                                @php
+                                                                    $detail = DB::table('student_score_details')
+                                                                        ->where('student_score_id', $item->id)
+                                                                        ->where('test_item_id', $itemTestValue->id)
+                                                                        ->first();
+                                                                @endphp
+                                                                <td>{{ $detail->score }}</td>
+                                                            @endforeach
+                                                            <td>{{ $item->average_score }}</td>
+                                                            <td>{{ Helper::getGrade($item->average_score) }}</td>
+                                                            <td>{{ $item->comment }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
 
-                                        </table>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class=" mt-3">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table
+                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">No</th>
+                                                        <th class="text-center">Name</th>
+                                                        <th class="text-center">Test</th>
+                                                        @foreach ($testItem as $itemTest)
+                                                            <th class="text-center">{{ $itemTest->name }}</th>
+                                                        @endforeach
+                                                        <th class="text-center">Average</th>
+                                                        <th class="text-center">Grade</th>
+                                                        <th class="text-center">Comment For Student</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $countTest = count($testItem) + 6;
+                                                    @endphp
+                                                    <tr>
+                                                        <td colspan="{{ $countTest }}" class="text-center">
+                                                            <h1>Data not found</h1>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>

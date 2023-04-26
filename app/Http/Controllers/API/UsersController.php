@@ -20,6 +20,7 @@ class UsersController extends Controller
     {
         try {
             $phone = "";
+            $parent_name = $request->name;
 
             if (substr($request->phone, 0, 2) == '08') {
                 $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
@@ -30,28 +31,35 @@ class UsersController extends Controller
             }
 
             $data = Parents::where('no_hp', $phone)->first();
-            if ($data) {
-                $otp = substr(str_shuffle("0123456789"), 0, 4);
+            if ($parent_name) {
+                if ($data) {
+                    $otp = substr(str_shuffle("0123456789"), 0, 4);
 
-                $generate = Parents::where('no_hp', $phone)->update(['otp' => $otp, 'password' => bcrypt($otp)]);
-                $message = 'Your verification code is: ' . $otp;
+                    $generate = Parents::where('no_hp', $phone)->update(['name' => $parent_name, 'otp' => $otp, 'password' => bcrypt($otp)]);
+                    $message = 'Your verification code is: ' . $otp;
 
-                $sendOTP =  Helper::sendMessage($phone, $message);
-                if ($generate && $sendOTP) {
-                    return response()->json([
-                        'code' => '00',
-                        'message' => $message,
-                    ], 200);
+                    $sendOTP =  Helper::sendMessage($phone, $message);
+                    if ($generate && $sendOTP) {
+                        return response()->json([
+                            'code' => '00',
+                            'message' => $message,
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'code' => '10',
+                            'message' => 'error',
+                        ], 200);
+                    }
                 } else {
                     return response()->json([
                         'code' => '10',
-                        'message' => 'error',
+                        'message' => 'Nomor HP Salah',
                     ], 200);
                 }
             } else {
                 return response()->json([
-                    'code' => '10',
-                    'message' => 'Nomor HP Salah',
+                    'code' => '01',
+                    'message' => 'Nama Orang Tua Harus Diisi',
                 ], 200);
             }
         } catch (\Throwable $th) {

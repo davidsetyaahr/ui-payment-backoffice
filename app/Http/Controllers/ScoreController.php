@@ -206,10 +206,26 @@ class ScoreController extends Controller
         }
     }
 
+    public function filterStudentByName(Request $request)
+    {
+
+        try {
+            $query = [];
+            $query = Students::where('name', 'like', '%' . $request->name . '%')->get();
+            return $query;
+
+            // return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $th;
+        }
+    }
+
     public function historyTest(Request $request)
     {
         try {
-            return view('score.history');
+            $students = Students::orderBy('id', 'asc')->get();
+            return view('score.history', compact('students'));
         } catch (\Throwable $th) {
             //throw $th;
         }

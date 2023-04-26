@@ -110,6 +110,7 @@
                                                 <tr>
                                                     <th class="text-center">No</th>
                                                     <th class="text-center">Name</th>
+                                                    <th class="text-center">Teacher</th>
                                                     <th class="text-center">Program</th>
                                                 </tr>
                                             </thead>
@@ -122,6 +123,7 @@
                                                     <tr>
                                                         <td>{{ $no++ }}</td>
                                                         <td>{{ $item[0]->name }}</td>
+                                                        <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                     </tr>
@@ -156,19 +158,4 @@
             </div>
         </div>
     </div>
-    <script>
-        function filter() {
-            var student1 = $('#student1').val();
-            var student2 = $('#student2').val();
-            var student = '';
-            if (student1 != '' && student2 == '') {
-                student = student1
-            } else if (student1 != '' && student2 != '') {
-                student = student2
-            } else {
-                student = student2
-            }
-            window.location = " {{ url('mutasi?student=') }}" + student;
-        }
-    </script>
 @endsection
