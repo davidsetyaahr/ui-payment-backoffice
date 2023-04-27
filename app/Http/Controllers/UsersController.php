@@ -167,8 +167,13 @@ class UsersController extends Controller
             if ($request->password) {
                 $input['password'] = bcrypt($request->password);
             }
-            Teacher::where('id', $user)->update($input);
-            return redirect('/user')->with('status', 'Success update profile');
+            if (Auth::guard('teacher')->check()) {
+                Teacher::where('id', $user)->update($input);
+                return redirect('/user')->with('status', 'Success update profile');
+            } else {
+                Staff::where('id', $user)->update($input);
+                return redirect('/user')->with('status', 'Success update profile');
+            }
         } catch (\Throwable $th) {
             return $th;
             return redirect('/user')->with('error', 'Success update profile');
