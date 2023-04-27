@@ -16,7 +16,7 @@
         }
     </style>
     <div class="content">
-        <div class="page-inner py-5 panel-header bg-primary-gradient">
+        <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div class="">
                     <h2 class="text-white pb-2 fw-bold">Reminder</h2>
@@ -104,8 +104,8 @@
                                 <div class="col-md-12">
                                     <div class="">
                                         {{-- @if (Request::get('student')) --}}
-                                        <table
-                                            class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                        <table id="basic-datatables"
+                                            class="table table-sm display table table-striped table-hover table-head-bg-info">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center">No</th>
@@ -131,7 +131,7 @@
                                             </tbody>
 
                                         </table>
-                                        <div class="pull-right">
+                                        {{-- <div class="pull-right">
                                             @php
                                                 $page = Request::get('page') != null ? Request::get('page') : 1;
                                                 $next = $page + 1;
@@ -147,7 +147,7 @@
                                                     class="btn btn-sm btn-secondary">
                                                     Next ></a>
                                             @endif
-                                        </div>
+                                        </div> --}}
                                         {{-- @endif --}}
                                     </div>
                                 </div>

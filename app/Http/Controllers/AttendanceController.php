@@ -338,16 +338,17 @@ class AttendanceController extends Controller
             }
         }
         $data = $arrAbsent;
-        $page = !empty($request->page) ? (int) $request->page : 1;
-        $total = count($data); //total items in array
-        $limit = 10; //per page
-        $totalPages = ceil($total / $limit); //calculate total pages
-        $page = max($page, 1); //get 1 page when $request->page <= 0
-        $page = min($page, $totalPages); //get last page when $request->page > $totalPages
-        $offset = ($page - 1) * $limit;
-        if ($offset < 0) $offset = 0;
-        $data = array_slice($data, $offset, $limit);
-        return view('attendance.reminder', compact('data', 'totalPages'));
+        // $page = !empty($request->page) ? (int) $request->page : 1;
+        // $total = count($data); //total items in array
+        // $limit = 10; //per page
+        // $totalPages = ceil($total / $limit); //calculate total pages
+        // $page = max($page, 1); //get 1 page when $request->page <= 0
+        // $page = min($page, $totalPages); //get last page when $request->page > $totalPages
+        // $offset = ($page - 1) * $limit;
+        // if ($offset < 0) $offset = 0;
+        // $data = array_slice($data, $offset, $limit);
+        // return view('attendance.reminder', compact('data', 'totalPages'));
+        return view('attendance.reminder', compact('data'));
     }
 
     public function mutasi(Request $request)

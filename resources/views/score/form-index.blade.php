@@ -16,7 +16,7 @@
         }
     </style>
     <div class="content">
-        <div class="page-inner py-5 panel-header bg-primary-gradient">
+        <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div class="">
                     <h2 class="text-white pb-2 fw-bold">Score</h2>

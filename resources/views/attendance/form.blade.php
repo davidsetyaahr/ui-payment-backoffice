@@ -16,7 +16,7 @@
         }
     </style>
     <div class="content">
-        <div class="page-inner py-5 panel-header bg-primary-gradient">
+        <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div class="">
                     <h2 class="text-white pb-2 fw-bold">{{ $title }}</h2>
@@ -69,9 +69,9 @@
                             <div class="card-header">
                                 <h4 class="card-title">{{ $data->type == 'create' ? 'Tambah Data' : 'Edit Data' }}</h4>
                             </div>
-                            <input type="hidden" name="day1" value="{{request()->get('day1')}}">
-                            <input type="hidden" name="day2" value="{{request()->get('day2')}}">
-                            <input type="hidden" name="time" value="{{request()->get('time')}}">
+                            <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
+                            <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
+                            <input type="hidden" name="time" value="{{ request()->get('time') }}">
                             {{-- <div class="card-body">
                                 <form action="" method="get">
                                     <div class="row">
@@ -104,164 +104,162 @@
                                 </form>
                             </div> --}}
                             {{-- @if (Request::get('day')) --}}
-                                <div class="card-body">
-                                    <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
-                                    <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
+                            <div class="card-body">
+                                <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
+                                <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
 
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <div class="">
-                                                <table
-                                                    class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center">No</th>
-                                                            <th class="text-center">Name</th>
-                                                            <th class="text-center" scope="col" class="w-5"
-                                                                style="min-width:3px;">Absent</th>
-                                                            <th class="text-center">In Point</th>
-                                                            <th class="text-center">Category</th>
-                                                            <th class="text-center">Total</th>
-                                                        </tr>
-                                                    </thead>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="">
+                                            <table
+                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">No</th>
+                                                        <th class="text-center">Name</th>
+                                                        <th class="text-center" scope="col" class="w-5"
+                                                            style="min-width:3px;">Absent</th>
+                                                        <th class="text-center">In Point</th>
+                                                        <th class="text-center">Category</th>
+                                                        <th class="text-center">Total</th>
+                                                    </tr>
+                                                </thead>
 
-                                                    <tbody>
-                                                        @php
-                                                            $no = 1;
-                                                        @endphp
-                                                        @foreach ($student as $it)
-                                                            <tr style="height: 40px!important">
-                                                                <td class="text-center" style="">{{ $no }}
-                                                                </td>
-                                                                <td style="">{{ $it->name }}</td>
-                                                                <input type="hidden" readonly name="studentId[]"
-                                                                    value="{{ $it->id }}">
-                                                                <td class=" text-center" scope="col"
-                                                                    style="width:3px!important;">
-                                                                    <input type="hidden"
-                                                                        name="isAbsent[{{ $no }}][]"
-                                                                        value="0">
-                                                                    @php
+                                                <tbody>
+                                                    @php
+                                                        $no = 1;
+                                                    @endphp
+                                                    @foreach ($student as $it)
+                                                        <tr style="height: 40px!important">
+                                                            <td class="text-center" style="">{{ $no }}
+                                                            </td>
+                                                            <td style="">{{ $it->name }}</td>
+                                                            <input type="hidden" readonly name="studentId[]"
+                                                                value="{{ $it->id }}">
+                                                            <td class=" text-center" scope="col"
+                                                                style="width:3px!important;">
+                                                                <input type="hidden"
+                                                                    name="isAbsent[{{ $no }}][]" value="0">
+                                                                @php
+                                                                    $isChecked = false;
+                                                                    if ($data->type == 'create') {
                                                                         $isChecked = false;
-                                                                        if ($data->type == 'create') {
-                                                                            $isChecked = false;
-                                                                        } else {
-                                                                            if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
-                                                                                $isChecked = true;
-                                                                            }
+                                                                    } else {
+                                                                        if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
+                                                                            $isChecked = true;
                                                                         }
-                                                                        
-                                                                    @endphp
-                                                                    <input type="checkbox" class="form-check-input cekBox"
-                                                                        id="cbAbsent{{ $no }}" value="1"
-                                                                        {{ $isChecked ? 'checked' : '' }}
-                                                                        aria-label="Checkbox for following text input"
-                                                                        name="isAbsent[{{ $no }}][]">
-                                                                </td>
-                                                                <td class="text-center" style="">
-                                                                    @php
+                                                                    }
+                                                                    
+                                                                @endphp
+                                                                <input type="checkbox" class="form-check-input cekBox"
+                                                                    id="cbAbsent{{ $no }}" value="1"
+                                                                    {{ $isChecked ? 'checked' : '' }}
+                                                                    aria-label="Checkbox for following text input"
+                                                                    name="isAbsent[{{ $no }}][]">
+                                                            </td>
+                                                            <td class="text-center" style="">
+                                                                @php
+                                                                    $isAbsent = false;
+                                                                    if ($data->type == 'create') {
                                                                         $isAbsent = false;
-                                                                        if ($data->type == 'create') {
-                                                                            $isAbsent = false;
-                                                                        } else {
-                                                                            if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent) {
-                                                                                $isAbsent = true;
-                                                                            }
+                                                                    } else {
+                                                                        if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent) {
+                                                                            $isAbsent = true;
                                                                         }
-                                                                    @endphp
-                                                                    <h5 id="inPointAbsent{{ $no }}">
-                                                                        {{ $isAbsent ? '10' : '0' }}</h5>
-                                                                </td>
-                                                                <td style="">
-                                                                    <select
-                                                                        class="form-control select2 select2-hidden-accessible"
-                                                                        style="width:100%;"
-                                                                        name="categories[{{ $no }}][]"
-                                                                        placeholder="Select Category"
-                                                                        id="categories{{ $no }}"
-                                                                        multiple="multiple">
+                                                                    }
+                                                                @endphp
+                                                                <h5 id="inPointAbsent{{ $no }}">
+                                                                    {{ $isAbsent ? '10' : '0' }}</h5>
+                                                            </td>
+                                                            <td style="">
+                                                                <select
+                                                                    class="form-control select2 select2-hidden-accessible"
+                                                                    style="width:100%;"
+                                                                    name="categories[{{ $no }}][]"
+                                                                    placeholder="Select Category"
+                                                                    id="categories{{ $no }}" multiple="multiple">
 
-                                                                        @foreach ($pointCategories as $st)
-                                                                            <option value="{{ $st->id }}"
-                                                                                {{ $data->type == 'update' && in_array(intval($st->id), $data->students[$no - 1]->category) ? 'selected' : '' }}>
-                                                                                {{ $st->name }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </td>
-                                                                <td class="text-center" style="">
-                                                                    @php
+                                                                    @foreach ($pointCategories as $st)
+                                                                        <option value="{{ $st->id }}"
+                                                                            {{ $data->type == 'update' && in_array(intval($st->id), $data->students[$no - 1]->category) ? 'selected' : '' }}>
+                                                                            {{ $st->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                            <td class="text-center" style="">
+                                                                @php
+                                                                    $totalPoint = 0;
+                                                                    if ($data->type == 'create') {
                                                                         $totalPoint = 0;
-                                                                        if ($data->type == 'create') {
-                                                                            $totalPoint = 0;
-                                                                        } else {
-                                                                            if ($data->students[$no - 1]->student_id == $it->id) {
-                                                                                $totalPoint = $data->students[$no - 1]->total_point;
-                                                                            }
+                                                                    } else {
+                                                                        if ($data->students[$no - 1]->student_id == $it->id) {
+                                                                            $totalPoint = $data->students[$no - 1]->total_point;
                                                                         }
-                                                                    @endphp
-                                                                    <input type="hidden" name="totalPoint[]"
-                                                                        id="inpTotalPoint{{ $no }}"
-                                                                        value="{{ $totalPoint }}" readonly>
-                                                                    <h5 id="totalPoint{{ $no }}">
-                                                                        {{ $totalPoint }}</h5>
-                                                                </td>
+                                                                    }
+                                                                @endphp
+                                                                <input type="hidden" name="totalPoint[]"
+                                                                    id="inpTotalPoint{{ $no }}"
+                                                                    value="{{ $totalPoint }}" readonly>
+                                                                <h5 id="totalPoint{{ $no }}">
+                                                                    {{ $totalPoint }}</h5>
+                                                            </td>
 
-                                                            </tr>
-                                                            @php
-                                                                $no++;
-                                                            @endphp
-                                                        @endforeach
+                                                        </tr>
+                                                        @php
+                                                            $no++;
+                                                        @endphp
+                                                    @endforeach
 
-                                                    </tbody>
+                                                </tbody>
 
-                                                </table>
-                                            </div>
+                                            </table>
                                         </div>
                                     </div>
-                                    <h2 class="mt-3">Agenda</h2>
-                                    <div class="row mt-3">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="">Comment For Student</label>
-                                                <textarea name="comment" class="form-control" id="" cols="30" rows="3">{{ $data->type == 'update' ? $data->comment : '' }}</textarea>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="">Text Book</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $data->type == 'update' ? $data->textBook : '' }}"
-                                                    name="textBook">
-                                            </div>
-
+                                </div>
+                                <h2 class="mt-3">Agenda</h2>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Comment For Student</label>
+                                            <textarea name="comment" class="form-control" id="" cols="30" rows="3">{{ $data->type == 'update' ? $data->comment : '' }}</textarea>
                                         </div>
 
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="">Excercise Book</label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $data->type == 'update' ? $data->excerciseBook : '' }}"
-                                                    name="excerciseBook">
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-
 
                                 </div>
-                                <div class="card-action mt-3">
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                    <button type="button" data-toggle="modal" data-target="#mdlCancel"
-                                        class="btn btn-danger">Cancel</button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Text Book</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $data->type == 'update' ? $data->textBook : '' }}"
+                                                name="textBook">
+                                        </div>
+
+                                    </div>
+
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Excercise Book</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $data->type == 'update' ? $data->excerciseBook : '' }}"
+                                                name="excerciseBook">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="card-action mt-3">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="button" data-toggle="modal" data-target="#mdlCancel"
+                                    class="btn btn-danger">Cancel</button>
+                            </div>
                             {{-- @endif --}}
                         </div>
                     </form>
@@ -338,12 +336,12 @@
                 alert("Day is required")
             } else if (time == '') {
                 alert("Time is required")
-            } 
+            }
             // else if (ampm == '') {
             //     alert("AM/PM is required")
-            // } 
+            // }
             else {
-                window.location.href = "{{ url('/attendance/form/'.$data->id) }}?day=" + day + "&time=" + time;
+                window.location.href = "{{ url('/attendance/form/' . $data->id) }}?day=" + day + "&time=" + time;
             }
         }
     </script>

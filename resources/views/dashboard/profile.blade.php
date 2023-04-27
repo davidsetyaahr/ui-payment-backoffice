@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="content">
-        <div class="panel-header bg-primary-gradient">
+        <div class="panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="page-inner py-5">
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
@@ -24,7 +24,6 @@
                             }
                         },
                     });
-
                 </script>
             @endif
             <div class="row">
@@ -39,12 +38,13 @@
                         </div>
                         <div class="card-body">
                             <div class="user-profile text-center">
-                                <div class="name">{{$data->nama}}</div>
-                                <div class="job">{{$data->role}}</div>
-                                <div class="desc">{{$data->username}}</div>
+                                <div class="name">{{ $data->nama }}</div>
+                                <div class="job">{{ $data->role }}</div>
+                                <div class="desc">{{ $data->username }}</div>
 
                                 <div class="view-profile">
-                                    <a href="{{ url('/user/'.$data->id.'/edit')}}" class="btn btn-secondary btn-block">Edit Data</a>
+                                    <a href="{{ url('/user/' . $data->id . '/edit') }}" class="btn btn-secondary btn-block">Edit
+                                        Data</a>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email2">Nama</label>
-                                        <p>{{$data->nama}}</p>
+                                        <p>{{ $data->nama }}</p>
                                     </div>
 
                                 </div>
@@ -71,7 +71,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email2">Telepon</label>
-                                        <p>{{$data->telepon}}</p>
+                                        <p>{{ $data->telepon }}</p>
                                     </div>
 
                                 </div>
@@ -79,33 +79,33 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password">Kecamatan</label>
-                                        <p>{{$data->kecamatan}}</p>
+                                        <p>{{ $data->kecamatan }}</p>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email2">Email</label>
-                                        <p>{{$data->email}}</p>
+                                        <p>{{ $data->email }}</p>
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password">Username</label>
-                                        <p>{{$data->username}}</p>
+                                        <p>{{ $data->username }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password">Role</label>
-                                        <p>{{$data->Role}}</p>
+                                        <p>{{ $data->Role }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="password">Alamat</label>
-                                        <p>{{$data->alamat}}</p>
+                                        <p>{{ $data->alamat }}</p>
                                     </div>
                                 </div>
                             </div>
