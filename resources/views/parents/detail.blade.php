@@ -48,7 +48,12 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Detail Data</h4>
+                            <div class="d-flex justify-content-between">
+                                <h4 class="card-title">Detail Data</h4>
+                                <div class="ml-md-auto ">
+                                    <a href="{{ url('parents') }}" class="btn btn-sm btn-info">Kembali</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
