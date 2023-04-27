@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Announces;
 use App\Models\Parents;
 use App\Models\Price;
+use App\Models\Staff;
 use App\Models\Students;
 use App\Models\Teacher;
 use App\Models\User;
@@ -48,13 +49,22 @@ class UsersController extends Controller
             'email' => 'required',
             'password' => 'required'
         ]);
-        // return Auth::guard('teacher')->attempt(['username' => $request->email, 'password' => $request->password]);
+        // return Auth::guard('staff')->attempt(['username' => $request->email, 'password' => $request->password]);
         try {
-            if (Auth::guard('teacher')->attempt(['username' => $request->email, 'password' => $request->password])) {
-                // if successful, then redirect to their intended location
-                return redirect('/dashboard')->with('message', 'Need to follow up');
+            if ($request->type == 'teacher') {
+                if (Auth::guard('teacher')->attempt(['username' => $request->email, 'password' => $request->password])) {
+                    // if successful, then redirect to their intended location
+                    return redirect()->intended('/dashboard');
+                } else {
+                    return redirect()->intended('/');
+                }
             } else {
-                return redirect()->intended('/');
+                if (Auth::guard('staff')->attempt(['username' => $request->email, 'password' => $request->password])) {
+                    // if successful, then redirect to their intended location
+                    return redirect('/dashboard')->with('message', 'Need to follow up');
+                } else {
+                    return redirect()->intended('/');
+                }
             }
         } catch (\Throwable $th) {
             //throw $th;
@@ -67,13 +77,22 @@ class UsersController extends Controller
         if (Auth::guard('teacher')->check()) {
             Auth::guard('teacher')->logout();
             return redirect('/');
+        } else if (Auth::guard('staff')->check()) {
+            Auth::guard('staff')->logout();
+            return redirect('/');
         }
     }
 
     public function profile()
     {
         try {
-            $data = Teacher::where('id', Auth::guard('teacher')->user()->id)->first();
+            $data = [];
+            if (Auth::guard('teacher')->check()) {
+                $data = Teacher::where('id', Auth::guard('teacher')->user()->id)->first();
+            } else if (Auth::guard('staff')->check()) {
+                $data = Staff::where('id', Auth::guard('staff')->user()->id)->first();
+            }
+
             // return $data;
             return view('user', compact('data'));
         } catch (\Throwable $th) {

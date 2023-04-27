@@ -10,7 +10,8 @@
                         <span>
                             <!-- {{ session('nama') }} -->
                             {{-- Admin UI Payment --}}
-                            <span class="user-level">{{ Auth::guard('teacher')->user()->name }}</span>
+                            <span
+                                class="user-level">{{ Auth::guard('teacher')->user() != null ? Auth::guard('teacher')->user()->name : Auth::guard('staff')->user()->name }}</span>
 
                         </span>
                     </a>
@@ -49,84 +50,86 @@
 
                 </li>
 
-                <li
-                    class="nav-item {{ Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'active' : '' }} submenu">
-                    <a data-toggle="collapse" href="#tables">
-                        <i class="fas fa-th-large"></i>
-                        <p>Master Data</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse {{ Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'show' : '' }}"
-                        id="tables">
-                        <ul class="nav nav-collapse">
-                            <li class="{{ Request::segment(1) == 'parents' ? 'active' : '' }}">
-                                <a href="{{ url('/parents') }}">
-                                    <span class="sub-item ">Parents</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'tests' ? 'active' : '' }}">
-                                <a href="{{ url('/tests') }}">
-                                    <span class="sub-item ">Test</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'pointCategories' ? 'active' : '' }}">
-                                <a href="{{ url('/pointCategories') }}">
-                                    <span class="sub-item ">Point Categories</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'reedemItems' ? 'active' : '' }}">
-                                <a href="{{ url('/reedemItems') }}">
-                                    <span class="sub-item ">Reedem Item</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'announces' ? 'active' : '' }}">
-                                <a href="{{ url('/announces') }}">
-                                    <span class="sub-item ">Announcement</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'advertise' ? 'active' : '' }}">
-                                <a href="{{ url('/advertise') }}">
-                                    <span class="sub-item ">Advertise</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item {{ Request::segment(1) == 'reedemPoint' ? 'active' : '' }}">
-                    <a href="{{ url('/reedemPoint') }}" class="collapsed">
-                        <i class="fas fa-download"></i>
-                        <p>Reedem Point</p>
-                    </a>
+                @if (Auth::guard('teacher')->user() == null)
+                    <li
+                        class="nav-item {{ Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'active' : '' }} submenu">
+                        <a data-toggle="collapse" href="#tables">
+                            <i class="fas fa-th-large"></i>
+                            <p>Master Data</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ Request::segment(1) == 'advertise' || Request::segment(1) == 'announces' || Request::segment(1) == 'pointCategories' || Request::segment(1) == 'reedemItems' || Request::segment(1) == 'testMaster' || Request::segment(1) == 'tests' || Request::segment(1) == 'parents' ? 'show' : '' }}"
+                            id="tables">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ Request::segment(1) == 'parents' ? 'active' : '' }}">
+                                    <a href="{{ url('/parents') }}">
+                                        <span class="sub-item ">Parents</span>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::segment(1) == 'tests' ? 'active' : '' }}">
+                                    <a href="{{ url('/tests') }}">
+                                        <span class="sub-item ">Test</span>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::segment(1) == 'pointCategories' ? 'active' : '' }}">
+                                    <a href="{{ url('/pointCategories') }}">
+                                        <span class="sub-item ">Point Categories</span>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::segment(1) == 'reedemItems' ? 'active' : '' }}">
+                                    <a href="{{ url('/reedemItems') }}">
+                                        <span class="sub-item ">Reedem Item</span>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::segment(1) == 'announces' ? 'active' : '' }}">
+                                    <a href="{{ url('/announces') }}">
+                                        <span class="sub-item ">Announcement</span>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::segment(1) == 'advertise' ? 'active' : '' }}">
+                                    <a href="{{ url('/advertise') }}">
+                                        <span class="sub-item ">Advertise</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item {{ Request::segment(1) == 'reedemPoint' ? 'active' : '' }}">
+                        <a href="{{ url('/reedemPoint') }}" class="collapsed">
+                            <i class="fas fa-download"></i>
+                            <p>Reedem Point</p>
+                        </a>
 
-                </li>
-                <li class="nav-item {{ Request::segment(1) == 'schedule-class' ? 'active' : '' }}">
-                    <a href="{{ url('/schedule-class') }}" class="collapsed">
-                        <i class="fas fa-calendar"></i>
-                        <p>Schedule Class</p>
-                    </a>
+                    </li>
+                    <li class="nav-item {{ Request::segment(1) == 'schedule-class' ? 'active' : '' }}">
+                        <a href="{{ url('/schedule-class') }}" class="collapsed">
+                            <i class="fas fa-calendar"></i>
+                            <p>Schedule Class</p>
+                        </a>
 
-                </li>
-                <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
-                    <a href="{{ url('/attendance/reminder') }}" class="collapsed">
-                        <i class="fas fa-bell"></i>
-                        <p>Reminder</p>
-                    </a>
+                    </li>
+                    <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
+                        <a href="{{ url('/attendance/reminder') }}" class="collapsed">
+                            <i class="fas fa-bell"></i>
+                            <p>Reminder</p>
+                        </a>
 
-                </li>
-                <li class="nav-item {{ Request::segment(1) == 'mutasi' ? 'active' : '' }}">
-                    <a href="{{ url('/mutasi') }}" class="collapsed">
-                        <i class="fas fa-users"></i>
-                        <p>Mutasi</p>
-                    </a>
+                    </li>
+                    <li class="nav-item {{ Request::segment(1) == 'mutasi' ? 'active' : '' }}">
+                        <a href="{{ url('/mutasi') }}" class="collapsed">
+                            <i class="fas fa-users"></i>
+                            <p>Mutasi</p>
+                        </a>
 
-                </li>
-                <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
-                    <a href="{{ url('/history-test') }}" class="collapsed">
-                        <i class="fas fa-book"></i>
-                        <p>History Test</p>
-                    </a>
+                    </li>
+                    <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
+                        <a href="{{ url('/history-test') }}" class="collapsed">
+                            <i class="fas fa-book"></i>
+                            <p>History Test</p>
+                        </a>
 
-                </li>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

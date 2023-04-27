@@ -2,6 +2,7 @@
 
 use App\Models\Parents;
 use App\Models\Teacher;
+use App\Models\Staff;
 
 return [
 
@@ -43,10 +44,14 @@ return [
             'driver' => 'session',
             'provider' => 'teacher',
         ],
-       
+
         'teacher' => [
             'driver' => 'session',
             'provider' => 'teacher',
+        ],
+        'staff' => [
+            'driver' => 'session',
+            'provider' => 'staff',
         ],
 
         'parent' => [
@@ -81,6 +86,10 @@ return [
         'teacher' => [
             'driver' => 'eloquent',
             'model' => Teacher::class,
+        ],
+        'staff' => [
+            'driver' => 'eloquent',
+            'model' => Staff::class,
         ],
         'parents' => [
             'driver' => 'eloquent',

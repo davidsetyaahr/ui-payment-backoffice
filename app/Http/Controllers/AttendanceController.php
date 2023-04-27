@@ -23,7 +23,14 @@ class AttendanceController extends Controller
     public function index()
     {
         // $class = Price::all();
-        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null;");
+        // if (Auth::gurad) {
+        //     # code...
+        // }
+        $where = '';
+        if (Auth::guard('teacher')->check() == true) {
+            $where = 'AND id_teacher = ' . Auth::guard('teacher')->user()->id;
+        }
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where;");
         $private = [];
         $general = [];
         foreach ($class as $key => $value) {

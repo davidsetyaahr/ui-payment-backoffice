@@ -24,7 +24,6 @@
                 sessionStorage.fonts = true;
             }
         });
-
     </script>
 
     <!-- CSS Files -->
@@ -45,7 +44,6 @@
                         buttons: false,
                         timer: 3000,
                     });
-
                 </script>
             @endif
             <div class="login-form">
@@ -71,6 +69,17 @@
                             @error('password')
                                 <label class="mt-1" style="color: red">{{ $message }}</label>
                             @enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="placeholder"><b>Login As</b></label>
+
+                        <div class="position-relative">
+                            <select name="type" id="" class="form-control">
+                                <option value="" selected disabled>---Choose Teacher/Staff---</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="staff">Staff</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group form-action-d-flex mb-3">
