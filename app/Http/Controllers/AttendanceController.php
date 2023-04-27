@@ -33,7 +33,8 @@ class AttendanceController extends Controller
                 array_push($general, $value);
             }
         }
-        return view('attendance.index', compact('private', 'general'));
+        $day = DB::table('day',)->get();
+        return view('attendance.index', compact('private', 'general', 'day'));
     }
 
     /**
@@ -309,7 +310,7 @@ class AttendanceController extends Controller
     public function reminder(Request $request)
     {
         $arrAbsent = [];
-        $students = Students::limit(100)->get();
+        $students = Students::get();
         foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
@@ -366,5 +367,27 @@ class AttendanceController extends Controller
         //     $query = $query->where('atd.price_id',  $request->class);
         // }
         // $data = $query->orderBy('atd.date', 'DESC')->paginate($request->perpage);
+    }
+
+    public function getClass(Request $request)
+    {
+        $level = DB::table('price');
+        if ($request->level == 'priv') {
+            $level = $level->where('level', 'Private');
+        } else {
+            $level = $level->where('level', '!=', 'Private');
+        }
+        return $level->get();
+    }
+
+    public function updateClass(Request $request)
+    {
+        $student = Students::where('priceid', $request->class)
+            ->where("day1", $request->day1)
+            ->where("day2", $request->day2)
+            ->where('course_time', $request->course_time)
+            // ->where('id_teacher',Auth::guard('teacher')->user()->id)
+            ->get();
+        return $student;
     }
 }

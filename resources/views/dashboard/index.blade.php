@@ -14,18 +14,27 @@
             </div>
         </div>
         <div class="page-inner mt--5">
-            @if (session('message'))
-                <script>
-                    swal("Need to follow up", "", {
-                        icon: "info",
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-success'
-                            }
+            {{-- @if (session('message')) --}}
+            <script>
+                swal("Need to follow up", "", {
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
                         },
-                    });
-                </script>
-            @endif
+                        dismiss: {
+                            className: 'btn btn-secondary'
+                        },
+                    },
+                }).then((result) => {
+                    console.log(result);
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result == true) {
+                        window.location = "{{ url('/attendance/reminder') }}"
+                    }
+                });
+            </script>
+            {{-- @endif --}}
             <div class="row mt--2">
                 <div class="col-sm-6 col-md-4">
                     <div class="card card-stats card-warning card-round">
