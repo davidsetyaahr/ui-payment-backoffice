@@ -112,6 +112,7 @@
                                                     <th class="text-center">Name</th>
                                                     <th class="text-center">Teacher</th>
                                                     <th class="text-center">Level</th>
+                                                    <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
 
@@ -126,6 +127,9 @@
                                                         <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
+                                                        <td>
+                                                            <a class="btn btn-sm btn-primary text-white">Done</a>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

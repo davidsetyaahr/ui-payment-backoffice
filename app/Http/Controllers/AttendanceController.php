@@ -67,7 +67,7 @@ class AttendanceController extends Controller
             ->first();
 
         $class = Price::where('id', $priceId)->first();
-        $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Reguler';
+        $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
         if ($cek) {
             $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
             foreach ($detail as $key => $id) {
@@ -407,12 +407,23 @@ class AttendanceController extends Controller
 
     public function updateClass(Request $request)
     {
-        $student = Students::where('priceid', $request->class)
-            ->where("day1", $request->day1)
-            ->where("day2", $request->day2)
-            ->where('course_time', $request->course_time)
-            // ->where('id_teacher',Auth::guard('teacher')->user()->id)
-            ->get();
-        return $student;
+        try {
+            $reqDay1 = $request->update_day1;
+            $reqDay2 = $request->update_day2;
+            $reqTime = $request->update_time;
+            $priceId = $request->update_class;
+            DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+                ->where("day2", $reqDay2)
+                ->where('course_time', $reqTime)->update([
+                    "day1" => $request->update_day_one,
+                    "day2" => $request->update_day_two,
+                    "course_time" => $request->update_course_time,
+                ]);
+            return redirect()->back()->with('message', 'Berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
     }
 }
