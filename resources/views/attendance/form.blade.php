@@ -67,7 +67,7 @@
 
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">{{ $data->type == 'create' ? 'Tambah Data' : 'Edit Data' }}</h4>
+                                <h4 class="card-title">{{ $data->type == 'create' ? 'Attendance' : 'Edit Attendance' }}</h4>
                             </div>
                             <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
                             <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
