@@ -64,9 +64,11 @@
                             @php
                                 $testItem = DB::table('test_items')->get();
                                 $studentScore = DB::table('student_scores')
-                                    ->select('student_scores.*', 'student.name', 'tests.name as test_name')
+                                    ->select('student_scores.*', 'student.name', 'tests.name as test_name', 'price.program as class', 'teacher.name as teacher_name')
                                     ->join('student', 'student.id', 'student_scores.student_id')
                                     ->join('tests', 'tests.id', 'student_scores.test_id')
+                                    ->join('price', 'price.id', 'student_scores.price_id')
+                                    ->join('teacher', 'teacher.id', 'student.id_teacher')
                                     ->where('date', Request::get('date'))
                                     ->where('student_id', Request::get('student'))
                                     ->get();
@@ -82,6 +84,8 @@
                                                         <th class="text-center">No</th>
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center">Test</th>
+                                                        <th class="text-center">Level</th>
+                                                        <th class="text-center">Teacher</th>
                                                         @foreach ($testItem as $itemTest)
                                                             <th class="text-center">{{ $itemTest->name }}</th>
                                                         @endforeach
@@ -99,6 +103,8 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $item->name }}</td>
                                                             <td>{{ $item->test_name }}</td>
+                                                            <td>{{ $item->class }}</td>
+                                                            <td>{{ $item->teacher_name }}</td>
                                                             @foreach ($testItem as $itemTestKey => $itemTestValue)
                                                                 @php
                                                                     $detail = DB::table('student_score_details')

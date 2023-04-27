@@ -75,7 +75,7 @@
                         <label for="password" class="placeholder"><b>Login As</b></label>
 
                         <div class="position-relative">
-                            <select name="type" id="" class="form-control">
+                            <select name="type" id="" class="form-control" required>
                                 <option value="" selected disabled>---Choose Teacher/Staff---</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="staff">Staff</option>

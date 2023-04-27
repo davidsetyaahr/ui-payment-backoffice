@@ -65,40 +65,40 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                {{-- <div class="col-md-3">
-
-                                    <label for="email2">Students</label>
-                                    <select class="form-control select2 select2-hidden-accessible student"
-                                        style="width:100%;" name="student" id="student1">
-                                        <option value="">Select Student</option>
-                                        @foreach ($student as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ Request::get('student') == $item->id ? 'selected' : '' }}>
-                                                {{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('student')
-                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                    @enderror
-
-
+                                <div class="col-md-12">
+                                    <form action="">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label for="email2">Level</label>
+                                                <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width:100%;" name="level" id="level">
+                                                    <option value="">Select Level</option>
+                                                    @foreach ($class as $item)
+                                                        <option value="{{ $item->id }}"
+                                                            {{ Request::get('level') == $item->id ? 'selected' : '' }}>
+                                                            {{ $item->program }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label for="email2">Teacher</label>
+                                                <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width:100%;" name="teacher" id="teacher">
+                                                    <option value="">Select Teacher</option>
+                                                    @foreach ($teacher as $item1)
+                                                        <option value="{{ $item1->id }}"
+                                                            {{ Request::get('teacher') == $item1->id ? 'selected' : '' }}>
+                                                            {{ $item1->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2" style="margin-top:20px">
+                                                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i>
+                                                    Filter</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                                <div class="col-md-3">
-
-                                    <label for="email2">Id Student</label>
-                                    <input type="number" name="student" id="student2" class="form-control student"
-                                        value="{{ Request::get('student') }}">
-                                    @error('student')
-                                        <label class="mt-1" style="color: red!important">{{ $message }}</label>
-                                    @enderror
-
-
-                                </div>
-                                <div class="col-md-3" style="margin-top:20px">
-                                    <button type="submit" class="btn btn-primary" onclick="filter()"><i
-                                            class="fas fa-filter"></i>
-                                        Filter</button>
-                                </div> --}}
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12">
@@ -111,7 +111,7 @@
                                                     <th class="text-center">No</th>
                                                     <th class="text-center">Name</th>
                                                     <th class="text-center">Teacher</th>
-                                                    <th class="text-center">Program</th>
+                                                    <th class="text-center">Level</th>
                                                 </tr>
                                             </thead>
 

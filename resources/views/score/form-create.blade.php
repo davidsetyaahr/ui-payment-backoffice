@@ -167,7 +167,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Item</th>
+                                                    <th>Skill</th>
                                                     <th>Score</th>
                                                     <th>Grade</th>
                                                 </tr>
@@ -238,7 +238,7 @@
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Comment For Student</label>
+                                        <label for="">Comments For Student</label>
                                         <textarea name="comment" class="form-control" id="comment" cols="30" rows="3">{{ $score == null ? '' : $score->comment }}</textarea>
                                     </div>
 
@@ -298,7 +298,7 @@
                 }
                 avg = total / len;
                 var grade = getGrade(avg);
-                $('.average').val(avg.toFixed(2));
+                $('.average').val(Math.round(avg));
                 $('#gradeAvg').text(grade);
             });
         });

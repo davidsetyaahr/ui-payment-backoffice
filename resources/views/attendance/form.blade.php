@@ -118,7 +118,7 @@
                                                         <th class="text-center">No</th>
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center" scope="col" class="w-5"
-                                                            style="min-width:3px;">Absent</th>
+                                                            style="min-width:3px;">Absence</th>
                                                         <th class="text-center">In Point</th>
                                                         <th class="text-center">Category</th>
                                                         <th class="text-center">Total</th>
@@ -221,7 +221,7 @@
                                 <div class="row mt-3">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Comment For Student</label>
+                                            <label for="">Topic</label>
                                             <textarea name="comment" class="form-control" id="" cols="30" rows="3">{{ $data->type == 'update' ? $data->comment : '' }}</textarea>
                                         </div>
 
