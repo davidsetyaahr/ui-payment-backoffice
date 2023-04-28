@@ -71,17 +71,30 @@ class AttendanceController extends Controller
         if ($cek) {
             $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
             foreach ($detail as $key => $id) {
+                // multiple
+                // $points = [];
+                // $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $id->id)
+                //     ->select('point_category_id')
+                //     ->get();
+
+                // foreach ($attPoint as $idp) {
+                //     array_push($points, intval($idp->point_category_id));
+                // }
+                // $id['category'] = $points;
+
+                // manual
                 $points = [];
+                $catPoints = [];
                 $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $id->id)
-                    ->select('point_category_id')
                     ->get();
 
                 foreach ($attPoint as $idp) {
-                    array_push($points, intval($idp->point_category_id));
+                    array_push($points, $idp->point);
+                    array_push($catPoints, $idp->point_category);
                 }
-                $id['category'] = $points;
+                $id->categoryPoint = $points[0];
+                $id->category = $catPoints[0];
             }
-            // return $cek;
             $data = (object)[
                 'type' => 'update',
                 'id' => $class->id,
@@ -136,7 +149,7 @@ class AttendanceController extends Controller
                 'day2' => (int)$request->day2,
                 'course_time' => $request->time,
                 'date' => date('Y-m-d'),
-                'teacher_id' => Auth::guard('teacher')->user()->id,
+                'teacher_id' => Auth::guard('teacher')->check() == true ? Auth::guard('teacher')->user()->id : Auth::guard('staff')->user()->id,
                 'activity' => $request->comment,
                 'text_book' => $request->textBook,
                 'excercise_book' => $request->excerciseBook,
@@ -162,41 +175,67 @@ class AttendanceController extends Controller
                         'keterangan' => 'Present',
                     ]);
                 }
-                if ($request->categories) {
-                    if (array_key_exists($i + 1, $request->categories)) {
-                        for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
-                            $pos = 0;
-                            foreach ($pointCategories as $key => $value) {
-                                if ($request->categories[$i + 1][$x] == $value['id']) {
-                                    $pos = $key;
+
+                // Multiple
+                // if ($request->categories) {
+                // if (array_key_exists($i + 1, $request->categories)) {
+                //     for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
+                //         $pos = 0;
+                //         foreach ($pointCategories as $key => $value) {
+                //             if ($request->categories[$i + 1][$x] == $value['id']) {
+                //                 $pos = $key;
+                //             }
+                //         }
+                //         AttendanceDetailPoint::create([
+                //             'attendance_detail_id' => $detail->id,
+                //             'point_category_id' => $request->categories[$i + 1][$x],
+                //             'point' => $pointCategories[$pos]->point,
+                //         ]);
+                //         if ($request->totalPoint[$i] > 0) {
+                //             PointHistory::create([
+                //                 'student_id' => $request->studentId[$i],
+                //                 'date' => date('Y-m-d'),
+                //                 'total_point' =>  $pointCategories[$pos]->point,
+                //                 'type' => 'in',
+                //                 'keterangan' =>  $pointCategories[$pos]->name,
+                //             ]);
+                //         }
+                //         // return ([
+                //         //     'attendance_detail_id' => $detail->id,
+                //         //     'point_category_id' => $request->categories[$i + 1][$x-1],
+                //         //     'point' => $pointCategories[$pos]->point,
+                //         // ]);
+                //     }
+                // }
+                // }
+
+                // Manual
+                if ($request->category) {
+                    if (array_key_exists($i + 1, $request->category)) {
+                        for ($x = 0; $x < count($request->category[$i + 1]); $x++) {
+                            if ($request->category[$i + 1][$x] != null && $request->point_category[$i + 1][$x] != null) {
+                                $attendanceDetailPoint = new AttendanceDetailPoint;
+                                $attendanceDetailPoint->attendance_detail_id = $detail->id;
+                                $attendanceDetailPoint->point_category = $request->category[$i + 1][$x];
+                                $attendanceDetailPoint->point = $request->point_category[$i + 1][$x];
+                                $attendanceDetailPoint->save();
+                                if ($request->totalPoint[$i] > 0) {
+                                    PointHistory::create([
+                                        'student_id' => $request->studentId[$i],
+                                        'date' => date('Y-m-d'),
+                                        'total_point' =>  $request->point_category[$i + 1][$x],
+                                        'type' => 'in',
+                                        'keterangan' =>  $request->category[$i + 1][$x],
+                                    ]);
                                 }
                             }
-                            AttendanceDetailPoint::create([
-                                'attendance_detail_id' => $detail->id,
-                                'point_category_id' => $request->categories[$i + 1][$x],
-                                'point' => $pointCategories[$pos]->point,
-                            ]);
-                            if ($request->totalPoint[$i] > 0) {
-                                PointHistory::create([
-                                    'student_id' => $request->studentId[$i],
-                                    'date' => date('Y-m-d'),
-                                    'total_point' =>  $pointCategories[$pos]->point,
-                                    'type' => 'in',
-                                    'keterangan' =>  $pointCategories[$pos]->name,
-                                ]);
-                            }
-                            // return ([
-                            //     'attendance_detail_id' => $detail->id,
-                            //     'point_category_id' => $request->categories[$i + 1][$x-1],
-                            //     'point' => $pointCategories[$pos]->point,
-                            // ]);
                         }
                     }
                 }
             }
             return redirect()->back();
         } catch (\Throwable $th) {
-            return $th;
+            ddd($th);
         }
         return $request;
     }
@@ -238,7 +277,7 @@ class AttendanceController extends Controller
             Attendance::where('id', $request->attendanceId)->update([
                 'price_id' => $request->priceId,
                 'date' => date('Y-m-d'),
-                'teacher_id' => Auth::guard('teacher')->user()->id,
+                'teacher_id' => Auth::guard('teacher')->check() == true ? Auth::guard('teacher')->user()->id : Auth::guard('staff')->user()->id,
                 'activity' => $request->comment,
                 'text_book' => $request->textBook,
                 'excercise_book' => $request->excerciseBook,
@@ -258,41 +297,62 @@ class AttendanceController extends Controller
                 Students::where('id', $request->studentId[$i])->update([
                     'total_point' => $tmpPoint +  $request->totalPoint[$i],
                 ]);
-                // if (count($request->isAbsent[$i + 1]) > 1) {
-                //     PointHistory::create([
-                //         'student_id' => $request->studentId[$i],
-                //         'date' => date('Y-m-d'),
-                //         'total_point' =>  10,
-                //         'type' => 'in',
-                //         'keterangan' => 'Absent',
-                //     ]);
+                if (count($request->isAbsent[$i + 1]) > 1) {
+                    PointHistory::create([
+                        'student_id' => $request->studentId[$i],
+                        'date' => date('Y-m-d'),
+                        'total_point' =>  10,
+                        'type' => 'in',
+                        'keterangan' => 'Absent',
+                    ]);
+                }
+
+                // Multiple
+                // if ($request->categories) {
+                //     if (array_key_exists($i + 1, $request->categories)) {
+                //         for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
+                //             $pos = 0;
+                //             foreach ($pointCategories as $key => $value) {
+                //                 if ($request->categories[$i + 1][$x] == $value['id']) {
+                //                     $pos = $key;
+                //                 }
+                //             }
+                //             $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
+                //                 ->get();
+                //             $tmpDetail = [];
+
+                //             foreach ($avl as $key => $value) {
+                //                 if (in_array($value->point_category_id, $request->categories[$i + 1]) == 0) {
+                //                     AttendanceDetailPoint::where('id', $value->id)->delete();
+                //                 }
+                //                 array_push($tmpDetail, $value->point_category_id);
+                //             }
+                //             if (in_array($request->categories[$i + 1][$x], $tmpDetail) == false) {
+                //                 AttendanceDetailPoint::create([
+                //                     'attendance_detail_id' => $dataDetail->id,
+                //                     'point_category_id' => $request->categories[$i + 1][$x],
+                //                     'point' => $pointCategories[$pos]->point,
+                //                 ]);
+                //             }
+                //         }
+                //     }
                 // }
 
-                if ($request->categories) {
-                    if (array_key_exists($i + 1, $request->categories)) {
-                        for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
-                            $pos = 0;
-                            foreach ($pointCategories as $key => $value) {
-                                if ($request->categories[$i + 1][$x] == $value['id']) {
-                                    $pos = $key;
-                                }
-                            }
-                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
-                                ->get();
-                            $tmpDetail = [];
-
-                            foreach ($avl as $key => $value) {
-                                if (in_array($value->point_category_id, $request->categories[$i + 1]) == 0) {
+                // Manual
+                if ($request->category) {
+                    if (array_key_exists($i + 1, $request->category)) {
+                        for ($x = 0; $x < count($request->category[$i + 1]); $x++) {
+                            if ($request->category[$i + 1][$x] != null && $request->point_category[$i + 1][$x] != null) {
+                                $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
+                                    ->get();
+                                foreach ($avl as $key => $value) {
                                     AttendanceDetailPoint::where('id', $value->id)->delete();
                                 }
-                                array_push($tmpDetail, $value->point_category_id);
-                            }
-                            if (in_array($request->categories[$i + 1][$x], $tmpDetail) == false) {
-                                AttendanceDetailPoint::create([
-                                    'attendance_detail_id' => $dataDetail->id,
-                                    'point_category_id' => $request->categories[$i + 1][$x],
-                                    'point' => $pointCategories[$pos]->point,
-                                ]);
+                                $attendanceDetailPoint = new AttendanceDetailPoint;
+                                $attendanceDetailPoint->attendance_detail_id = $dataDetail->id;
+                                $attendanceDetailPoint->point_category = $request->category[$i + 1][$x];
+                                $attendanceDetailPoint->point = $request->point_category[$i + 1][$x];
+                                $attendanceDetailPoint->save();
                             }
                         }
                     }
