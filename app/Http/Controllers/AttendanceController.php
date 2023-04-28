@@ -379,8 +379,8 @@ class AttendanceController extends Controller
     {
         $arrAbsent = [];
         $arrAbsentFilter = [];
-        // $students = Students::get();
-        $students = Students::limit(100)->get();
+        $students = Students::get();
+        // $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
         foreach ($students as $key => $value) {
