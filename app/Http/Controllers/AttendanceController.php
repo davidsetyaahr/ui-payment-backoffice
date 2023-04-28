@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\AttendanceDetail;
 use App\Models\AttendanceDetailPoint;
+use App\Models\Mutasi;
 use App\Models\PointCategories;
 use App\Models\PointHistory;
 use App\Models\Price;
 use App\Models\Students;
+use App\Models\StudentScore;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -481,40 +483,53 @@ class AttendanceController extends Controller
         }
     }
 
-    private function searchForId($id, $array)
-    {
-        foreach ($array as $key => $val) {
-            if ($val['id'] === $id) {
-                return $key;
-            }
-        }
-        return null;
-    }
-
     public function mutasi(Request $request)
     {
         $studentId = $request->student;
-        $student = Students::get();
+        $students = Students::get();
         $price = Price::get();
-        $class = Students::join('price', 'price.id', 'student.priceid')
-            ->select('price.program')
-            ->where('student.id', $studentId)->first();
-        $query = [];
-        $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
-            ->join('student as st', 'st.id', 'attendance_details.student_id')
-            ->join('price as pr', 'pr.id', 'atd.price_id')
-            ->select('st.name', 'pr.program', 'atd.id as attendance_id1', 'attendance_details.*', 'atd.date', 'st.id as student_id1', 'pr.id as price_id')
-            ->where('attendance_details.student_id', $studentId);
-        if ($request->class) {
-            $query = $query->where('atd.price_id',  $request->class);
-        }
-        $data = $query->orderBy('atd.date', 'DESC')->groupBy('pr.program')->paginate(10);
-        // return $data;
-        return view('attendance.mutasi', compact('data', 'student', 'price'));
+        $data = [];
+        // $class = Students::join('price', 'price.id', 'student.priceid')
+        //     ->select('price.program')
+        //     ->where('student.id', $studentId)->first();
+        // $query = [];
+        // $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
+        //     ->join('student as st', 'st.id', 'attendance_details.student_id')
+        //     ->join('price as pr', 'pr.id', 'atd.price_id')
+        //     ->select('st.name', 'pr.program', 'atd.id as attendance_id1', 'attendance_details.*', 'atd.date', 'st.id as student_id1', 'pr.id as price_id')
+        //     ->where('attendance_details.student_id', $studentId);
         // if ($request->class) {
         //     $query = $query->where('atd.price_id',  $request->class);
         // }
-        // $data = $query->orderBy('atd.date', 'DESC')->paginate($request->perpage);
+        // $data = $query->orderBy('atd.date', 'DESC')->groupBy('pr.program')->paginate(10);
+        if ($request->student && $request->class) {
+            $student = Students::find($studentId);
+            $data = Mutasi::with('level', 'score')->where('student_id', $student->id)->paginate(10);
+        }
+        return view('attendance.mutasi', compact('data', 'students', 'price'));
+    }
+
+    public function storeMutasi(Request $request)
+    {
+        try {
+            $student = Students::find($request->student);
+            $score = StudentScore::where('student_id', $request->student)->orderBy('id', 'desc')->first();
+            $mutasi = new Mutasi;
+            $mutasi->student_id = $request->student;
+            $mutasi->price_id = $student->priceid;
+            if ($score != null) {
+                $mutasi->score_id = $score->id;
+            }
+            $student->priceid = $request->level;
+            $student->save();
+            $mutasi->save();
+            return redirect('mutasi?student=' . $student->id . '&class=' . $student->priceid)->with('message', 'Berhasil dimutasi');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('status', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
+        return $score != null ? 'asd' : 'ccd';
     }
 
     public function getClass(Request $request)

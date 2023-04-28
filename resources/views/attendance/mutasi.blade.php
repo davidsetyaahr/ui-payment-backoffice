@@ -45,6 +45,18 @@
         </div>
 
         <div class="page-inner mt--5">
+            @if (session('message'))
+                <script>
+                    swal("Success!", "{{ session('message') }}!", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    });
+                </script>
+            @endif
             @if (session('status'))
                 <script>
                     swal("Gagal!", "{{ session('status') }}!", {
@@ -66,7 +78,22 @@
                                     ->where('id', Request::get('student'))
                                     ->first();
                             @endphp
-                            <h4 class="card-title">Mutasi Siswa {{ Request::get('student') ? $getStudent->name : '' }}</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="card-title">Mutasi Siswa
+                                        {{ Request::get('student') ? $getStudent->name : '' }}</h4>
+                                </div>
+                                <div class="col-md-6" style="text-align:end;">
+                                    @if (Request::get('student'))
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-success" data-toggle="modal"
+                                            data-target="#exampleModal"
+                                            onclick="addMutasi({{ Request::get('student') }})"><i class="fas fa-plus"></i>
+                                            Tambah Mutasi</a>
+                                        <input type="hidden" value="{{ Request::get('student') ? $getStudent->name : '' }}"
+                                            id="studentName">
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -145,18 +172,12 @@
                                                         $score = '';
                                                     @endphp
                                                     @foreach ($data as $item)
-                                                        @php
-                                                            $score = DB::table('student_scores')
-                                                                ->where('student_id', $item->student_id)
-                                                                ->where('price_id', $item->price_id)
-                                                                ->first();
-                                                        @endphp
                                                         <tr>
                                                             <td>{{ $no++ }}</td>
-                                                            <td>{{ $item->program }}</td>
-                                                            <td>{{ $score != null ? $score->average_score : '-' }}
+                                                            <td>{{ $item->level->program }}</td>
+                                                            <td>{{ $item->score != null ? $item->score->average_score : '-' }}
                                                             </td>
-                                                            <td>{{ $score != null ? Helper::getGrade($score->average_score) : '-' }}
+                                                            <td>{{ $item->score != null ? Helper::getGrade($item->score->average_score) : '-' }}
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -176,6 +197,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ url('/mutasi') }}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Level</label>
+                            <select name="level" id="" class="form-control select2" style="width: 100%">
+                                <option value="">---Choose Level---</option>
+                                @foreach ($price as $i)
+                                    <option value="{{ $i->id }}">{{ $i->program }}</option>
+                                @endforeach
+                            </select>
+                            <input type="hidden" value="{{ Request::get('student') }}" name="student">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
             function getStudent() {
@@ -186,15 +240,15 @@
                     dataType: 'JSON',
                     success: function(data) {
 
-                        var $student = $('#student1');
-                        $student.empty();
-                        $student.append('<option value="">Select Student</option>');
+                        var $students = $('#student1');
+                        $students.empty();
+                        $students.append('<option value="">Select Student</option>');
                         for (var i = 0; i < data.length; i++) {
-                            $student.append(
+                            $students.append(
                                 `<option id='${data[i].id}' value='${data[i].id}' ${data[i].id == "{{ Request::get('student') }}" ? 'selected' : ''}>${data[i].name}</option>`
                             );
                         }
-                        $student.change();
+                        $students.change();
 
                     }
                 });
@@ -223,6 +277,11 @@
                 student = student2
             }
             window.location = " {{ url('mutasi?student=') }}" + student + '&class=' + price;
+        }
+
+        function addMutasi(id) {
+            var name = $('#studentName').val();
+            $('#exampleModalLabel').html('Tambah Mutasi ' + name);
         }
     </script>
 @endsection

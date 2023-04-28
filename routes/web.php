@@ -69,6 +69,7 @@ Route::middleware(['web'])->group(function () {
         Route::post('/update-class', [AttendanceController::class, 'updateClass']);
     });
     Route::get('/mutasi', [AttendanceController::class, 'mutasi']);
+    Route::post('/mutasi', [AttendanceController::class, 'storeMutasi']);
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
