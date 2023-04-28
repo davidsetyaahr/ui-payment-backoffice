@@ -38,6 +38,19 @@
             width: 200px !important;
             height: 200px !important;
         }
+
+        .custom-control-lg .custom-control-label::before,
+        .custom-control-lg .custom-control-label::after {
+            top: 0.1rem !important;
+            left: -2rem !important;
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+        }
+
+        .custom-control-lg .custom-control-label {
+            margin-left: 0.5rem !important;
+            font-size: 1rem !important;
+        }
     </style>
 
 

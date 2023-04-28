@@ -378,11 +378,11 @@ class AttendanceController extends Controller
     public function reminder(Request $request)
     {
         $arrAbsent = [];
-        $students = Students::get();
-        // $students = Students::limit(100)->get();
+        $arrAbsentFilter = [];
+        // $students = Students::get();
+        $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
-        $a = 'd';
         foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
@@ -391,15 +391,6 @@ class AttendanceController extends Controller
                 ->join('teacher as t', 't.id', 'a.teacher_id')
                 ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id')
                 ->where('attendance_details.student_id', $value->id);
-            // if ($request->level) {
-            //     $attendance = $attendance->where('a.price_id', $request->level);
-            // }
-            // if ($request->teacher) {
-            //     $attendance = $attendance->where('a.teacher_id', $request->teacher);
-            // }
-            // if ($request->level && $request->teacher) {
-            //     $attendance = $attendance->where('a.teacher_id', $request->teacher)->where('a.price_id', $request->level);
-            // }
 
             $attendance = $attendance->orderBy('attendance_details.id', 'desc')->limit(2)->get();
             $countA = count($attendance);
@@ -413,11 +404,37 @@ class AttendanceController extends Controller
             if ($ttlApha >= 2) {
                 array_push($arrAbsent, $attendance);
             }
-            // return ($arrAbsent[$key][$ttlApha - 1]);
-            // return array_keys(array_column($arrAbsent, 'id'), 1188);
         }
-        $data = $arrAbsent;
-        // return $data;
+
+
+
+        foreach ($arrAbsent as $k => $v) {
+            if ($request->level != '' && $request->teacher == '') {
+                if ($v[0]->price_id == $request->level) {
+                    array_push($arrAbsentFilter, $v);
+                }
+            }
+            if ($request->level == '' && $request->teacher != '') {
+                if ($v[0]->teacher_id == $request->teacher) {
+                    array_push($arrAbsentFilter, $v);
+                }
+            }
+            if ($request->level != '' && $request->teacher != '') {
+                if ($v[0]->teacher_id == $request->teacher && $v[0]->price_id == $request->level) {
+                    array_push($arrAbsentFilter, $v);
+                }
+            }
+        }
+
+        if ($request->level != '' && $request->teacher == '') {
+            $data = '$arrAbsentFilter';
+        } else if ($request->level == '' && $request->teacher != '') {
+            $data = $arrAbsentFilter;
+        } else if ($request->level != '' && $request->teacher != '') {
+            $data = $arrAbsentFilter;
+        } else {
+            $data = $arrAbsent;
+        }
 
         // $page = !empty($request->page) ? (int) $request->page : 1;
         // $total = count($data); //total items in array
