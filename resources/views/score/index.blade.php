@@ -10,7 +10,7 @@
                         {{-- <h5 class="text-white op-7 mb-2">Free Bootstrap 4 Admin Dashboard</h5> --}}
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
-                        <a href="{{ url('/parents/create') }}" class="btn btn-secondary btn-round">Student's Score</a>
+                        <a href="{{ url('/parents/create') }}" class="btn btn-secondary btn-round">Tambah Data</a>
                     </div>
                 </div>
             </div>
