@@ -513,7 +513,7 @@ class AttendanceController extends Controller
     {
         try {
             $student = Students::find($request->student);
-            $score = StudentScore::where('student_id', $request->student)->orderBy('id', 'desc')->first();
+            $score = StudentScore::where('student_id', $request->student)->where('price_id', $student->priceid)->orderBy('id', 'desc')->first();
             $mutasi = new Mutasi;
             $mutasi->student_id = $request->student;
             $mutasi->price_id = $student->priceid;

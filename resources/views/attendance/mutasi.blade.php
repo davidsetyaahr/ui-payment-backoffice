@@ -165,22 +165,29 @@
                                                         {{-- <th class="text-center">Action</th> --}}
                                                     </tr>
                                                 </thead>
-
                                                 <tbody>
-                                                    @php
-                                                        $no = 1;
-                                                        $score = '';
-                                                    @endphp
-                                                    @foreach ($data as $item)
+                                                    @if (count($data) != 0)
+                                                        @php
+                                                            $no = 1;
+                                                            $score = '';
+                                                        @endphp
+                                                        @foreach ($data as $item)
+                                                            <tr>
+                                                                <td>{{ $no++ }}</td>
+                                                                <td>{{ $item->level->program }}</td>
+                                                                <td>{{ $item->score != null ? $item->score->average_score : '-' }}
+                                                                </td>
+                                                                <td>{{ $item->score != null ? Helper::getGrade($item->score->average_score) : '-' }}
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @else
                                                         <tr>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $item->level->program }}</td>
-                                                            <td>{{ $item->score != null ? $item->score->average_score : '-' }}
-                                                            </td>
-                                                            <td>{{ $item->score != null ? Helper::getGrade($item->score->average_score) : '-' }}
+                                                            <td colspan="4" class="text-center">
+                                                                <h4>Data not found!</h4>
                                                             </td>
                                                         </tr>
-                                                    @endforeach
+                                                    @endif
                                                 </tbody>
 
                                             </table>
