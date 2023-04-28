@@ -121,7 +121,7 @@
                                                             style="min-width:3px;">Absence</th>
                                                         <th class="text-center">In Point Absence</th>
                                                         <th class="text-center">Category</th>
-                                                        <th class="text-center">In Point Category</th>
+                                                        {{-- <th class="text-center">In Point Category</th> --}}
                                                         <th class="text-center">Total</th>
                                                     </tr>
                                                 </thead>
@@ -173,7 +173,7 @@
                                                                     {{ $isAbsent ? '10' : '0' }}</h5>
                                                             </td>
                                                             <td style="">
-                                                                {{-- <select
+                                                                <select
                                                                     class="form-control select2 select2-hidden-accessible"
                                                                     style="width:100%;"
                                                                     name="categories[{{ $no }}][]"
@@ -186,19 +186,19 @@
                                                                             {{ $st->name }}
                                                                         </option>
                                                                     @endforeach
-                                                                </select> --}}
-                                                                <input type="text" class="form-control"
+                                                                </select>
+                                                                {{-- <input type="text" class="form-control"
                                                                     placeholder="Enter Category"
                                                                     name="category[{{ $no }}][]"
-                                                                    value="{{ $data->type == 'update' ? $data->students[$no - 1]->category : '' }}">
+                                                                    value="{{ $data->type == 'update' ? $data->students[$no - 1]->category : '' }}"> --}}
                                                             </td>
-                                                            <td>
+                                                            {{-- <td>
                                                                 <input type="number" class="form-control"
                                                                     placeholder="Enter In Point Category"
                                                                     name="point_category[{{ $no }}][]"
                                                                     id="point_category{{ $no }}"
                                                                     value="{{ $data->type == 'update' ? $data->students[$no - 1]->categoryPoint : '' }}">
-                                                            </td>
+                                                            </td> --}}
                                                             <td class="text-center" style="">
                                                                 @php
                                                                     $totalPoint = 0;
@@ -324,29 +324,29 @@
                     }
                 });
 
-                // $('#categories' + i).change(function() {
-                //     var tmpTotalPoint = 0;
-                //     var getVal = $('#categories' + i).val();
-                //     dataCtgr.forEach(element => {
-                //         getVal.forEach(x => {
-                //             if (element.id.toString() == x.toString()) {
-                //                 tmpTotalPoint += element.point;
-                //             }
-                //         })
-                //     });
-
-                //     $("#totalPoint" + i).text(tmpTotalPoint + parseInt($("#inPointAbsent" + i).text()));
-                //     $("#inpTotalPoint" + i).val(tmpTotalPoint + parseInt($("#inPointAbsent" + i).text()));
-
-                // });
-                $('#point_category' + i).keyup(function() {
+                $('#categories' + i).change(function() {
                     var tmpTotalPoint = 0;
-                    var point = isNaN(parseInt($('#point_category' + i).val())) == true ? 0 : parseInt($(
-                        '#point_category' + i).val());
-                    $("#totalPoint" + i).text(point + parseInt($("#inPointAbsent" + i).text()));
-                    $("#inpTotalPoint" + i).val(point + parseInt($("#inPointAbsent" + i).text()));
+                    var getVal = $('#categories' + i).val();
+                    dataCtgr.forEach(element => {
+                        getVal.forEach(x => {
+                            if (element.id.toString() == x.toString()) {
+                                tmpTotalPoint += element.point;
+                            }
+                        })
+                    });
+
+                    $("#totalPoint" + i).text(tmpTotalPoint + parseInt($("#inPointAbsent" + i).text()));
+                    $("#inpTotalPoint" + i).val(tmpTotalPoint + parseInt($("#inPointAbsent" + i).text()));
 
                 });
+                // $('#point_category' + i).keyup(function() {
+                //     var tmpTotalPoint = 0;
+                //     var point = isNaN(parseInt($('#point_category' + i).val())) == true ? 0 : parseInt($(
+                //         '#point_category' + i).val());
+                //     $("#totalPoint" + i).text(point + parseInt($("#inPointAbsent" + i).text()));
+                //     $("#inpTotalPoint" + i).val(point + parseInt($("#inPointAbsent" + i).text()));
+
+                // });
             }
 
         });
