@@ -63,6 +63,8 @@ Route::middleware(['web'])->group(function () {
         Route::post('/store', [AttendanceController::class, 'store']);
         Route::post('/update/{attendance}', [AttendanceController::class, 'update']);
         Route::get('/reminder', [AttendanceController::class, 'reminder']);
+        Route::get('/reminder-done', [AttendanceController::class, 'reminderDone']);
+        Route::get('/reminder-absen', [AttendanceController::class, 'reminderAbsen']);
         Route::get('/get-class', [AttendanceController::class, 'getClass']);
         Route::post('/update-class', [AttendanceController::class, 'updateClass']);
     });

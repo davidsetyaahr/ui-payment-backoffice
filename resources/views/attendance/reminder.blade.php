@@ -45,13 +45,13 @@
         </div>
 
         <div class="page-inner mt--5">
-            @if (session('status'))
+            @if (session('message'))
                 <script>
-                    swal("Gagal!", "{{ session('status') }}!", {
-                        icon: "error",
+                    swal("Success!", "{{ session('message') }}!", {
+                        icon: "success",
                         buttons: {
                             confirm: {
-                                className: 'btn btn-danger'
+                                className: 'btn btn-success',
                             }
                         },
                     });
@@ -128,7 +128,15 @@
                                                         <td>{{ $item[0]->program }}</td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                         <td>
-                                                            <a class="btn btn-sm btn-primary text-white">Done</a>
+                                                            @if ($item[0]->is_done == true)
+                                                                <input type="checkbox" class="custom-checkbox-size" checked
+                                                                    style="pointer-events:none">
+                                                                <a href="{{ url('attendance/reminder-absen') . '?student=' . $item[0]->student_id }}"
+                                                                    class="btn btn-sm btn-danger text-white">Hapus</a>
+                                                            @else
+                                                                <a href="{{ url('attendance/reminder-done') . '?student=' . $item[0]->student_id }}"
+                                                                    class="btn btn-sm btn-primary text-white">Done</a>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach

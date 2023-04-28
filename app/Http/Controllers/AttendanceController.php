@@ -378,7 +378,8 @@ class AttendanceController extends Controller
     public function reminder(Request $request)
     {
         $arrAbsent = [];
-        $students = Students::limit(100)->get();
+        $students = Students::get();
+        // $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
         $a = 'd';
@@ -413,9 +414,10 @@ class AttendanceController extends Controller
                 array_push($arrAbsent, $attendance);
             }
             // return ($arrAbsent[$key][$ttlApha - 1]);
-            // return array_column($arrAbsent, 'id');
+            // return array_keys(array_column($arrAbsent, 'id'), 1188);
         }
         $data = $arrAbsent;
+        // return $data;
 
         // $page = !empty($request->page) ? (int) $request->page : 1;
         // $total = count($data); //total items in array
@@ -428,6 +430,48 @@ class AttendanceController extends Controller
         // $data = array_slice($data, $offset, $limit);
         // return view('attendance.reminder', compact('data', 'totalPages'));
         return view('attendance.reminder', compact('data', 'class', 'teachers'));
+    }
+
+    public function reminderDone(Request $request)
+    {
+        try {
+            $student = $request->student;
+            AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
+                "is_done" => true
+            ]);
+
+            return redirect()->back()->with('message', 'Berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
+    }
+
+    public function reminderAbsen(Request $request)
+    {
+        try {
+            $student = $request->student;
+            AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
+                "is_absent" => '1'
+            ]);
+
+            return redirect()->back()->with('message', 'Berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
+    }
+
+    private function searchForId($id, $array)
+    {
+        foreach ($array as $key => $val) {
+            if ($val['id'] === $id) {
+                return $key;
+            }
+        }
+        return null;
     }
 
     public function mutasi(Request $request)
