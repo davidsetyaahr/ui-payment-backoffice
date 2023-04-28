@@ -92,8 +92,8 @@ class AttendanceController extends Controller
                     array_push($points, $idp->point);
                     array_push($catPoints, $idp->point_category);
                 }
-                $id->categoryPoint = $points[0];
-                $id->category = $catPoints[0];
+                $id->categoryPoint = $points != null ? $points[0] : '';
+                $id->category = $catPoints != null ? $catPoints[0] : '';
             }
             $data = (object)[
                 'type' => 'update',
@@ -380,27 +380,27 @@ class AttendanceController extends Controller
         $arrAbsent = [];
         $students = Students::limit(100)->get();
         $class = Price::get();
-        $teacher = Teacher::get();
+        $teachers = Teacher::get();
         $a = 'd';
         foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
                 ->join('price as p', 'p.id', 'st.priceid')
-                ->leftJoin('attendances as a', 'a.id', 'attendance_details.attendance_id')
-                ->leftJoin('teacher as t', 't.id', 'a.teacher_id')
+                ->join('attendances as a', 'a.id', 'attendance_details.attendance_id')
+                ->join('teacher as t', 't.id', 'a.teacher_id')
                 ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id')
-                ->where('student_id', $value->id)->orderBy('attendance_details.id', 'desc')->limit(2);
-            if ($request->level) {
-                $attendance = $attendance->where('a.price_id', $request->level);
-            }
-            if ($request->teacher) {
-                $attendance = $attendance->where('a.teacher_id', $request->teacher);
-            }
-            if ($request->level && $request->teacher) {
-                $attendance = $attendance->where('a.teacher_id', $request->teacher)->where('a.price_id', $request->level);
-            }
+                ->where('attendance_details.student_id', $value->id);
+            // if ($request->level) {
+            //     $attendance = $attendance->where('a.price_id', $request->level);
+            // }
+            // if ($request->teacher) {
+            //     $attendance = $attendance->where('a.teacher_id', $request->teacher);
+            // }
+            // if ($request->level && $request->teacher) {
+            //     $attendance = $attendance->where('a.teacher_id', $request->teacher)->where('a.price_id', $request->level);
+            // }
 
-            $attendance = $attendance->get();
+            $attendance = $attendance->orderBy('attendance_details.id', 'desc')->limit(2)->get();
             $countA = count($attendance);
             if ($countA != 0) {
                 foreach ($attendance as $keya => $valuea) {
@@ -412,9 +412,11 @@ class AttendanceController extends Controller
             if ($ttlApha >= 2) {
                 array_push($arrAbsent, $attendance);
             }
+            // return ($arrAbsent[$key][$ttlApha - 1]);
+            // return array_column($arrAbsent, 'id');
         }
         $data = $arrAbsent;
-        // return $data;
+
         // $page = !empty($request->page) ? (int) $request->page : 1;
         // $total = count($data); //total items in array
         // $limit = 10; //per page
@@ -425,7 +427,7 @@ class AttendanceController extends Controller
         // if ($offset < 0) $offset = 0;
         // $data = array_slice($data, $offset, $limit);
         // return view('attendance.reminder', compact('data', 'totalPages'));
-        return view('attendance.reminder', compact('data', 'class', 'teacher'));
+        return view('attendance.reminder', compact('data', 'class', 'teachers'));
     }
 
     public function mutasi(Request $request)

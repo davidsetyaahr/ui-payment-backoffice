@@ -85,7 +85,7 @@
                                                 <select class="form-control select2 select2-hidden-accessible"
                                                     style="width:100%;" name="teacher" id="teacher">
                                                     <option value="">Select Teacher</option>
-                                                    @foreach ($teacher as $item1)
+                                                    @foreach ($teachers as $item1)
                                                         <option value="{{ $item1->id }}"
                                                             {{ Request::get('teacher') == $item1->id ? 'selected' : '' }}>
                                                             {{ $item1->name }}</option>
