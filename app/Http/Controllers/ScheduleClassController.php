@@ -45,20 +45,21 @@ class ScheduleClassController extends Controller
     public function store(Request $request)
     {
         try {
+            $day2 = $request->day2 != null ? $request->day2 : $request->day1;
             DB::table('student')
                 ->where('priceid', $request->class)
                 ->where('id_teacher', $request->teacher)
                 ->where('day1', $request->day1)
-                ->where('day2', $request->day2)
+                ->where('day2', $day2)
                 ->where('course_time', $request->time)
                 ->update(['day1' => null, 'day2' => null, 'id_teacher' => null, 'course_time' => null, 'id_staff' => null]);
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, $day2) {
                 if ($request->upcls) {
                     foreach ($request->upcls as $key => $value) {
                         // DB::table('student')
                         //     ->where('id', $value)
                         //     ->update(['day1' => null]);
-                        $update = ['day1' => $request->day1, 'day2' => $request->day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff];
+                        $update = ['day1' => $request->day1, 'day2' => $day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff];
                         DB::table('student')
                             ->where('id', $value)
                             ->update($update);

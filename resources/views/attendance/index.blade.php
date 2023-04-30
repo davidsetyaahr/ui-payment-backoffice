@@ -74,7 +74,8 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <b>{{ $item->day_one }} & {{ $item->day_two }}</b>
+                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                        {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>
 
@@ -156,7 +157,8 @@
                                                             </form>
                                                         </div>
                                                     </div> <i class="fa fas fa-angle-right"></i>
-                                                    <b>{{ $item->day_one }} & {{ $item->day_two }}</b>
+                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                        {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>
 
@@ -260,7 +262,8 @@
             var day1 = $('#regday1Modal' + id).val();
             var day2 = $('#regday2Modal' + id).val();
             var course = $('#regclassModal' + id).val();
-            $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + dayOne + ' & ' + dayTwo + ' ' + courseTime +
+            var day = day1 != day2 ? dayOne + ' & ' + dayTwo : dayOne
+            $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + day + ' ' + courseTime +
                 ') ' +
                 ' ' + teacher);
             $('#updateClassModal').attr('action', '{{ url('attendance/update-class') }}');
@@ -279,7 +282,8 @@
             var day1 = $('#prvday1Modal' + id).val();
             var day2 = $('#prvday2Modal' + id).val();
             var course = $('#prvclassModal' + id).val();
-            $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + dayOne + ' & ' + dayTwo + ' ' + courseTime +
+            var day = day1 != day2 ? dayOne + ' & ' + dayTwo : dayOne
+            $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + day + ' ' + courseTime +
                 ') ' +
                 ' ' + teacher);
             $('#updateClassModal').attr('action', '{{ url('attendance/update-class') }}');

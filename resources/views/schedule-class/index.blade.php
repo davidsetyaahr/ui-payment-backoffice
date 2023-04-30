@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="">Day 2</label>
-                                        <select name="day2" id="" class="form-control select2" required>
+                                        <select name="day2" id="" class="form-control select2">
                                             <option value="">---Select Day---</option>
                                             @foreach ($day as $itema)
                                                 <option
@@ -118,11 +118,7 @@
                         </form>
                     </div>
                     <hr>
-                    @if (Request::get('teacher') &&
-                            Request::get('class') &&
-                            Request::get('day2') &&
-                            Request::get('day1') &&
-                            Request::get('time'))
+                    @if (Request::get('teacher') && Request::get('class') && Request::get('time'))
                         <form action="{{ url('/schedule-class') }}" method="POST">
                             @csrf
                             <input type="hidden" name="class" value="{{ Request::get('class') }}">
@@ -152,10 +148,17 @@
                                                     @foreach ($data as $item)
                                                         <tr>
                                                             <td>
-                                                                <input type="checkbox" name="upcls[]" class="updateCheck"
-                                                                    id="upCls{{ $key++ }}"
-                                                                    value="{{ $item->id }}"
-                                                                    {{ Request::get('day1') == $item->day1 && Request::get('day2') == $item->day2 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
+                                                                @if (Request::get('day2'))
+                                                                    <input type="checkbox" name="upcls[]"
+                                                                        class="updateCheck" id="upCls{{ $key++ }}"
+                                                                        value="{{ $item->id }}"
+                                                                        {{ Request::get('day1') == $item->day1 && Request::get('day2') == $item->day2 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
+                                                                @else
+                                                                    <input type="checkbox" name="upcls[]"
+                                                                        class="updateCheck" id="upCls{{ $key++ }}"
+                                                                        value="{{ $item->id }}"
+                                                                        {{ Request::get('day1') == $item->day1 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 {{ $item->name }}
