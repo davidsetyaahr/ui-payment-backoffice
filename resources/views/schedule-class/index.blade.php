@@ -100,7 +100,7 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label for="">Staff</label>
-                                        <select name="staff" id="" class="form-control select2" required>
+                                        <select name="staff" id="" class="form-control select2">
                                             <option value="">---Select Staff---</option>
                                             @foreach ($staff as $items)
                                                 <option value="{{ $items->id }}"
