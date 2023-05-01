@@ -23,15 +23,20 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // $class = Price::all();
         // if (Auth::gurad) {
         //     # code...
         // }
         $where = '';
+        $teachers = Teacher::get();
         if (Auth::guard('teacher')->check() == true) {
             $where = 'AND id_teacher = ' . Auth::guard('teacher')->user()->id;
+        }
+
+        if (Auth::guard('staff')->check() == true && $request->teacher) {
+            $where = 'AND id_teacher = ' . $request->teacher;
         }
         $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where;");
         $private = [];
@@ -44,7 +49,7 @@ class AttendanceController extends Controller
             }
         }
         $day = DB::table('day',)->get();
-        return view('attendance.index', compact('private', 'general', 'day'));
+        return view('attendance.index', compact('private', 'general', 'day', 'teachers'));
     }
 
     /**
@@ -57,6 +62,7 @@ class AttendanceController extends Controller
         $reqDay1 = $request->day1;
         $reqDay2 = $request->day2;
         $reqTime = $request->time;
+        $reqTeacher = $request->teacher;
         // $reqAmpm = $request->ampm;
         $student = "";
         $day = DB::table('day')->get();
@@ -124,9 +130,14 @@ class AttendanceController extends Controller
         $student = Students::where('priceid', $class->id)
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
-            ->where('course_time', $reqTime)
-            // ->where('id_teacher',Auth::guard('teacher')->user()->id)
-            ->get();
+            ->where('course_time', $reqTime);
+        if (Auth::guard('teacher')->check() == true) {
+            $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
+        } else {
+            $student = $student->where('id_teacher', $reqTeacher);
+        }
+
+        $student =   $student->get();
 
 
         $pointCategories = PointCategories::all();
