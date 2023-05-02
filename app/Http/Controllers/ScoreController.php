@@ -44,7 +44,12 @@ class ScoreController extends Controller
         try {
             $reqTest = $request->test;
             $test = ModelsTests::find($reqTest);
-            $testItem = TestItems::get();
+            $testItem = '';
+            if ($request->class == 1 || $request->class == 2 || $request->class == 3 || $request->class == 4 || $request->class == 5 || $request->class == 6) {
+                $testItem = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->get();
+            } else {
+                $testItem = TestItems::get();
+            }
             $reqClass = $request->class;
             $students = Students::with('score')->where('priceid', $reqClass)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)->get();
             return view('score.form-index', compact('test', 'testItem', 'students'));
@@ -58,11 +63,16 @@ class ScoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $students = Students::get();
         $test = ModelsTests::all();
-        $item = TestItems::orderBy('id', 'ASC')->get();
+        $item = '';
+        if ($request->class == 1 || $request->class == 2 || $request->class == 3 || $request->class == 4 || $request->class == 5 || $request->class == 6) {
+            $item = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->orderBy('id', 'ASC')->get();
+        } else {
+            $item = TestItems::orderBy('id', 'ASC')->get();
+        }
         $class = Price::all();
         $title = 'Input Score';
         $data = (object)[
