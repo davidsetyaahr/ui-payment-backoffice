@@ -129,6 +129,13 @@
                         </a>
 
                     </li>
+                    <li class="nav-item {{ Request::segment(1) == 'saldo-awal' ? 'active' : '' }}">
+                        <a href="{{ url('/saldo-awal') }}" class="collapsed">
+                            <i class="fas fa-upload"></i>
+                            <p>Saldo Awal</p>
+                        </a>
+
+                    </li>
                 @endif
             </ul>
         </div>

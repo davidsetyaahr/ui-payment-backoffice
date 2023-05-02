@@ -72,5 +72,8 @@ Route::middleware(['web'])->group(function () {
     Route::post('/mutasi', [AttendanceController::class, 'storeMutasi']);
     Route::get('/reedemPoint', [ReedemPointController::class, 'create']);
     Route::post('/reedemPoint', [ReedemPointController::class, 'store']);
+    Route::get('/saldo-awal', [ReedemPointController::class, 'saldoAwal']);
+    Route::get('/saldo-awal/form/{id}', [ReedemPointController::class, 'createSaldoAwal']);
+    Route::post('/saldo-awal', [ReedemPointController::class, 'storeSaldoAwal']);
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
 });

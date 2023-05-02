@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
+use App\Models\AttendanceDetail;
+use App\Models\AttendanceDetailPoint;
+use App\Models\PointCategories;
 use App\Models\PointHistory;
 use App\Models\PointHistoryCategory;
 use App\Models\Price;
 use App\Models\ReedemItems;
 use App\Models\ReedemPoint;
 use App\Models\Students;
+use App\Models\Teacher;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReedemPointController extends Controller
 {
@@ -97,6 +106,123 @@ class ReedemPointController extends Controller
             // $data =
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    public function saldoAwal(Request $request)
+    {
+        $where = '';
+        $teachers = Teacher::get();
+        if (Auth::guard('teacher')->check() == true) {
+            $where = 'AND id_teacher = ' . Auth::guard('teacher')->user()->id;
+        }
+
+        if (Auth::guard('staff')->check() == true && Auth::guard('staff')->user()->id != 7) {
+            $where = 'AND id_staff = ' . Auth::guard('staff')->user()->id;
+        }
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where;");
+        $private = [];
+        $general = [];
+        foreach ($class as $key => $value) {
+            if ($value->level == 'Private') {
+                array_push($private, $value);
+            } else {
+                array_push($general, $value);
+            }
+        }
+        $day = DB::table('day',)->get();
+        return view('reedemPoint.saldo-awal', compact('private', 'general', 'day', 'teachers'));
+    }
+
+    public function createSaldoAwal($priceId, Request $request)
+    {
+        $reqDay1 = $request->day1;
+        $reqDay2 = $request->day2;
+        $reqTime = $request->time;
+        $reqTeacher = $request->teacher;
+        // $reqAmpm = $request->ampm;
+        $student = "";
+        $day = DB::table('day')->get();
+        $cek = Attendance::where('price_id', $priceId)
+            ->where('date', date('Y-m-d'))
+            ->where('day1', $reqDay1)
+            ->where('day2', $reqDay2)
+            ->where('course_time', $reqTime)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        $class = Price::where('id', $priceId)->first();
+        $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
+        if ($cek) {
+            $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
+            foreach ($detail as $key => $id) {
+                // multiple
+                $points = [];
+                $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $id->id)
+                    ->select('point_category_id')
+                    ->get();
+
+                foreach ($attPoint as $idp) {
+                    array_push($points, intval($idp->point_category_id));
+                }
+                $id['category'] = $points;
+            }
+            $data = (object)[
+                'type' => 'update',
+                'id' => $class->id,
+                'attendanceId' => $cek->id,
+                'comment' => $cek->activity,
+                'textBook' => $cek->text_book,
+                'excerciseBook' => $cek->excercise_book,
+                'students' => $detail,
+            ];
+            // return $data;
+        } else {
+
+            $data = (object)[
+                'type' => 'create',
+                'id' => $class->id,
+                'attendanceId' => 0,
+                'comment' => '',
+                'textBook' => '',
+                'excerciseBook' => '',
+                'students' => [],
+            ];
+        }
+
+
+        $student = Students::where('priceid', $class->id)
+            ->where("day1", $reqDay1)
+            ->where("day2", $reqDay2)
+            ->where('course_time', $reqTime);
+        if (Auth::guard('teacher')->check() == true) {
+            $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
+        } else {
+            $student = $student->where('id_teacher', $reqTeacher);
+        }
+
+        $student =   $student->get();
+
+
+        $pointCategories = PointCategories::all();
+        // return $student;
+        return view('reedemPoint.form-saldo-awal', compact('title', 'data', 'student', 'pointCategories', 'day'));
+    }
+
+    public function storeSaldoAwal(Request $request)
+    {
+        try {
+            foreach ($request->studentId as $key => $value) {
+                $student = Students::find($value);
+                $student->total_point = $request->saldo_awal[$key];
+                $student->save();
+            }
+            return redirect()->back()->withStatus('Data berhasil diperbarui ');
+        } catch (Exception $e) {
+            //throw $th;
+            ddd($e);
+        } catch (QueryException $e) {
+            ddd($e);
         }
     }
 }
