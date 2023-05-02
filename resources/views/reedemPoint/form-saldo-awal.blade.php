@@ -19,7 +19,7 @@
         <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div class="">
-                    <h2 class="text-white pb-2 fw-bold">Saldo Awal</h2>
+                    <h2 class="text-white pb-2 fw-bold">Opening Balance</h2>
                     <ul class="breadcrumbs">
                         <li class="nav-home text-white">
                             <a href="#">
@@ -30,7 +30,7 @@
                             <i class="flaticon-right-arrow text-white"></i>
                         </li>
                         <li class="nav-item text-white">
-                            <a href="#" class="text-white">Saldo Awal</a>
+                            <a href="#" class="text-white">Opening Balance</a>
                         </li>
                     </ul>
                 </div>
@@ -59,7 +59,8 @@
 
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">{{ $data->type == 'create' ? 'Saldo Awal' : 'Edit Saldo Awal' }}</h4>
+                                <h4 class="card-title">
+                                    {{ $data->type == 'create' ? 'Opening Balance' : 'Edit Opening Balance' }}</h4>
                             </div>
                             <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
                             <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
@@ -77,7 +78,7 @@
                                                     <tr>
                                                         <th class="text-center">No</th>
                                                         <th class="text-center">Name</th>
-                                                        <th class="text-center">Saldo Awal</th>
+                                                        <th class="text-center">Opening Balance</th>
                                                     </tr>
                                                 </thead>
 
