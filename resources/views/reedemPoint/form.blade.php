@@ -137,7 +137,8 @@
                                 </div>
                                 <div id="target" style="display: none;">
                                     <div class="row ">
-                                        <div class="col-md-4" style="padding-right: 0px!important">
+                                        {{-- Otomatis --}}
+                                        {{-- <div class="col-md-4" style="padding-right: 0px!important">
                                             <div class="form-group">
 
                                                 <select name="item[]" class="form-control text-black">
@@ -161,10 +162,17 @@
                                                     required name="qty[]">
 
                                             </div>
+                                        </div> --}}
+                                        <div class="col-md-3" style="padding-left: 0px!important">
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Reedem Point"
+                                                    required name="total_point">
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-2 mb-3 button-add" style="display: none;">
+                                {{-- <div class="row mt-2 mb-3 button-add" style="display: none;">
                                     <button id="add-target" type="button" class="btn btn-sm btn-success ml-4 mr-2"><span
                                             class="fa far fa-plus"></span> Add Item</button>
                                     <button id="remove-target" type="button" class="btn btn-sm btn-danger"><span
@@ -175,7 +183,7 @@
                                     <div class="col-md-3">
 
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="card-action mt-3">
                                 <button type="submit" class="btn btn-success">Submit</button>
