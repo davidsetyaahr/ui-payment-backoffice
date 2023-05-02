@@ -150,7 +150,7 @@
                                                                             $isChecked = true;
                                                                         }
                                                                     }
-                                                                    
+
                                                                 @endphp
                                                                 <input type="checkbox" class="form-check-input cekBox"
                                                                     id="cbAbsent{{ $no }}" value="1"
@@ -305,21 +305,23 @@
         $(document).ready(function() {
             $('#categories' + i).val(0);
             var dataCtgr = JSON.parse('{!! $pointCategories !!}');
-
             var len = $('.cekBox').length;
 
             for (let i = 1; i <= len; i++) {
+                var pointDay = {{ Request::get('day1') }} == 5 || {{ Request::get('day1') }} == 6 ||
+                    {{ Request::get('day2') }} == 5 || {{ Request::get('day2') }} == 6 ? 20 : 10;
+                console.log(pointDay);
                 var totalPoint = parseInt($("#totalPoint" + i).text());
                 $('#cbAbsent' + i).click('change', function() {
                     if ($(this).is(':checked')) {
-                        $("#inPointAbsent" + i).text(parseInt(10));
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + 10);
+                        $("#inPointAbsent" + i).text(parseInt(pointDay));
+                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + pointDay);
                         $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) + 10);
+                            "#inpTotalPoint" + i).val() : 0) + pointDay);
                     } else {
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - 10);
+                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - pointDay);
                         $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) - 10);
+                            "#inpTotalPoint" + i).val() : 0) - pointDay);
                         $("#inPointAbsent" + i).text(0);
                     }
                 });
