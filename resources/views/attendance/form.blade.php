@@ -67,7 +67,7 @@
 
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">{{ $data->type == 'create' ? 'Absence' : 'Edit Absence' }}</h4>
+                                <h4 class="card-title">{{ $data->type == 'create' ? 'Presence' : 'Edit Presence' }}</h4>
                             </div>
                             <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
                             <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
@@ -119,7 +119,7 @@
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center" scope="col" class="w-5"
                                                             style="min-width:3px;">Presence</th>
-                                                        <th class="text-center">In Point</th>
+                                                        <th class="text-center">In-Point</th>
                                                         <th class="text-center">Category</th>
                                                         {{-- <th class="text-center">In Point Category</th> --}}
                                                         <th class="text-center">Total</th>
@@ -170,7 +170,12 @@
                                                                     }
                                                                 @endphp
                                                                 <h5 id="inPointAbsent{{ $no }}">
-                                                                    {{ $isAbsent ? '10' : '0' }}</h5>
+                                                                    @if ($isAbsent)
+                                                                        {{ Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 ? '20' : '10' }}
+                                                                    @else
+                                                                        0
+                                                                    @endif
+                                                                    {{-- {{ $isAbsent ? '10' : '0' }}</h5> --}}
                                                             </td>
                                                             <td style="">
                                                                 <select
