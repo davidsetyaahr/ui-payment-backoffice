@@ -119,7 +119,7 @@
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center" scope="col" class="w-5"
                                                             style="min-width:3px;">Presence</th>
-                                                        <th class="text-center">In Point Absence</th>
+                                                        <th class="text-center">In Point</th>
                                                         <th class="text-center">Category</th>
                                                         {{-- <th class="text-center">In Point Category</th> --}}
                                                         <th class="text-center">Total</th>
