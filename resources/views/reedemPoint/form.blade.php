@@ -59,7 +59,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    {{-- <div class="col-md-3">
 
                                         <label for="email2">Class</label>
                                         <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
@@ -93,7 +93,7 @@
                                         @enderror
 
 
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-3">
 
                                         <label for="email2">Id Student</label>
