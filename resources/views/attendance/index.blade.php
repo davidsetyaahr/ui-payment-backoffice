@@ -35,6 +35,39 @@
                             <h4 class="card-title">Regular</h4>
                         </div>
                         <div class="card-body">
+                            <form action="" method="get">
+                                <div class="row">
+                                    @if (Auth::guard('staff')->check() == true)
+                                        @if (Auth::guard('staff')->user()->id == 7)
+                                            <div class="col-md-3">
+                                                <select name="teacher" id="" class="form-control select2">
+                                                    <option value="">---Choose Teacher---</option>
+                                                    @foreach ($teachers as $t)
+                                                        <option value="{{ $t->id }}"
+                                                            {{ Request::get('teacher') == $t->id ? 'selected' : '' }}>
+                                                            {{ $t->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                    @endif
+                                    <div class="col-md-3">
+                                        <select name="level" id="" class="form-control select2">
+                                            <option value="">---Choose Class---</option>
+                                            @foreach ($level as $c)
+                                                <option value="{{ $c->id }}"
+                                                    {{ Request::get('level') == $c->id ? 'selected' : '' }}>
+                                                    {{ $c->program }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i>
+                                            Filter</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
                             <div class="row">
                                 @foreach ($general as $key => $item)
                                     <div class="col-sm-6 col-md-4 ">
@@ -46,32 +79,35 @@
                                                             <i class="fa fas fa-angle-right"></i>
                                                             <b> {{ $item->program }}</b>
                                                         </div>
-                                                        <div>
-                                                            <form action="{{ url('schedule-class/delete') }}" method="POST"
-                                                                class="form-inline">
-                                                                @method('delete')
-                                                                @csrf
-                                                                <input type="hidden" name="priceid"
-                                                                    value="{{ $item->priceid }}">
-                                                                <input type="hidden" name="day1"
-                                                                    value="{{ $item->day1 }}">
-                                                                <input type="hidden" name="day2"
-                                                                    value="{{ $item->day2 }}">
-                                                                <input type="hidden" name="course_time"
-                                                                    value="{{ $item->course_time }}">
-                                                                <input type="hidden" name="id_teacher"
-                                                                    value="{{ $item->id_teacher }}">
-                                                                <button type="submit"
-                                                                    onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                                                    class="btn btn-xs btn-danger"
-                                                                    style="margin-right: 10px !important;"><i
-                                                                        class="fas fa-trash"></i></button>
-                                                                <a href="javascript:void(0)" class="btn btn-xs btn-success"
-                                                                    data-toggle="modal" data-target="#editJadwalModal"
-                                                                    onclick="updateModalReg({{ $key }})"><i
-                                                                        class="fas fa-pencil-alt"></i></a>
-                                                            </form>
-                                                        </div>
+                                                        @if (Auth::guard('staff')->check() == true)
+                                                            <div>
+                                                                <form action="{{ url('schedule-class/delete') }}"
+                                                                    method="POST" class="form-inline">
+                                                                    @method('delete')
+                                                                    @csrf
+                                                                    <input type="hidden" name="priceid"
+                                                                        value="{{ $item->priceid }}">
+                                                                    <input type="hidden" name="day1"
+                                                                        value="{{ $item->day1 }}">
+                                                                    <input type="hidden" name="day2"
+                                                                        value="{{ $item->day2 }}">
+                                                                    <input type="hidden" name="course_time"
+                                                                        value="{{ $item->course_time }}">
+                                                                    <input type="hidden" name="id_teacher"
+                                                                        value="{{ $item->id_teacher }}">
+                                                                    <button type="submit"
+                                                                        onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                                        class="btn btn-xs btn-danger"
+                                                                        style="margin-right: 10px !important;"><i
+                                                                            class="fas fa-trash"></i></button>
+                                                                    <a href="javascript:void(0)"
+                                                                        class="btn btn-xs btn-success" data-toggle="modal"
+                                                                        data-target="#editJadwalModal"
+                                                                        onclick="updateModalReg({{ $key }})"><i
+                                                                            class="fas fa-pencil-alt"></i></a>
+                                                                </form>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                     <br>
                                                     <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
@@ -129,33 +165,35 @@
                                                             <b> {{ $item->program }}</b>
                                                             <br>
                                                         </div>
-                                                        <div>
-                                                            <form action="{{ url('schedule-class/delete') }}"
-                                                                method="POST" class="form-inline">
-                                                                @method('delete')
-                                                                @csrf
-                                                                <input type="hidden" name="priceid"
-                                                                    value="{{ $item->priceid }}">
-                                                                <input type="hidden" name="day1"
-                                                                    value="{{ $item->day1 }}">
-                                                                <input type="hidden" name="day2"
-                                                                    value="{{ $item->day2 }}">
-                                                                <input type="hidden" name="course_time"
-                                                                    value="{{ $item->course_time }}">
-                                                                <input type="hidden" name="id_teacher"
-                                                                    value="{{ $item->id_teacher }}">
-                                                                <button type="submit"
-                                                                    onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                                                    class="btn btn-xs btn-danger"
-                                                                    style="margin-right: 10px !important;"><i
-                                                                        class="fas fa-trash"></i></button>
-                                                                <a href="javascript:void(0)"
-                                                                    class="btn btn-xs btn-success" data-toggle="modal"
-                                                                    data-target="#editJadwalModal"
-                                                                    onclick="updateModalPrv({{ $key }})"><i
-                                                                        class="fas fa-pencil-alt"></i></a>
-                                                            </form>
-                                                        </div>
+                                                        @if (Auth::guard('staff')->check() == true)
+                                                            <div>
+                                                                <form action="{{ url('schedule-class/delete') }}"
+                                                                    method="POST" class="form-inline">
+                                                                    @method('delete')
+                                                                    @csrf
+                                                                    <input type="hidden" name="priceid"
+                                                                        value="{{ $item->priceid }}">
+                                                                    <input type="hidden" name="day1"
+                                                                        value="{{ $item->day1 }}">
+                                                                    <input type="hidden" name="day2"
+                                                                        value="{{ $item->day2 }}">
+                                                                    <input type="hidden" name="course_time"
+                                                                        value="{{ $item->course_time }}">
+                                                                    <input type="hidden" name="id_teacher"
+                                                                        value="{{ $item->id_teacher }}">
+                                                                    <button type="submit"
+                                                                        onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                                        class="btn btn-xs btn-danger"
+                                                                        style="margin-right: 10px !important;"><i
+                                                                            class="fas fa-trash"></i></button>
+                                                                    <a href="javascript:void(0)"
+                                                                        class="btn btn-xs btn-success" data-toggle="modal"
+                                                                        data-target="#editJadwalModal"
+                                                                        onclick="updateModalPrv({{ $key }})"><i
+                                                                            class="fas fa-pencil-alt"></i></a>
+                                                                </form>
+                                                            </div>
+                                                        @endif
                                                     </div> <i class="fa fas fa-angle-right"></i>
                                                     <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
                                                         {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
@@ -222,7 +260,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="">Day 1</label>
-                                        <select name="update_day_one" id=""
+                                        <select name="update_day_one" id="update_day_one"
                                             class="form-control select2 select2-hidden-accessible" style="width:100%;">
                                             <option value="">---Choose Day 1---</option>
                                             @foreach ($day as $item1)
@@ -237,6 +275,26 @@
                                             <option value="">---Choose Day 2---</option>
                                             @foreach ($day as $item2)
                                                 <option value="{{ $item2->id }}">{{ $item2->day }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Class</label>
+                                        <select name="update_level" id="update_level"
+                                            class="form-control select2 select2-hidden-accessible" style="width:100%;">
+                                            <option value="">---Choose Class---</option>
+                                            @foreach ($level as $item4)
+                                                <option value="{{ $item4->id }}">{{ $item4->program }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Teacher</label>
+                                        <select name="update_teacher" id=""
+                                            class="form-control select2 select2-hidden-accessible" style="width:100%;">
+                                            <option value="">---Choose Teacher---</option>
+                                            @foreach ($teachers as $item3)
+                                                <option value="{{ $item3->id }}">{{ $item3->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -262,6 +320,7 @@
             var day1 = $('#regday1Modal' + id).val();
             var day2 = $('#regday2Modal' + id).val();
             var course = $('#regclassModal' + id).val();
+            var idTeacher = $('#regidteacherModal' + id).val();
             var day = day1 != day2 ? dayOne + ' & ' + dayTwo : dayOne
             $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + day + ' ' + courseTime +
                 ') ' +
@@ -271,6 +330,11 @@
             $('#update_day2').val(day2);
             $('#update_class').val(course);
             $('#update_time').val(courseTime);
+            $('input[name="update_course_time"]').val(courseTime);
+            $("#update_day_one").select2("val", day1);
+            $('select[name="update_day_two"]').select2("val", day2);
+            $('#update_level').select2("val", course);
+            $('select[name="update_teacher"]').select2("val", idTeacher);
         }
 
         function updateModalPrv(id) {
@@ -282,6 +346,7 @@
             var day1 = $('#prvday1Modal' + id).val();
             var day2 = $('#prvday2Modal' + id).val();
             var course = $('#prvclassModal' + id).val();
+            var idTeacher = $('#prvidteacherModal' + id).val();
             var day = day1 != day2 ? dayOne + ' & ' + dayTwo : dayOne
             $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + day + ' ' + courseTime +
                 ') ' +
@@ -291,6 +356,11 @@
             $('#update_day2').val(day2);
             $('#update_class').val(course);
             $('#update_time').val(courseTime);
+            $('input[name="update_course_time"]').val(courseTime);
+            $("#update_day_one").select2("val", day1);
+            $('select[name="update_day_two"]').select2("val", day2);
+            $('select[name="update_level"]').select2("val", 32);
+            $('select[name="update_teacher"]').select2("val", idTeacher);
         }
     </script>
 @endsection

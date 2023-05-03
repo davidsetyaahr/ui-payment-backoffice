@@ -160,7 +160,8 @@
                                                                         {{ Request::get('day1') == $item->day1 && Request::get('teacher') == $item->id_teacher && Request::get('time') == $item->course_time ? 'checked' : '' }}>
                                                                 @endif
                                                             </td>
-                                                            <td>
+                                                            <td
+                                                                style="{{ $item->day1 != null && $item->day2 != null && $item->id_teacher != null && $item->course_time != null ? 'color:red' : '' }}">
                                                                 {{ $item->name }}
                                                             </td>
                                                         </tr>

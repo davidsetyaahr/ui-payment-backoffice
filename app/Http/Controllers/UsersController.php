@@ -22,7 +22,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $student = Students::count();
+        $student = Students::where('status', 'ACTIVE')->count();
         $parent = Parents::count();
         $teacher = Teacher::count();
         $announces = Announces::orderBy('id', 'DESC')->first();

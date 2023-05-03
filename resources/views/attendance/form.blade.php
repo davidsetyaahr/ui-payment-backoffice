@@ -150,7 +150,7 @@
                                                                             $isChecked = true;
                                                                         }
                                                                     }
-
+                                                                    
                                                                 @endphp
                                                                 <input type="checkbox" class="form-check-input cekBox"
                                                                     id="cbAbsent{{ $no }}" value="1"

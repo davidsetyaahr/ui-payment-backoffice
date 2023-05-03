@@ -31,12 +31,19 @@ class AttendanceController extends Controller
         // }
         $where = '';
         $teachers = Teacher::get();
+        $level = Price::get();
         if (Auth::guard('teacher')->check() == true) {
             $where = 'AND id_teacher = ' . Auth::guard('teacher')->user()->id;
         }
 
         if (Auth::guard('staff')->check() == true && Auth::guard('staff')->user()->id != 7) {
             $where = 'AND id_staff = ' . Auth::guard('staff')->user()->id;
+        }
+        if ($request->teacher) {
+            $where = 'AND id_teacher = ' . $request->teacher;
+        }
+        if ($request->level) {
+            $where = 'AND priceid = ' . $request->level;
         }
         $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where;");
         $private = [];
@@ -49,7 +56,7 @@ class AttendanceController extends Controller
             }
         }
         $day = DB::table('day',)->get();
-        return view('attendance.index', compact('private', 'general', 'day', 'teachers'));
+        return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level'));
     }
 
     /**
@@ -567,6 +574,8 @@ class AttendanceController extends Controller
                     "day1" => $request->update_day_one,
                     "day2" => $request->update_day_two,
                     "course_time" => $request->update_course_time,
+                    "priceid" => $request->update_level,
+                    "id_teacher" => $request->update_teacher,
                 ]);
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
