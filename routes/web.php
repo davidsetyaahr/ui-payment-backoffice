@@ -6,6 +6,7 @@ use App\Http\Controllers\AnnouncesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ParentsController;
+use App\Http\Controllers\ParentStudentsController;
 use App\Http\Controllers\PointCategoriesController;
 use App\Http\Controllers\ReedemItemsController;
 use App\Http\Controllers\ReedemPointController;
@@ -76,4 +77,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/saldo-awal/form/{id}', [ReedemPointController::class, 'createSaldoAwal']);
     Route::post('/saldo-awal', [ReedemPointController::class, 'storeSaldoAwal']);
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
+    Route::get('/barcode-student/{id}', [ParentStudentsController::class, 'student']);
 });
