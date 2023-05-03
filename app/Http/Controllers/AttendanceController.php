@@ -447,7 +447,7 @@ class AttendanceController extends Controller
         }
 
         if ($request->level != '' && $request->teacher == '') {
-            $data = '$arrAbsentFilter';
+            $data = $arrAbsentFilter;
         } else if ($request->level == '' && $request->teacher != '') {
             $data = $arrAbsentFilter;
         } else if ($request->level != '' && $request->teacher != '') {

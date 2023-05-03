@@ -47,11 +47,11 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-5 mb-3">
+                                    {{-- <div class="col-md-5 mb-3">
                                         <label for="">Date</label>
                                         <input type="date" name="date" class="form-control"
                                             value="{{ Request::get('date') }}">
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-2" style="margin-top:20px;">
                                         <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
                                             Filter</button>
@@ -60,7 +60,7 @@
                         </div>
                         </form>
                         <hr>
-                        @if (Request::get('date'))
+                        @if (Request::get('student'))
                             @php
                                 $testItem = DB::table('test_items')->get();
                                 $studentScore = DB::table('student_scores')
@@ -69,7 +69,7 @@
                                     ->join('tests', 'tests.id', 'student_scores.test_id')
                                     ->join('price', 'price.id', 'student_scores.price_id')
                                     ->join('teacher', 'teacher.id', 'student.id_teacher')
-                                    ->where('date', Request::get('date'))
+                                    // ->where('date', Request::get('date'))
                                     ->where('student_id', Request::get('student'))
                                     ->get();
                             @endphp
