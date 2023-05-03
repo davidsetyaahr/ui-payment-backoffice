@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ParentStudents;
 use App\Models\Students;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Picqer\Barcode\BarcodeGeneratorPNG;
@@ -92,7 +93,8 @@ class ParentStudentsController extends Controller
         // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
         $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
         // Storage::putFileAs('barcode', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR), Hash::make('asd') . 'jpg');
-        file_put_contents('\public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
+        // file_put_contents('\public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
+        File::put('\public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
         // \Storage::disk('public')->put('test.png', base64_decode(DNS2D::getBarcodePNG("4", "PDF417")));
         // $student = Students::find($id);
         // return view('parents.barcode', compact('student'));
