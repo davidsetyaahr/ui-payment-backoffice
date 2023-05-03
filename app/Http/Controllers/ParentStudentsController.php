@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ParentStudents;
 use App\Models\Students;
 use Illuminate\Http\Request;
-use Milon\Barcode\Facades\DNS2DFacade;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class ParentStudentsController extends Controller
 {
@@ -87,10 +87,11 @@ class ParentStudentsController extends Controller
 
     public function student($id)
     {
-        // $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
-        // file_put_contents('barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
+        // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
+        $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
+        file_put_contents('public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
         // \Storage::disk('public')->put('test.png', base64_decode(DNS2D::getBarcodePNG("4", "PDF417")));
-        $student = Students::find($id);
-        return view('parents.barcode', compact('student'));
+        // $student = Students::find($id);
+        // return view('parents.barcode', compact('student'));
     }
 }
