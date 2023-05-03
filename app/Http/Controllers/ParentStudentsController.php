@@ -96,7 +96,7 @@ class ParentStudentsController extends Controller
         // file_put_contents('\public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
         // \Storage::disk('public')->put('test.png', base64_decode(DNS2D::getBarcodePNG("4", "PDF417")));
         $student = Students::find($id);
-        File::put('storage/test.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
+        File::put('storage/test.jpg', $generator->getBarcode($student->id, $generator::TYPE_CODABAR));
         return view('parents.barcode', compact('student'));
     }
 }
