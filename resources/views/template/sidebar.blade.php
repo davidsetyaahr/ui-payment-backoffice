@@ -118,7 +118,7 @@
                     <li class="nav-item {{ Request::segment(1) == 'mutasi' ? 'active' : '' }}">
                         <a href="{{ url('/mutasi') }}" class="collapsed">
                             <i class="fas fa-users"></i>
-                            <p>Mutasi</p>
+                            <p>Jump Level</p>
                         </a>
 
                     </li>

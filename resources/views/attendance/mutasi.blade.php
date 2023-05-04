@@ -19,7 +19,7 @@
         <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div class="">
-                    <h2 class="text-white pb-2 fw-bold">Mutasi</h2>
+                    <h2 class="text-white pb-2 fw-bold">Jump Level</h2>
                     <ul class="breadcrumbs">
                         <li class="nav-home text-white">
                             <a href="#">
@@ -36,7 +36,7 @@
                             <i class="flaticon-right-arrow text-white"></i>
                         </li>
                         <li class="nav-item text-white">
-                            <a href="#" class="text-white">Mutasi</a>
+                            <a href="#" class="text-white">Jump Level</a>
                         </li>
                     </ul>
                 </div>
@@ -80,7 +80,7 @@
                             @endphp
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4 class="card-title">Mutasi Siswa
+                                    <h4 class="card-title">Jump Level Student
                                         {{ Request::get('student') ? $getStudent->name : '' }}</h4>
                                 </div>
                                 <div class="col-md-6" style="text-align:end;">
@@ -88,7 +88,7 @@
                                         <a href="javascript:void(0)" class="btn btn-sm btn-success" data-toggle="modal"
                                             data-target="#exampleModal"
                                             onclick="addMutasi({{ Request::get('student') }})"><i class="fas fa-plus"></i>
-                                            Tambah Mutasi</a>
+                                            Add Jump Level</a>
                                         <input type="hidden" value="{{ Request::get('student') ? $getStudent->name : '' }}"
                                             id="studentName">
                                     @endif
