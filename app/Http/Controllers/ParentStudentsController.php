@@ -93,7 +93,7 @@ class ParentStudentsController extends Controller
         $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
         $student = Students::where('status', 'ACTIVE')->get();
         foreach ($student as $key => $value) {
-            File::put('storage/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
+            File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
         }
     }
 }
