@@ -48,7 +48,7 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
+                                            <th>ID</th>
                                             <th>Name</th>
                                             <th>Barcode</th>
                                             <th>Aksi</th>
