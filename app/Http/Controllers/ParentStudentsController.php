@@ -96,4 +96,10 @@ class ParentStudentsController extends Controller
             File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
         }
     }
+
+    public function barcode()
+    {
+        $data = Students::where('status', 'ACTIVE')->limit(20)->get();
+        return view('parents.barcode', compact('data'));
+    }
 }

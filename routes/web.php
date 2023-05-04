@@ -77,5 +77,6 @@ Route::middleware(['web'])->group(function () {
     Route::get('/saldo-awal/form/{id}', [ReedemPointController::class, 'createSaldoAwal']);
     Route::post('/saldo-awal', [ReedemPointController::class, 'storeSaldoAwal']);
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
-    Route::get('/barcode-student', [ParentStudentsController::class, 'student']);
+    Route::get('/get-barcode-student', [ParentStudentsController::class, 'student']);
+    Route::get('/barcode-student', [ParentStudentsController::class, 'barcode']);
 });
