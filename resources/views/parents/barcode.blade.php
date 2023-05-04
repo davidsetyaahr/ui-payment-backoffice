@@ -60,8 +60,8 @@
                                                 <td>{{ $item->name }}</td>
                                                 <td><img src="{{ url('storage/barcode/' . $item->id . '.jpg') }}">
                                                 </td>
-                                                <td><a href="{{ url('storage/barcode/' . $item->id . '.jpg') }}"
-                                                        target="_blank" class="btn btn-sm btn-primary">Download</a> </td>
+                                                <td><a href="{{ url('barcode-download/' . $item->id) }}"
+                                                        class="btn btn-sm btn-primary">Download</a> </td>
                                                 </td>
                                             </tr>
                                         @endforeach

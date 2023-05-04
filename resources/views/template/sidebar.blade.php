@@ -137,6 +137,15 @@
                     </a>
 
                 </li>
+                @if (Auth::guard('teacher')->user() == null)
+                    <li class="nav-item {{ Request::segment(1) == 'barcode-student' ? 'active' : '' }}">
+                        <a href="{{ url('/barcode-student') }}" class="collapsed">
+                            <i class="fas fa-barcode"></i>
+                            <p>Barcode Student</p>
+                        </a>
+
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

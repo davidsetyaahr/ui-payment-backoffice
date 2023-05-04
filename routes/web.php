@@ -79,4 +79,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
     Route::get('/get-barcode-student', [ParentStudentsController::class, 'student']);
     Route::get('/barcode-student', [ParentStudentsController::class, 'barcode']);
+    Route::get('/barcode-download/{id}', [ParentStudentsController::class, 'download']);
 });

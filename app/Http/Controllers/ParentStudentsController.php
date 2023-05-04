@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use DB;
 use Picqer\Barcode\BarcodeGeneratorPNG;
+use Response;
 
 class ParentStudentsController extends Controller
 {
@@ -99,7 +101,13 @@ class ParentStudentsController extends Controller
 
     public function barcode()
     {
-        $data = Students::where('status', 'ACTIVE')->limit(20)->get();
+        $data = Students::where('status', 'ACTIVE')->get();
         return view('parents.barcode', compact('data'));
+    }
+
+    public function download($id)
+    {
+        $filepath = 'storage/barcode/' . $id . '.jpg';
+        return Response::download($filepath);
     }
 }
