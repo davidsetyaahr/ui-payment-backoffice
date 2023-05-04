@@ -88,15 +88,12 @@ class ParentStudentsController extends Controller
         //
     }
 
-    public function student($id)
+    public function student()
     {
-        // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
         $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
-        // Storage::putFileAs('barcode', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR), Hash::make('asd') . 'jpg');
-        // file_put_contents('\public\barcode\barcode.jpg', $generator->getBarcode('081231723897', $generator::TYPE_CODABAR));
-        // \Storage::disk('public')->put('test.png', base64_decode(DNS2D::getBarcodePNG("4", "PDF417")));
-        $student = Students::find($id);
-        File::put('storage/test.jpg', $generator->getBarcode($student->id, $generator::TYPE_CODE_128));
-        return view('parents.barcode', compact('student'));
+        $student = Students::where('status', 'ACTIVE')->get();
+        foreach ($student as $key => $value) {
+            File::put('storage/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
+        }
     }
 }
