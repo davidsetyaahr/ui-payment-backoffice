@@ -48,6 +48,7 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
+                                            <th>No</th>
                                             <th>Name</th>
                                             <th>Barcode</th>
                                             <th>Aksi</th>
@@ -56,7 +57,7 @@
                                     <tbody>
                                         @foreach ($data as $item)
                                             <tr>
-
+                                                <td>{{ $item->id }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td><img src="{{ url('storage/barcode/' . $item->id . '.jpg') }}">
                                                 </td>
