@@ -110,4 +110,9 @@ class ParentStudentsController extends Controller
         $filepath = 'storage/barcode/' . $id . '.jpg';
         return Response::download($filepath);
     }
+
+    public function print($id)
+    {
+        return view('parents.print', compact('id'));
+    }
 }
