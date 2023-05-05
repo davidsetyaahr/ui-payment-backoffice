@@ -38,18 +38,16 @@
                             <form action="" method="get">
                                 <div class="row">
                                     @if (Auth::guard('staff')->check() == true)
-                                        @if (Auth::guard('staff')->user()->id == 7)
-                                            <div class="col-md-3">
-                                                <select name="teacher" id="" class="form-control select2">
-                                                    <option value="">---Choose Teacher---</option>
-                                                    @foreach ($teachers as $t)
-                                                        <option value="{{ $t->id }}"
-                                                            {{ Request::get('teacher') == $t->id ? 'selected' : '' }}>
-                                                            {{ $t->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        @endif
+                                        <div class="col-md-3">
+                                            <select name="teacher" id="" class="form-control select2">
+                                                <option value="">---Choose Teacher---</option>
+                                                @foreach ($teachers as $t)
+                                                    <option value="{{ $t->id }}"
+                                                        {{ Request::get('teacher') == $t->id ? 'selected' : '' }}>
+                                                        {{ $t->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     @endif
                                     <div class="col-md-3">
                                         <select name="level" id="" class="form-control select2">
@@ -58,6 +56,16 @@
                                                 <option value="{{ $c->id }}"
                                                     {{ Request::get('level') == $c->id ? 'selected' : '' }}>
                                                     {{ $c->program }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="day" id="" class="form-control select2">
+                                            <option value="">---Choose Day---</option>
+                                            @foreach ($day as $d)
+                                                <option value="{{ $d->id }}"
+                                                    {{ Request::get('day') == $d->id ? 'selected' : '' }}>
+                                                    {{ $d->day }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -151,7 +159,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Private Class</h4>
+                            <h4 class="card-title">Private</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -162,7 +170,7 @@
                                                 <span style="font-size: 16px">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <b> {{ $item->program }}</b>
+                                                            <b> {{ $item->student_name }}</b>
                                                             <br>
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)

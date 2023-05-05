@@ -19,13 +19,15 @@
                 </div>
             </div>
             <ul class="nav nav-primary">
-                <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
-                    <a href="{{ url('/dashboard') }}" class="collapsed">
-                        <i class="fas fa-home"></i>
-                        <p>Dashboard</p>
-                    </a>
+                @if (Auth::guard('teacher')->user() == null)
+                    <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
+                        <a href="{{ url('/dashboard') }}" class="collapsed">
+                            <i class="fas fa-home"></i>
+                            <p>Dashboard</p>
+                        </a>
 
-                </li>
+                    </li>
+                @endif
                 <li
                     class="nav-section {{ Request::segment(1) == 'admin' || Request::segment(1) == 'petani' ? 'active' : '' }}">
                     <span class="sidebar-mini-icon">

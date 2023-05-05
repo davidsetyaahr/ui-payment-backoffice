@@ -136,10 +136,9 @@
                                                         <td>
                                                             @if ($average != null)
                                                                 <a href="{{ url('score/create?type=edit&class=') . Request::get('class') . '&student=' . $itemSValue->id . '&test=' . Request::get('test') . '&id_test=' . $average->id . '&date=' . $average->date . '&day1=' . Request::get('day1') . '&day2=' . Request::get('day2') . '&teacher=' . Request::get('teacher') . '&time=' . Request::get('time') }}"
-                                                                    target="_blank" class="btn btn-sm btn-primary">Edit</a>
+                                                                    class="btn btn-sm btn-primary">Edit</a>
                                                             @else
                                                                 <a href="{{ url('score/create?type=create&class=') . Request::get('class') . '&student=' . $itemSValue->id . '&test=' . Request::get('test') . '&day1=' . Request::get('day1') . '&day2=' . Request::get('day2') . '&teacher=' . Request::get('teacher') . '&time=' . Request::get('time') }}"
-                                                                    target="_blank"
                                                                     class="btn btn-sm btn-primary">Create</a>
                                                             @endif
                                                         </td>
