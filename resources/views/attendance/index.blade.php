@@ -59,16 +59,18 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <select name="day" id="" class="form-control select2">
-                                            <option value="">---Choose Day---</option>
-                                            @foreach ($day as $d)
-                                                <option value="{{ $d->id }}"
-                                                    {{ Request::get('day') == $d->id ? 'selected' : '' }}>
-                                                    {{ $d->day }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    @if (Auth::guard('teacher')->check() == true)
+                                        <div class="col-md-3">
+                                            <select name="day" id="" class="form-control select2">
+                                                <option value="">---Choose Day---</option>
+                                                @foreach ($day as $d)
+                                                    <option value="{{ $d->id }}"
+                                                        {{ Request::get('day') == $d->id ? 'selected' : '' }}>
+                                                        {{ $d->day }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                     <div class="col-md-2">
                                         <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i>
                                             Filter</button>

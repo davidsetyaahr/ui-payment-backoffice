@@ -42,14 +42,11 @@ class AttendanceController extends Controller
         if ($request->teacher) {
             $where = 'AND id_teacher = ' . $request->teacher;
         }
-        if ($request->level && Auth::guard('staff')->check() == true && Auth::guard('staff')->user()->id != 7) {
+        if ($request->level && Auth::guard('staff')->check() == true) {
             $where = 'AND priceid = ' . $request->level;
         }
         if ($request->level && Auth::guard('teacher')->check() == true) {
             $where = 'AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
-        }
-        if ($request->day && Auth::guard('staff')->check() == true && Auth::guard('staff')->user()->id != 7) {
-            $where = 'AND day1 = ' . $request->day;
         }
         if ($request->day && Auth::guard('teacher')->check() == true) {
             $where = 'AND day1 = ' . $request->day . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
