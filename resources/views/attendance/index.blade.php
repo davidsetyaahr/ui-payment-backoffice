@@ -173,9 +173,15 @@
                                                     <div class="d-flex justify-content-between">
                                                         <div>
                                                             @php
-                                                                $studentName = DB::table('');
+                                                                $studentName = DB::table('student')
+                                                                    ->where('priceid', $item->priceid)
+                                                                    ->where('day1', $item->day1)
+                                                                    ->where('day2', $item->day2)
+                                                                    ->where('id_teacher', $item->id_teacher)
+                                                                    ->where('course_time', $item->course_time)
+                                                                    ->first();
                                                             @endphp
-                                                            {{-- <b> {{ $item->student_name }}</b> --}}
+                                                            <b> {{ $studentName->name }}</b>
                                                             <br>
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
