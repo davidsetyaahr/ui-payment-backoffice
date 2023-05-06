@@ -25,9 +25,10 @@ class ReedemPointController extends Controller
     {
         try {
             $class = Price::all();
-            $students = Students::join('price as p', 'p.id', 'student.priceid')
-                ->select('student.name', 'student.id', 'student.total_point')
-                ->get();
+            // $students = Students::join('price as p', 'p.id', 'student.priceid')
+            //     ->select('student.name', 'student.id', 'student.total_point')
+            //     ->get();
+            $students = Students::where('status', 'ACTIVE')->get();
             $item = ReedemItems::all();
             $title = 'Reedem Point';
             return view('reedemPoint.form', compact('students', 'title', 'item', 'class'));

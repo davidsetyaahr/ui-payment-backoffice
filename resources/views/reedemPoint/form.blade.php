@@ -96,6 +96,23 @@
                                     </div> --}}
                                     <div class="col-md-3">
 
+                                        <label for="email2">Students</label>
+                                        <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                            name="student" id="student">
+                                            <option value="">Select Student</option>
+                                            @foreach ($students as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
+                                            <option value=""></option>
+                                        </select>
+                                        @error('student')
+                                            <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                        @enderror
+
+
+                                    </div>
+                                    <div class="col-md-3">
+
                                         <label for="email2">Id Student</label>
                                         <input type="number" name="id_student" id="id_student" class="form-control">
                                         @error('student')
@@ -221,6 +238,7 @@
 
         $(document).ready(function() {
             $('#student').on('change', function() {
+                $('#id_student').val('')
                 var idStudent = $('select[name=student] option').filter(':selected').val();
                 jQuery.each(dataStudent, function(index, item) {
                     if (item.id == idStudent) {
@@ -238,6 +256,7 @@
             });
 
             $('#id_student').on('keyup', function() {
+                $('#student').val(0);
                 var idStudent = $('input[name=id_student]').val();
                 jQuery.each(dataStudent, function(index, item) {
                     if (item.id == idStudent) {
