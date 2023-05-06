@@ -172,7 +172,10 @@
                                                 <span style="font-size: 16px">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <b> {{ $item->student_name }}</b>
+                                                            @php
+                                                                $studentName = DB::table('');
+                                                            @endphp
+                                                            {{-- <b> {{ $item->student_name }}</b> --}}
                                                             <br>
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
