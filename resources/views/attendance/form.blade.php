@@ -72,38 +72,6 @@
                             <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
                             <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
                             <input type="hidden" name="time" value="{{ request()->get('time') }}">
-                            {{-- <div class="card-body">
-                                <form action="" method="get">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <label for="">Day</label>
-                                            <select name="day" id="day" class="form-control select2">
-                                                <option value="">---Select Day---</option>
-                                                @foreach ($day as $itema)
-                                                    <option
-                                                        value="{{ $itema->id }}"{{ Request::get('day') == $itema->id ? 'selected' : '' }}>
-                                                        {{ $itema->day }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="">Time</label>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <input id="time" type="time" class="form-control" name="time"
-                                                    value="{{ Request::get('time') ? Request::get('time') : '' }}" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 mt-3">
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="filter()"><i
-                                                    class="fas fa-filter"></i>
-                                                Filter</a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div> --}}
-                            {{-- @if (Request::get('day')) --}}
                             <div class="card-body">
                                 <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
                                 <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
@@ -123,7 +91,7 @@
                                                         <th class="text-center">Category</th>
                                                         {{-- <th class="text-center">In Point Category</th> --}}
                                                         <th class="text-center">
-                                                            {{ Request::get('day1') == Request::get('day2') ? 'true' : 'false' }}
+                                                            Total
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -152,7 +120,6 @@
                                                                             $isChecked = true;
                                                                         }
                                                                     }
-                                                                    
                                                                 @endphp
                                                                 <input type="checkbox" class="form-check-input cekBox"
                                                                     id="cbAbsent{{ $no }}" value="1"
@@ -317,7 +284,7 @@
             for (let i = 1; i <= len; i++) {
                 var pointDay = {{ Request::get('day1') }} == 5 || {{ Request::get('day1') }} == 6 ||
                     {{ Request::get('day2') }} == 5 || {{ Request::get('day2') }} == 6 ||
-                    {{ Request::get('day1') == Request::get('day2') }} ? 20 : 10;
+                    {{ Request::get('day1') }} == {{ Request::get('day2') }} ? 20 : 10;
                 console.log(pointDay);
                 var totalPoint = parseInt($("#totalPoint" + i).text());
                 $('#cbAbsent' + i).click('change', function() {

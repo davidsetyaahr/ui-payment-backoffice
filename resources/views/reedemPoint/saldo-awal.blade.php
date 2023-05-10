@@ -35,26 +35,49 @@
                             <h4 class="card-title">Regular</h4>
                         </div>
                         <div class="card-body">
-                            {{-- <form action="" method="get">
+                            <form action="" method="get">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <label for="">Teacher</label>
-                                        <select name="teacher" id="teacher" class="form-control select2">
-                                            <option value="">---Choose Teacher---</option>
-                                            @foreach ($teachers as $t)
-                                                <option value="{{ $t->id }}"
-                                                    {{ Request::get('teacher') == $t->id ? 'selected' : '' }}>
-                                                    {{ $t->name }}</option>
+                                    @if (Auth::guard('staff')->check() == true)
+                                        <div class="col-md-3">
+                                            <select name="teacher" id="" class="form-control select2">
+                                                <option value="">---Choose Teacher---</option>
+                                                @foreach ($teachers as $t)
+                                                    <option value="{{ $t->id }}"
+                                                        {{ Request::get('teacher') == $t->id ? 'selected' : '' }}>
+                                                        {{ $t->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    <div class="col-md-3">
+                                        <select name="level" id="" class="form-control select2">
+                                            <option value="">---Choose Class---</option>
+                                            @foreach ($level as $c)
+                                                <option value="{{ $c->id }}"
+                                                    {{ Request::get('level') == $c->id ? 'selected' : '' }}>
+                                                    {{ $c->program }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-2" style="margin-top:20px;">
-                                        <button class="btn btn-primary text-white"><i class="fas fa-filter"></i>
+                                    @if (Auth::guard('teacher')->check() == true)
+                                        <div class="col-md-3">
+                                            <select name="day" id="" class="form-control select2">
+                                                <option value="">---Choose Day---</option>
+                                                @foreach ($day as $d)
+                                                    <option value="{{ $d->id }}"
+                                                        {{ Request::get('day') == $d->id ? 'selected' : '' }}>
+                                                        {{ $d->day }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i>
                                             Filter</button>
                                     </div>
                                 </div>
                             </form>
-                            <hr> --}}
+                            <hr>
                             <div class="row">
                                 @foreach ($general as $key => $item)
                                     <div class="col-sm-6 col-md-4 ">
@@ -68,7 +91,8 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                    <b>{{ $item->day_one }}
+                                                        {{ $item->day1 != $item->day2 ? '&' : '' }}
                                                         {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>
@@ -101,7 +125,16 @@
                                                 <span style="font-size: 16px">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <b> {{ $item->program }}</b>
+                                                            @php
+                                                                $studentName = DB::table('student')
+                                                                    ->where('priceid', $item->priceid)
+                                                                    ->where('day1', $item->day1)
+                                                                    ->where('day2', $item->day2)
+                                                                    ->where('id_teacher', $item->id_teacher)
+                                                                    ->where('course_time', $item->course_time)
+                                                                    ->first();
+                                                            @endphp
+                                                            <b> {{ $studentName->name }}</b>
                                                             <br>
                                                         </div>
                                                     </div> <i class="fa fas fa-angle-right"></i>

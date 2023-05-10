@@ -33,6 +33,25 @@
                             <h4 class="card-title">Student's Score</h4>
                         </div>
                         <div class="card-body">
+                            <form action="" method="get">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <select name="level" id="" class="form-control select2">
+                                            <option value="">---Choose Class---</option>
+                                            @foreach ($level as $c)
+                                                <option value="{{ $c->id }}"
+                                                    {{ Request::get('level') == $c->id ? 'selected' : '' }}>
+                                                    {{ $c->program }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i>
+                                            Filter</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
                             <div class="row">
                                 @foreach ($class as $key => $item)
                                     <div class="col-sm-6 col-md-4 ">
@@ -42,7 +61,20 @@
                                                     <div class="d-flex justify-content-between">
                                                         <div>
                                                             <i class="fa fas fa-angle-right"></i>
-                                                            <b> {{ $item->program }}</b>
+                                                            @if ($item->program == 'Private' || $item->program == 'Semi Private')
+                                                                @php
+                                                                    $studentName = DB::table('student')
+                                                                        ->where('priceid', $item->priceid)
+                                                                        ->where('day1', $item->day1)
+                                                                        ->where('day2', $item->day2)
+                                                                        ->where('id_teacher', $item->id_teacher)
+                                                                        ->where('course_time', $item->course_time)
+                                                                        ->first();
+                                                                @endphp
+                                                                <b>{{ $studentName->name }}</b>
+                                                            @else
+                                                                <b> {{ $item->program }}</b>
+                                                            @endif
                                                         </div>
                                                         <div>
                                                         </div>
