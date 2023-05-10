@@ -122,7 +122,9 @@
                                                         <th class="text-center">In-Point</th>
                                                         <th class="text-center">Category</th>
                                                         {{-- <th class="text-center">In Point Category</th> --}}
-                                                        <th class="text-center">Total</th>
+                                                        <th class="text-center">
+                                                            {{ Request::get('day1') == Request::get('day2') ? 'true' : 'false' }}
+                                                        </th>
                                                     </tr>
                                                 </thead>
 
@@ -171,7 +173,7 @@
                                                                 @endphp
                                                                 <h5 id="inPointAbsent{{ $no }}">
                                                                     @if ($isAbsent)
-                                                                        {{ Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 ? '20' : '10' }}
+                                                                        {{ Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2') ? '20' : '10' }}
                                                                     @else
                                                                         0
                                                                     @endif
@@ -314,7 +316,8 @@
 
             for (let i = 1; i <= len; i++) {
                 var pointDay = {{ Request::get('day1') }} == 5 || {{ Request::get('day1') }} == 6 ||
-                    {{ Request::get('day2') }} == 5 || {{ Request::get('day2') }} == 6 ? 20 : 10;
+                    {{ Request::get('day2') }} == 5 || {{ Request::get('day2') }} == 6 ||
+                    {{ Request::get('day1') == Request::get('day2') }} ? 20 : 10;
                 console.log(pointDay);
                 var totalPoint = parseInt($("#totalPoint" + i).text());
                 $('#cbAbsent' + i).click('change', function() {
