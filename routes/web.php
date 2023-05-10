@@ -5,6 +5,7 @@ use App\Http\Controllers\AdvertisesController;
 use App\Http\Controllers\AnnouncesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ParentStudentsController;
 use App\Http\Controllers\PointCategoriesController;
@@ -33,7 +34,12 @@ Route::get('/logout', [UsersController::class, 'logout']);
 
 Route::get('/print', [UsersController::class, 'print']);
 Route::get('/printInvoice/{paymentId}', [PaymentController::class, 'printInvoice']);
-
+Route::prefix('landing-page')->group(
+    function () {
+        Route::get('/redeem-point', [LandingPageController::class, 'redeemPoint']);
+        Route::post('/store-redeem-point', [LandingPageController::class, 'storeReedemPoint']);
+    }
+);
 
 Route::middleware(['web'])->group(function () {
     Route::get('/user', [UsersController::class, 'profile']);
