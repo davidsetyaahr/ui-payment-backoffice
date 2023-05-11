@@ -153,7 +153,7 @@ class AttendanceController extends Controller
         $student =   $student->get();
 
 
-        $pointCategories = PointCategories::orderBy('point', 'ASC')->get();
+        $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         // return $student;
         return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day'));
     }
@@ -166,7 +166,6 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
         try {
             $pointCategories = PointCategories::all();
             $createAttendance = [
@@ -192,13 +191,30 @@ class AttendanceController extends Controller
                 Students::where('id', $request->studentId[$i])->update([
                     'total_point' => $student->total_point +  $request->totalPoint[$i],
                 ]);
-                if (count($request->isAbsent[$i + 1]) > 1) {
+                if (count($request->isAbsent[$i + 1]) != 1) {
                     PointHistory::create([
                         'student_id' => $request->studentId[$i],
                         'date' => date('Y-m-d'),
                         'total_point' =>  10,
                         'type' => 'in',
                         'keterangan' => 'Present',
+                    ]);
+                }
+                if ($request->birthdaypoint[$i + 1][0] != 0) {
+                    AttendanceDetailPoint::create([
+                        'attendance_detail_id' => $detail->id,
+                        'point_category_id' => 5,
+                        'point' => 30,
+                    ]);
+                    PointHistory::create([
+                        'student_id' => $request->studentId[$i],
+                        'date' => date('Y-m-d'),
+                        'total_point' =>  30,
+                        'type' => 'in',
+                        'keterangan' =>  'Extra Birthday',
+                    ]);
+                    Students::where('id', $request->studentId[$i])->update([
+                        'total_point' => $student->total_point +  30,
                     ]);
                 }
 
@@ -263,7 +279,6 @@ class AttendanceController extends Controller
         } catch (\Throwable $th) {
             ddd($th);
         }
-        return $request;
     }
 
     /**

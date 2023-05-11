@@ -103,14 +103,14 @@
                                                     @foreach ($student as $it)
                                                         @php
                                                             $birthDayPoint = 0;
-                                                            // if ($it->birthday == date('M d')) {
-                                                            //     $birthDayPoint = 30;
-                                                            // }
+                                                            if ($it->birthday == date('M d')) {
+                                                                $birthDayPoint = 30;
+                                                            }
                                                         @endphp
                                                         <tr style="height: 40px!important">
                                                             <td class="text-center" style="">{{ $no }}
                                                             </td>
-                                                            <td style="">{{ $it->name }}
+                                                            <td style="">{{ $it->id }}
                                                             </td>
                                                             <input type="hidden" readonly name="studentId[]"
                                                                 value="{{ $it->id }}">
@@ -168,12 +168,12 @@
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
-                                                                @if ($birthDayPoint != 0)
+                                                                {{-- @if ($birthDayPoint != 0)
                                                                     <span class="center"
                                                                         style="color: red
                                                                 ">+
                                                                         Extra Birthday</span>
-                                                                @endif
+                                                                @endif --}}
                                                                 {{-- <input type="text" class="form-control"
                                                                     placeholder="Enter Category"
                                                                     name="category[{{ $no }}][]"
@@ -199,12 +199,15 @@
                                                                 @endphp
                                                                 <input type="hidden" name="totalPoint[]"
                                                                     id="inpTotalPoint{{ $no }}"
-                                                                    value="{{ $totalPoint + $birthDayPoint }}" readonly>
+                                                                    value="{{ $totalPoint }}" readonly>
+                                                                <input type="hidden"
+                                                                    name="birthdaypoint[{{ $no }}][]"
+                                                                    value="{{ $birthDayPoint }}">
                                                                 {{-- <input type="text" name="totalPointCategory[]"
                                                                     id="inpTotalPointCategory{{ $no }}"
                                                                     value="{{ $totalPoint }}" readonly> --}}
                                                                 <h5 id="totalPoint{{ $no }}">
-                                                                    {{ $totalPoint + $birthDayPoint }}</h5>
+                                                                    {{ $totalPoint }}</h5>
                                                             </td>
 
                                                         </tr>
@@ -298,7 +301,7 @@
                 var pointDay = {{ Request::get('day1') }} == 5 || {{ Request::get('day1') }} == 6 ||
                     {{ Request::get('day2') }} == 5 || {{ Request::get('day2') }} == 6 ||
                     {{ Request::get('day1') }} == {{ Request::get('day2') }} ? 20 : 10;
-                var birthDayPoint = parseInt('{{ $birthDayPoint }}');
+                var birthDayPoint = 0;
                 var totalPoint = parseInt($("#totalPoint" + i).text());
                 $('#cbAbsent' + i).click('change', function() {
                     if ($(this).is(':checked')) {
