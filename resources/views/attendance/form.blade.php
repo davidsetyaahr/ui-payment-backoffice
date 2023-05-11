@@ -103,9 +103,9 @@
                                                     @foreach ($student as $it)
                                                         @php
                                                             $birthDayPoint = 0;
-                                                            if ($it->birthday == date('M d')) {
-                                                                $birthDayPoint = 30;
-                                                            }
+                                                            // if ($it->birthday == date('M d')) {
+                                                            //     $birthDayPoint = 30;
+                                                            // }
                                                         @endphp
                                                         <tr style="height: 40px!important">
                                                             <td class="text-center" style="">{{ $no }}
