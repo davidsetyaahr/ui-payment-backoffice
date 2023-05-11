@@ -180,6 +180,31 @@
 
                                             </div>
                                         </div> --}}
+                                        <div class="col-md-12">
+                                            <div class="table-responsive">
+                                                <table class="display table table-striped table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Date</th>
+                                                            <th>Point</th>
+                                                            <th>Keterangan</th>
+                                                            <th>Type</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="history-point">
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>1</td>
+                                                            <td>1</td>
+                                                            <td>1</td>
+                                                            <td>1</td>
+                                                            <td>1</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                         <div class="col-md-3" style="padding-left: 0px!important">
                                             <div class="form-group">
                                                 <input type="number" class="form-control" placeholder="Reedem Point"
@@ -189,18 +214,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{-- <div class="row mt-2 mb-3 button-add" style="display: none;">
-                                    <button id="add-target" type="button" class="btn btn-sm btn-success ml-4 mr-2"><span
-                                            class="fa far fa-plus"></span> Add Item</button>
-                                    <button id="remove-target" type="button" class="btn btn-sm btn-danger"><span
-                                            class="fa far fa-minus"></span> Remove Item</button>
-                                    <div class="col-md-2">
-
-                                    </div>
-                                    <div class="col-md-3">
-
-                                    </div>
-                                </div> --}}
                             </div>
                             <div class="card-action mt-3">
                                 <button type="submit" class="btn btn-success">Submit</button>
@@ -238,7 +251,9 @@
 
         $(document).ready(function() {
             $('#student').on('change', function() {
+                $('#history-point').empty();
                 $('#id_student').val('')
+                var no = 1;
                 var idStudent = $('select[name=student] option').filter(':selected').val();
                 jQuery.each(dataStudent, function(index, item) {
                     if (item.id == idStudent) {
@@ -252,11 +267,31 @@
 
                     }
                 });
-
+                $.ajax({
+                    type: "get",
+                    url: "{{ url('history-point') }}/" + idStudent,
+                    dataType: "json",
+                    success: function(response) {
+                        $.each(response, function(i, v) {
+                            var content = `
+                                            <tr>
+                                                <td>${no++}</td>
+                                                <td>${v.date}</td>
+                                                <td>${v.total_point}</td>
+                                                <td>${v.keterangan}</td>
+                                                <td>${v.type == 'in' ? 'In' : 'Out'}</td>
+                                            </tr>
+                                        `
+                            $('#history-point').append(content);
+                        });
+                    }
+                });
             });
 
             $('#id_student').on('keyup', function() {
+                $('#history-point').empty();
                 $('#student').val(0);
+                var no = 1;
                 var idStudent = $('input[name=id_student]').val();
                 jQuery.each(dataStudent, function(index, item) {
                     if (item.id == idStudent) {
@@ -269,7 +304,25 @@
                         $('#point_total').val(item.total_point);
                     }
                 });
-
+                $.ajax({
+                    type: "get",
+                    url: "{{ url('history-point') }}/" + idStudent,
+                    dataType: "json",
+                    success: function(response) {
+                        $.each(response, function(key, value) {
+                            var content = `
+                                            <tr>
+                                                <td>${no++}</td>
+                                                <td>${value.date}</td>
+                                                <td>${value.total_point}</td>
+                                                <td>${value.keterangan}</td>
+                                                <td>${value.type == 'in' ? 'In' : 'Out'}</td>
+                                            </tr>
+                                        `
+                            $('#history-point').append(content);
+                        });
+                    }
+                });
             });
 
             var length = $("#target").length;

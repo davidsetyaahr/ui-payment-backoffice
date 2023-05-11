@@ -82,6 +82,8 @@ Route::middleware(['web'])->group(function () {
     Route::get('/saldo-awal', [ReedemPointController::class, 'saldoAwal']);
     Route::get('/saldo-awal/form/{id}', [ReedemPointController::class, 'createSaldoAwal']);
     Route::post('/saldo-awal', [ReedemPointController::class, 'storeSaldoAwal']);
+    Route::get('/history-point', [ReedemPointController::class, 'histori']);
+    Route::get('/history-point/{studentid}', [ReedemPointController::class, 'historiAjax']);
     Route::get('/students/filter', [ScoreController::class, 'filterStudentByName']);
     Route::get('/get-barcode-student', [ParentStudentsController::class, 'student']);
     Route::get('/barcode-student', [ParentStudentsController::class, 'barcode']);

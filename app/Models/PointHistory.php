@@ -11,4 +11,14 @@ class PointHistory extends Model
     use HasFactory;
     protected $table = 'point_histories';
     protected $fillable = ['student_id', 'date', 'total_point', 'type', 'keterangan'];
+
+    /**
+     * Get the student that owns the PointHistory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Students::class, 'student_id');
+    }
 }

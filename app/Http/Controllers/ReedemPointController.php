@@ -238,4 +238,22 @@ class ReedemPointController extends Controller
             ddd($e);
         }
     }
+
+    public function historiAjax($id)
+    {
+        $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'ASC')->get();
+        return $data;
+    }
+
+    public function histori(Request $request)
+    {
+        $title = 'History Point';
+        $student = Students::where('status', 'ACTIVE')->get();
+        $data = PointHistory::with('student');
+        if ($request->student) {
+            $data = $data->where('student_id', $request->student);
+        }
+        $data = $data->get();
+        return view('reedemPoint.history-point', compact('title', 'data', 'student'));
+    }
 }
