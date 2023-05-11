@@ -153,7 +153,7 @@ class AttendanceController extends Controller
         $student =   $student->get();
 
 
-        $pointCategories = PointCategories::all();
+        $pointCategories = PointCategories::orderBy('point', 'ASC')->get();
         // return $student;
         return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day'));
     }
