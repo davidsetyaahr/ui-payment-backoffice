@@ -131,18 +131,18 @@
                         </a>
 
                     </li>
-                    {{-- <li class="nav-item {{ Request::segment(1) == 'history-point' ? 'active' : '' }}">
-                        <a href="{{ url('/history-point') }}" class="collapsed">
-                            <i class="fas fa-book"></i>
-                            <p>History Point</p>
-                        </a>
-
-                    </li> --}}
                 @endif
                 <li class="nav-item {{ Request::segment(1) == 'saldo-awal' ? 'active' : '' }}">
                     <a href="{{ url('/saldo-awal') }}" class="collapsed">
                         <i class="fas fa-upload"></i>
                         <p>Opening Balance</p>
+                    </a>
+
+                </li>
+                <li class="nav-item {{ Request::segment(1) == 'history-point' ? 'active' : '' }}">
+                    <a href="{{ url('/history-point') }}" class="collapsed">
+                        <i class="fas fa-book"></i>
+                        <p>History Point</p>
                     </a>
 
                 </li>
