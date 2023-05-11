@@ -238,7 +238,7 @@
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Comments For Student</label>
+                                        <label for="">Comment for Student</label>
                                         <textarea name="comment" class="form-control" id="comment" cols="30" rows="3">{{ $score == null ? '' : $score->comment }}</textarea>
                                     </div>
 
