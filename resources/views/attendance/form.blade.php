@@ -132,7 +132,9 @@
                                                                     id="cbAbsent{{ $no }}" value="1"
                                                                     {{ $isChecked ? 'checked' : '' }}
                                                                     aria-label="Checkbox for following text input"
-                                                                    name="isAbsent[{{ $no }}][]">
+                                                                    name="isAbsent[{{ $no }}][]"
+                                                                    data-hour="{{ $it->course_hour }}"
+                                                                    data-class="{{ $it->priceid }}">
                                                             </td>
                                                             <td class="text-center" style="">
                                                                 @php
@@ -147,7 +149,22 @@
                                                                 @endphp
                                                                 <h5 id="inPointAbsent{{ $no }}">
                                                                     @if ($isAbsent)
-                                                                        {{ Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2') ? '20' : '10' }}
+                                                                        @php
+                                                                            $pointDay = 0;
+                                                                            $pointHour = 0;
+                                                                            if (Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2')) {
+                                                                                $pointDay = 20;
+                                                                            } else {
+                                                                                $pointDay = 10;
+                                                                            }
+                                                                            
+                                                                            if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
+                                                                                $totalPoint = $it->course_hour . '0';
+                                                                            } else {
+                                                                                $totalPoint = $pointDay;
+                                                                            }
+                                                                        @endphp
+                                                                        {{ $totalPoint }}
                                                                     @else
                                                                         0
                                                                     @endif
@@ -222,6 +239,55 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if (Auth::guard('teacher')->check() == true)
+                                    <h2 class="mt-3">Last Agenda</h2>
+                                    <div class="row-mt-3">
+                                        <div class="col-md-12">
+                                            @php
+                                                $agenda = \App\Models\AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
+                                                    ->select('attendances.activity', 'attendances.date', 'attendances.text_book', 'attendances.excercise_book')
+                                                    ->where('attendances.price_id', $priceId)
+                                                    ->where('attendances.day1', Request::get('day1'))
+                                                    ->where('attendances.day2', Request::get('day2'))
+                                                    ->where('attendances.course_time', Request::get('time'))
+                                                    ->where('attendances.teacher_id', Request::get('teacher'))
+                                                    ->orderBy('attendance_details.id', 'DESC')
+                                                    ->take(5)
+                                                    ->get();
+                                                $noA = 1;
+                                            @endphp
+                                            <table
+                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Topic</th>
+                                                        <th>Date</th>
+                                                        <th>Text Book</th>
+                                                        <th>Excercise Book</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (count($agenda) != 0)
+                                                        @foreach ($agenda as $itema)
+                                                            <tr>
+                                                                <td>{{ $noA++ }}</td>
+                                                                <td>{{ $itema->activity }}</td>
+                                                                <td>{{ $itema->date }}</td>
+                                                                <td>{{ $itema->text_book }}</td>
+                                                                <td>{{ $itema->excercise_book }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @else
+                                                        <tr>
+                                                            <td colspan="5">Data not found</td>
+                                                        </tr>
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
                                 <h2 class="mt-3">Agenda</h2>
                                 <div class="row mt-3">
                                     <div class="col-md-6">
@@ -304,15 +370,19 @@
                 var birthDayPoint = 0;
                 var totalPoint = parseInt($("#totalPoint" + i).text());
                 $('#cbAbsent' + i).click('change', function() {
+                    var dataHour = $(this).data('hour');
+                    var dataClass = $(this).data('class');
+                    var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
+                        parseInt(dataHour + '0') : pointDay
                     if ($(this).is(':checked')) {
-                        $("#inPointAbsent" + i).text(parseInt(pointDay));
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + pointDay);
+                        $("#inPointAbsent" + i).text(parseInt(conditionPoint));
+                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
                         $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) + pointDay);
+                            "#inpTotalPoint" + i).val() : 0) + conditionPoint);
                     } else {
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - pointDay);
+                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - conditionPoint);
                         $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) - pointDay);
+                            "#inpTotalPoint" + i).val() : 0) - conditionPoint);
                         $("#inPointAbsent" + i).text(0);
                     }
                 });

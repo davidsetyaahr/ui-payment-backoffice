@@ -140,7 +140,7 @@ class AttendanceController extends Controller
         }
 
 
-        $student = Students::where('priceid', $class->id)
+        $student = Students::where('status', 'ACTIVE')->where('priceid', $class->id)
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime);
@@ -155,7 +155,7 @@ class AttendanceController extends Controller
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day'));
+        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId'));
     }
 
     /**
@@ -275,7 +275,7 @@ class AttendanceController extends Controller
                 //     }
                 // }
             }
-            return redirect()->back();
+            return redirect('/attendance/class')->with('message', 'Schedule student update');
         } catch (\Throwable $th) {
             ddd($th);
         }
@@ -399,7 +399,7 @@ class AttendanceController extends Controller
                 //     }
                 // }
             }
-            return redirect()->back();
+            return redirect('/attendance/class')->with('message', 'Schedule student update');
         } catch (\Throwable $th) {
             return $th;
         }
@@ -420,7 +420,7 @@ class AttendanceController extends Controller
     {
         $arrAbsent = [];
         $arrAbsentFilter = [];
-        $students = Students::get();
+        $students = Students::where('status', 'ACTIVE')->get();
         // $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
@@ -525,7 +525,7 @@ class AttendanceController extends Controller
     public function mutasi(Request $request)
     {
         $studentId = $request->student;
-        $students = Students::get();
+        $students = Students::where('status', 'ACTIVE')->get();
         $price = Price::get();
         $data = [];
         // $class = Students::join('price', 'price.id', 'student.priceid')

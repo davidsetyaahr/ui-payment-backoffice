@@ -21,7 +21,7 @@ class ScheduleClassController extends Controller
         $staff = DB::table('staff')->get();
         $data = '';
         if ($request->class) {
-            $data = DB::table('student')->where('priceid', $request->class)->get();
+            $data = DB::table('student')->where('priceid', $request->class)->where('status', 'ACTIVE')->get();
         }
         return view('schedule-class.index', compact('day', 'class', 'data', 'teacher', 'staff'));
     }
@@ -59,7 +59,7 @@ class ScheduleClassController extends Controller
                         // DB::table('student')
                         //     ->where('id', $value)
                         //     ->update(['day1' => null]);
-                        $update = ['day1' => $request->day1, 'day2' => $day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff];
+                        $update = ['day1' => $request->day1, 'day2' => $day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff, 'course_hour' => $request->course_time];
                         DB::table('student')
                             ->where('id', $value)
                             ->update($update);

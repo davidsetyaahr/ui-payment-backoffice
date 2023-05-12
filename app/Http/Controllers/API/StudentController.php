@@ -105,7 +105,7 @@ class StudentController extends Controller
 
             $billing = PaymentBillDetail::where('student_id', $studentId)->where('status', 'Waiting')->sum('price');
             $agenda = AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
-                ->select('attendances.activity', 'attendances.date')
+                ->select('attendances.activity', 'attendances.date', 'attendances.text_book')
                 ->where('attendance_details.student_id', $studentId)
                 ->orderBy('attendance_details.id', 'DESC')
                 ->take(5)->get();

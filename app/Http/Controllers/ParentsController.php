@@ -81,7 +81,7 @@ class ParentsController extends Controller
     public function show(Parents $parent)
     {
         $data =  $parent;
-        $dataStudent = Students::all();
+        $dataStudent = Students::where('status', 'ACTIVE')->get();
         $students = ParentStudents::join('student', 'student.id', 'parent_students.student_id')
             ->select('student.*')
             ->where('parent_students.parent_id', $parent->id)

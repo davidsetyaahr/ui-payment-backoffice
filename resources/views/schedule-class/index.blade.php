@@ -80,7 +80,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="">Time</label>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -98,7 +98,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="">Staff</label>
                                         <select name="staff" id="" class="form-control select2">
                                             <option value="">---Select Staff---</option>
@@ -108,6 +108,18 @@
                                                     {{ $items->name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="col-md-2 radioInput" style="text-align: center">
+                                        <label for="">1 Hour</label>
+                                        <input type="radio" id="" name="course_hour" value="1"
+                                            class="form-control" style="margin-top:15px;"
+                                            {{ Request::get('course_hour') == 1 ? 'checked' : '' }}>
+                                    </div>
+                                    <div class="col-md-2 radioInput" style="text-align: center">
+                                        <label for="">2 Hour</label>
+                                        <input type="radio" id="" name="course_hour" value="2"
+                                            class="form-control" style="margin-top:15px;"
+                                            {{ Request::get('course_hour') == 2 ? 'checked' : '' }}>
                                     </div>
                                     <div class="col-md-2 mt-3">
                                         <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i>
@@ -127,6 +139,8 @@
                             <input type="hidden" name="day1" value="{{ Request::get('day1') }}">
                             <input type="hidden" name="day2" value="{{ Request::get('day2') }}">
                             <input type="hidden" name="time" value="{{ Request::get('time') }}">
+                            <input type="hidden" name="day2" value="{{ Request::get('day2') }}">
+                            <input type="hidden" name="course_time" value="{{ Request::get('course_hour') }}">
                             <div class="card-body">
                                 <div class="row mt-3">
                                     <div class="col-md-12">
@@ -186,12 +200,30 @@
     </div>
     </div>
     <script>
+        console.log("{{ Request::get('class') }}");
+        if ("{{ Request::get('class') == 39 || Request::get('class') == 42 }}") {
+            $('.radioInput').show()
+        } else {
+            $('.radioInput').hide()
+        }
         $('#checkAll').change(function() {
             if ($(this).is(':checked')) {
                 $('.updateCheck').prop('checked', true);
             } else {
                 $('.updateCheck').prop('checked', false);
             }
+        });
+
+        $('select[name="class"]').change(function() {
+            console.log($(this).val());
+            var id = $(this).val();
+            if (id == 42 || id == 39) {
+                $('.radioInput').show()
+            } else {
+                $('.radioInput').hide()
+
+            }
+
         });
     </script>
 @endsection
