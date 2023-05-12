@@ -18,14 +18,14 @@ class Authenticate extends Middleware
         if (Auth::guard('teacher')->check()) {
 
             return redirect('/dashboard');
-        } if (Auth::guard('teacher')->check()){
-            
+        }
+        if (Auth::guard('teacher')->check()) {
         } else {
 
             return redirect('/');
         }
-        // if (! $request->expectsJson()) {
-        //     return route('login');
-        // }
+        if (!$request->expectsJson()) {
+            return route('/');
+        }
     }
 }

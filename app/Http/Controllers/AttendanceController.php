@@ -86,9 +86,11 @@ class AttendanceController extends Controller
             ->where('course_time', $reqTime)
             ->orderBy('id', 'DESC')
             ->first();
+        $agenda = [];
 
         $class = Price::where('id', $priceId)->first();
         $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
+        // return $cek;
         if ($cek) {
             $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
             foreach ($detail as $key => $id) {
@@ -125,9 +127,14 @@ class AttendanceController extends Controller
                 'excerciseBook' => $cek->excercise_book,
                 'students' => $detail,
             ];
+            $agenda =  Attendance::where('price_id', $priceId)
+                ->where('day1', $reqDay1)
+                ->where('day2', $reqDay2)
+                ->where('teacher_id', $reqTeacher)
+                ->orderBy('id', 'DESC')->get();
             // return $data;
         } else {
-
+            $agenda = [];
             $data = (object)[
                 'type' => 'create',
                 'id' => $class->id,
@@ -155,7 +162,7 @@ class AttendanceController extends Controller
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId'));
+        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'agenda'));
     }
 
     /**

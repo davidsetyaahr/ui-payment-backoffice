@@ -8,12 +8,10 @@
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>
-                            <!-- {{ session('nama') }} -->
-                            {{-- Admin UI Payment --}}
-                            <span
-                                class="user-level">{{ Auth::guard('teacher')->user() != null ? Auth::guard('teacher')->user()->name : Auth::guard('staff')->user()->name }}</span>
+                            <span class="user-level">
 
-                        </span>
+                                {{ (Auth::guard('teacher')->user() != null ? Auth::guard('teacher')->user()->name : Auth::guard('staff')->user()->name) ?? '' }}
+                            </span>
                     </a>
 
                 </div>
