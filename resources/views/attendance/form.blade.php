@@ -282,6 +282,26 @@
                             </div>
                             {{-- @endif --}}
                         </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Last Agenda</h4>
+                            </div>
+                            <div class="card-body">
+                                @foreach ($agenda as $item)
+                                    <div class="col-md-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p>{{ $item->date }}
+                                                    <br>{{ $item->activity }}
+                                                    <br>Text Book : {{ $item->text_book }}
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
