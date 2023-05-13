@@ -239,55 +239,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if (Auth::guard('teacher')->check() == true)
-                                    <h2 class="mt-3">Last Agenda</h2>
-                                    <div class="row-mt-3">
-                                        <div class="col-md-12">
-                                            @php
-                                                $agenda = \App\Models\AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
-                                                    ->select('attendances.activity', 'attendances.date', 'attendances.text_book', 'attendances.excercise_book')
-                                                    ->where('attendances.price_id', $priceId)
-                                                    ->where('attendances.day1', Request::get('day1'))
-                                                    ->where('attendances.day2', Request::get('day2'))
-                                                    ->where('attendances.course_time', Request::get('time'))
-                                                    ->where('attendances.teacher_id', Request::get('teacher'))
-                                                    ->orderBy('attendance_details.id', 'DESC')
-                                                    ->take(5)
-                                                    ->get();
-                                                $noA = 1;
-                                            @endphp
-                                            <table
-                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Topic</th>
-                                                        <th>Date</th>
-                                                        <th>Text Book</th>
-                                                        <th>Excercise Book</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (count($agenda) != 0)
-                                                        @foreach ($agenda as $itema)
-                                                            <tr>
-                                                                <td>{{ $noA++ }}</td>
-                                                                <td>{{ $itema->activity }}</td>
-                                                                <td>{{ $itema->date }}</td>
-                                                                <td>{{ $itema->text_book }}</td>
-                                                                <td>{{ $itema->excercise_book }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="5">Data not found</td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                @endif
                                 <h2 class="mt-3">Agenda</h2>
                                 <div class="row mt-3">
                                     <div class="col-md-6">
@@ -333,26 +284,31 @@
                             </div>
                             {{-- @endif --}}
                         </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Last Agenda</h4>
-                            </div>
-                            <div class="card-body">
-                                @foreach ($agenda as $item)
-                                    <div class="col-md-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p>{{ $item->date }}
-                                                    <br>{{ $item->activity }}
-                                                    <br>Text Book : {{ $item->text_book }}
-                                                </p>
 
+                        @if (Auth::guard('teacher')->check() == true)
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Last Agenda</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        @foreach ($agenda as $item)
+                                            <div class="col-md-3">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <p>{{ $item->date }}
+                                                            <br>{{ $item->activity }}
+                                                            <br>Text Book : {{ $item->text_book }}
+                                                        </p>
+
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </form>
                 </div>
             </div>
