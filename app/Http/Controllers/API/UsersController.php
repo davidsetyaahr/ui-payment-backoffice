@@ -38,28 +38,28 @@ class UsersController extends Controller
                     $generate = Parents::where('no_hp', $phone)->update(['name' => $parent_name, 'otp' => $otp, 'password' => bcrypt($otp)]);
                     $message = 'Your verification code is: ' . $otp;
 
-                    $sendOTP =  Helper::sendMessage($phone, $message);
-                    // $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
-                    // $data['default_student_id'] = $students->student_id;
-                    // $data['default_student_name'] = $students->name;
-                    // $credentials = ([
-                    //     'no_hp' => $phone,
-                    //     'password' => $otp,
-                    // ]);
+                    // $sendOTP =  Helper::sendMessage($phone, $message);
+                    $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
+                    $data['default_student_id'] = $students->student_id;
+                    $data['default_student_name'] = $students->name;
+                    $credentials = ([
+                        'no_hp' => $phone,
+                        'password' => $otp,
+                    ]);
 
-                    if ($generate && $sendOTP) {
-                        // if ($token = JWTAuth::attempt($credentials)) {
-                        //     // return $this->respondWithToken($token, 'parent');
-                        //     return response()->json([
-                        //         'code' => '00',
-                        //         'data' => (object)$data,
-                        //         'token' => $this->respondWithToken($token),
-                        //     ]);
-                        // }
-                        return response()->json([
-                            'code' => '00',
-                            'message' => $message,
-                        ], 200);
+                    if ($generate) {
+                        if ($token = JWTAuth::attempt($credentials)) {
+                            // return $this->respondWithToken($token, 'parent');
+                            return response()->json([
+                                'code' => '00',
+                                'data' => (object)$data,
+                                'token' => $this->respondWithToken($token),
+                            ]);
+                        }
+                        // return response()->json([
+                        //     'code' => '00',
+                        //     'message' => $message,
+                        // ], 200);
                     } else {
                         return response()->json([
                             'code' => '10',
