@@ -89,4 +89,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/barcode-student', [ParentStudentsController::class, 'barcode']);
     Route::get('/barcode-download/{id}', [ParentStudentsController::class, 'download']);
     Route::get('/barcode-print/{id}', [ParentStudentsController::class, 'print']);
+    Route::get('/barcode-print-all', [ParentStudentsController::class, 'printAll']);
 });

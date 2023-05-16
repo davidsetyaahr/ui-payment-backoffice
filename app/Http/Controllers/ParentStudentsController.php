@@ -113,6 +113,14 @@ class ParentStudentsController extends Controller
 
     public function print($id)
     {
-        return view('parents.print', compact('id'));
+        $student = Students::join('price', 'price.id', 'student.priceid')->find($id);
+        return view('parents.print', compact('id', 'student'));
+    }
+
+    public function printAll()
+    {
+        $student = Students::leftJoin('price', 'price.id', 'student.priceid')->select('student.id as id', 'student.name as name', 'price.program as program')->where('status', 'ACTIVE')->limit(50)->get();
+        // return $student;
+        return view('parents.print-all', compact('student'));
     }
 }
