@@ -94,6 +94,7 @@
                                             <th>Name</th>
                                             <th>Grade</th>
                                             <th>Birthday</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -103,21 +104,24 @@
                                                 <td>{{ $item->name }}</td>
                                                 <td>{{ $item->grade == null ? '-' : $item->grade }}</td>
                                                 <td>{{ $item->birthday }}</td>
-                                                {{-- <td class=" d-flex">
-                                            <form action="{{ route('parents.destroy',$item->id) }}" method="POST"
-                                        class="form-inline">
-                                        @method('delete')
-                                        @csrf
-                                        <a href="{{ url('/parents/'.$item->id.'/edit')}}"
-                                            class="btn btn-xs btn-info mr-2 "><i class="fas fa-edit"></i></a>
-                                        <a href="{{ url('/parents/'.$item->id)}}"
-                                            class="btn btn-xs btn-warning mr-2 "><i class="fas fa-eye"></i></a>
-                                        <input type="hidden" name="id" value="{{$item->id}}">
-                                        <button type="submit"
-                                            onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                            class="btn btn-xs btn-primary"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                        </td> --}}
+                                                <td class=" d-flex">
+                                                    <form action="{{ url('/parentStudent/' . $item->parent_student_id) }}"
+                                                        method="POST" class="form-inline">
+                                                        @method('delete')
+                                                        @csrf
+                                                        {{-- <a href="{{ url('/parents/' . $item->id . '/edit') }}"
+                                                            class="btn btn-xs btn-info mr-2 "><i
+                                                                class="fas fa-edit"></i></a> --}}
+                                                        {{-- <a href="{{ url('/parents/' . $item->id) }}"
+                                                            class="btn btn-xs btn-warning mr-2 "><i
+                                                                class="fas fa-eye"></i></a>
+                                                        <input type="hidden" name="id" value="{{ $item->id }}"> --}}
+                                                        <button type="submit"
+                                                            onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                            class="btn btn-xs btn-primary"><i
+                                                                class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

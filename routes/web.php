@@ -54,6 +54,7 @@ Route::middleware(['web'])->group(function () {
     Route::delete('/schedule-class/delete', [ScheduleClassController::class, 'delete']);
     Route::resource('/schedule-class', ScheduleClassController::class);
     Route::post('/parentStudent', [ParentsController::class, 'storeParentStudents']);
+    Route::delete('/parentStudent/{id}', [ParentsController::class, 'deleteParentStudents']);
     Route::prefix('score')->group(function () {
         Route::get('/form', [ScoreController::class, 'index']);
         Route::get('/form-create', [ScoreController::class, 'formCreate']);

@@ -72,6 +72,16 @@ class ParentsController extends Controller
         }
     }
 
+    public function deleteParentStudents($id)
+    {
+        try {
+            ParentStudents::find($id)->delete();
+            return redirect()->back()->with('status', 'Berhasil menghapus data');
+        } catch (\Throwable $th) {
+            return back()->with('status', 'Gagal menambah data');
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -83,11 +93,11 @@ class ParentsController extends Controller
         $data =  $parent;
         $dataStudent = Students::where('status', 'ACTIVE')->get();
         $students = ParentStudents::join('student', 'student.id', 'parent_students.student_id')
-            ->select('student.*')
+            ->select('student.*', 'parent_students.id as parent_student_id')
             ->where('parent_students.parent_id', $parent->id)
             ->get();
 
-        return view('parents.detail', compact('data', 'students', 'dataStudent'));
+        return view('parents.detail', compact('data', 'students', 'dataStudent', 'parent'));
     }
 
     /**
