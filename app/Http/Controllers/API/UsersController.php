@@ -39,7 +39,7 @@ class UsersController extends Controller
                     $message = 'Your verification code is: ' . $otp;
 
                     $sendOTP =  Helper::sendMessage($phone, $message);
-                    $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
+                    $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data->id)->first();
                     $data['default_student_id'] = $students->student_id;
                     $data['default_student_name'] = $students->name;
                     $credentials = ([
