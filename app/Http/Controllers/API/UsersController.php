@@ -47,19 +47,19 @@ class UsersController extends Controller
                         'password' => $otp,
                     ]);
 
-                    if ($generate && $sendOTP) {
-                        // if ($token = JWTAuth::attempt($credentials)) {
-                        //     // return $this->respondWithToken($token, 'parent');
-                        //     return response()->json([
-                        //         'code' => '00',
-                        //         'data' => (object)$data,
-                        //         'token' => $this->respondWithToken($token),
-                        //     ]);
-                        // }
-                        return response()->json([
-                            'code' => '00',
-                            'message' => $message,
-                        ], 200);
+                    if ($generate) {
+                        if ($token = JWTAuth::attempt($credentials)) {
+                            // return $this->respondWithToken($token, 'parent');
+                            return response()->json([
+                                'code' => '00',
+                                'data' => (object)$data,
+                                'token' => $this->respondWithToken($token),
+                            ]);
+                        }
+                        // return response()->json([
+                        //     'code' => '00',
+                        //     'message' => $message,
+                        // ], 200);
                     } else {
                         return response()->json([
                             'code' => '10',
