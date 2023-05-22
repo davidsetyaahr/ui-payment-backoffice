@@ -53,6 +53,8 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Phone Number</th>
+                                            <th>Student Name</th>
+                                            {{-- <th>OTP</th> --}}
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -62,6 +64,23 @@
 
                                                 <td>{{ $item->name }}</td>
                                                 <td>{{ $item->no_hp }}</td>
+                                                <td>
+                                                    @php
+                                                        $student = DB::table('parent_students')
+                                                            ->select('student.name')
+                                                            ->join('student', 'student.id', 'parent_students.student_id')
+                                                            ->where('parent_id', $item->id)
+                                                            ->get();
+                                                    @endphp
+                                                    @if (count($student) != 0)
+                                                        @foreach ($student as $ks => $vs)
+                                                            {{-- {{ $ks++ == count($student) ? 'asd' : 'ccd' }}
+                                                            {{ $ks }}
+                                                            {{ count($student) }} --}}
+                                                            <li>{{ $vs->name }}</li>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
                                                 <td class=" d-flex">
                                                     <form action="{{ route('parents.destroy', $item->id) }}" method="POST"
                                                         class="form-inline">
