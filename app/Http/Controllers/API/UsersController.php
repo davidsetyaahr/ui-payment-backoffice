@@ -38,7 +38,7 @@ class UsersController extends Controller
                     $generate = Parents::where('no_hp', $phone)->update(['name' => $parent_name, 'otp' => $otp, 'password' => bcrypt($otp)]);
                     $message = 'Your verification code is: ' . $otp;
 
-                    $sendOTP =  Helper::sendMessage($phone, $message);
+                    // $sendOTP =  Helper::sendMessage($phone, $message);
                     $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data->id)->first();
                     $data['default_student_id'] = $students->student_id;
                     $data['default_student_name'] = $students->name;
@@ -60,6 +60,77 @@ class UsersController extends Controller
                         //     'code' => '00',
                         //     'message' => $message,
                         // ], 200);
+                    } else {
+                        return response()->json([
+                            'code' => '10',
+                            'message' => 'error',
+                        ], 200);
+                    }
+                } else {
+                    return response()->json([
+                        'code' => '10',
+                        'message' => 'Nomor HP Salah',
+                    ], 200);
+                }
+            } else {
+                return response()->json([
+                    'code' => '01',
+                    'message' => 'Nama Orang Tua Harus Diisi',
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return $th;
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error', 'message' => $th,
+            ], 403);
+        }
+    }
+
+    public function sendOtp(Request $request)
+    {
+        try {
+            $phone = "";
+            $parent_name = $request->name;
+
+            if (substr($request->phone, 0, 2) == '08') {
+                $phone = str_replace(substr($request->phone, 0, 2), '62', $request->phone);
+            } else if (substr($request->phone, 0, 3) == '+62') {
+                $phone = str_replace(substr($request->phone, 0, 3), '62', $request->phone);
+            } else {
+                $phone = $request->phone;
+            }
+
+            $data = Parents::where('no_hp', $phone)->first();
+            if ($parent_name) {
+                if ($data) {
+                    $otp = substr(str_shuffle("0123456789"), 0, 4);
+
+                    $generate = Parents::where('no_hp', $phone)->update(['name' => $parent_name, 'otp' => $otp, 'password' => bcrypt($otp)]);
+                    $message = 'Your verification code is: ' . $otp;
+
+                    $sendOTP =  Helper::sendMessage($phone, $message);
+                    // $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data->id)->first();
+                    // $data['default_student_id'] = $students->student_id;
+                    // $data['default_student_name'] = $students->name;
+                    // $credentials = ([
+                    //     'no_hp' => $phone,
+                    //     'password' => $otp,
+                    // ]);
+
+                    if ($generate && $sendOTP) {
+                        // if ($token = JWTAuth::attempt($credentials)) {
+                        //     // return $this->respondWithToken($token, 'parent');
+                        //     return response()->json([
+                        //         'code' => '00',
+                        //         'data' => (object)$data,
+                        //         'token' => $this->respondWithToken($token),
+                        //     ]);
+                        // }
+                        return response()->json([
+                            'code' => '00',
+                            'message' => $message,
+                        ], 200);
                     } else {
                         return response()->json([
                             'code' => '10',
