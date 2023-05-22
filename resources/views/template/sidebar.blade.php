@@ -1,4 +1,4 @@
-@if (Auth::check())
+@if (Auth::guard('teacher')->user() != null || Auth::guard('staff')->user() != null)
     <div class="sidebar sidebar-style-2">
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
             <div class="sidebar-content">
@@ -160,6 +160,6 @@
     </div>
 @else
     <script>
-        window.location = "/";
+        window.location = "https://primtech-sistem.com/ui-payment-backoffice/public/";
     </script>
 @endif
