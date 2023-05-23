@@ -54,7 +54,7 @@
                                             <th>Name</th>
                                             <th>Phone Number</th>
                                             <th>Student Name</th>
-                                            {{-- <th>OTP</th> --}}
+                                            <th>OTP</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -81,6 +81,7 @@
                                                         @endforeach
                                                     @endif
                                                 </td>
+                                                <td>{{ $item->otp }}</td>
                                                 <td class=" d-flex">
                                                     <form action="{{ route('parents.destroy', $item->id) }}" method="POST"
                                                         class="form-inline">
@@ -89,13 +90,16 @@
                                                         <a href="{{ url('/parents/' . $item->id . '/edit') }}"
                                                             class="btn btn-xs btn-info mr-2 "><i
                                                                 class="fas fa-edit"></i></a>
+                                                        {{-- <a href="{{ url('/update-otp/' . $item->id) }}"
+                                                            class="btn btn-xs btn-primary mr-2 "><i
+                                                                class="fas fa-code"></i></a> --}}
                                                         <a href="{{ url('/parents/' . $item->id) }}"
                                                             class="btn btn-xs btn-warning mr-2 "><i
                                                                 class="fas fa-eye"></i></a>
                                                         <input type="hidden" name="id" value="{{ $item->id }}">
                                                         <button type="submit"
                                                             onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                                            class="btn btn-xs btn-primary"><i
+                                                            class="btn btn-xs btn-danger"><i
                                                                 class="fas fa-trash"></i></button>
                                                     </form>
                                                 </td>

@@ -161,4 +161,23 @@ class ParentsController extends Controller
             return redirect('/parents')->with('error', 'Gagal menghapus data');
         }
     }
+
+    public function updateOtp($id)
+    {
+        try {
+            $parent = Parents::where('id', $id)->first();
+            $student = ParentStudents::where('parent_id', $parent->id)->first();
+            $studentDetail = Students::where('id', $student->id)->first();
+            return [
+                'parent_id' => $parent,
+                'student_id' => $student,
+                'studentDetail' => $studentDetail,
+                // 'Month' => Carbon::now()->format
+            ];
+            return redirect('/parents')->with('status', 'Berhasil menghapus data');
+        } catch (\Throwable $th) {
+            return $th;
+            return redirect('/parents')->with('error', 'Gagal menghapus data');
+        }
+    }
 }
