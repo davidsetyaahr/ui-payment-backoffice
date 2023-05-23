@@ -87,6 +87,19 @@
                                         </div>
 
                                     </div>
+                                    <div class="col-md-4">
+                                        @if ($data->type == 'edit')
+                                            @php
+                                                $student = App\Models\ParentStudents::where('parent_id', $data->id)->get();
+                                            @endphp
+                                            @foreach ($student as $s)
+                                                @php
+                                                    $studentDetail = App\Models\Students::where('id', $s->student_id)->first();
+                                                @endphp
+                                                <li>{{ $studentDetail->name }}</li>
+                                            @endforeach
+                                        @endif
+                                    </div>
 
                                 </div>
 
