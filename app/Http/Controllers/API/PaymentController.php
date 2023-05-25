@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\HistoryBilling;
+use App\Models\PaymentBill;
 use App\Models\PaymentBillDetail;
 use App\Models\PaymentFromApp;
 use App\Models\Students;
 use App\Models\PaymentFromAppDetail;
+use App\Models\Price;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,14 +23,14 @@ class PaymentController extends Controller
         try {
 
             $query = [];
-            $class = Students::join('price','student.priceid','price.id')->where('student.id',$studentId)->first();
+            $class = Students::join('price', 'student.priceid', 'price.id')->where('student.id', $studentId)->first();
             $query = HistoryBilling::join('payment_bill_detail as pbd', 'pbd.unique_code', 'history_billing.unique_code')
                 ->select('history_billing.*')
                 ->where('pbd.student_id', $studentId)
                 ->distinct();
 
             if ($request->start && $request->end) {
-                $query = $query->whereBetween('history_billing.created_at',  [$request->start." 00:00", $request->end." 23:59"]);
+                $query = $query->whereBetween('history_billing.created_at',  [$request->start . " 00:00", $request->end . " 23:59"]);
             }
             $data = $query->paginate($request->perpage);
             $class = Students::join('price', 'price.id', 'student.priceid')
@@ -77,7 +79,7 @@ class PaymentController extends Controller
     public function listBill($studentId)
     {
         try {
-            $class = Students::join('price','student.priceid','price.id')->where('student.id',$studentId)->first();
+            $class = Students::join('price', 'student.priceid', 'price.id')->where('student.id', $studentId)->first();
             $tmp = PaymentBillDetail::join('student', 'student.id', 'payment_bill_detail.student_id')
                 ->select('student.name', 'payment_bill_detail.*')
                 ->where('payment_bill_detail.student_id', $studentId)
@@ -207,5 +209,76 @@ class PaymentController extends Controller
         $pdf = PDF::loadview('report.print', ['data' => $data, 'detail' => $detail])->setPaper($customPaper, 'landscape');
         return $pdf->download($fileName);
         // return  $pdf->stream($fileName);
+    }
+
+    public function getBillMonth($studentId)
+    {
+        try {
+            $detailPaid = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->orderBy('id', 'DESC')->first();
+            $student = Students::find($studentId);
+            $price = Price::find($student->priceid);
+            if ($detailPaid != null) {
+                $exMonth = explode(' ', $detailPaid->payment);
+                $month = explode('-', $exMonth[1]);
+                $detailPaid->month = (int)$month[0];
+                if ($detailPaid->month != now()->month) {
+                    $model = new PaymentBill();
+                    $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
+                    $model->total_price = $price->course;
+                    $model->created_by = Auth::guard('parent')->user()->name;
+                    $model->updated_by = Auth::guard('parent')->user()->name;
+                    $model->save();
+
+                    $modelDetail = new PaymentBillDetail();
+                    $modelDetail->id_payment_bill = $model->id;
+                    $modelDetail->student_id = $studentId;
+                    $modelDetail->category = 'COURSE';
+                    $modelDetail->price = $price->course;
+                    $modelDetail->unique_code = '-';
+                    $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
+                    $modelDetail->status = 'Waiting';
+                    $modelDetail->save();
+                    return response()->json([
+                        'code' => '00',
+                        'payload' => 'Success1',
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'code' => '00',
+                        'payload' => 'Pembayaran untuk bulan ini sudah tertagih',
+                    ], 200);
+                }
+            } else {
+                $model = new PaymentBill();
+                $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
+                $model->total_price = $price->course;
+                $model->created_by = Auth::guard('parent')->user()->name;
+                $model->updated_by = Auth::guard('parent')->user()->name;
+                $model->save();
+
+                $modelDetail = new PaymentBillDetail();
+                $modelDetail->id_payment_bill = $model->id;
+                $modelDetail->student_id = $studentId;
+                $modelDetail->category = 'COURSE';
+                $modelDetail->price = $price->course;
+                $modelDetail->unique_code = '-';
+                $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
+                $modelDetail->status = 'Waiting';
+                $modelDetail->save();
+                return response()->json([
+                    'code' => '00',
+                    'payload' => 'Success3',
+                ], 200);
+            }
+            // return response()->json([
+            //     'code' => '00',
+            //     'payload' => $detailPaid,
+            // ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error ' . $th,
+            ], 403);
+        }
     }
 }

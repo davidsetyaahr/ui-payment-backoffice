@@ -10,7 +10,7 @@ class PointHistory extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'point_histories';
-    protected $fillable = ['student_id', 'date', 'total_point', 'type', 'keterangan'];
+    protected $fillable = ['student_id', 'date', 'total_point', 'type', 'keterangan', 'balance_in_advanced'];
 
     /**
      * Get the student that owns the PointHistory

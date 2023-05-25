@@ -205,6 +205,7 @@ class AttendanceController extends Controller
                         'total_point' =>  10,
                         'type' => 'in',
                         'keterangan' => 'Present',
+                        'balance_in_advanced' => $student->total_point,
                     ]);
                 }
                 if ($request->birthdaypoint[$i + 1][0] != 0) {
@@ -219,6 +220,7 @@ class AttendanceController extends Controller
                         'total_point' =>  30,
                         'type' => 'in',
                         'keterangan' =>  'Extra Birthday',
+                        'balance_in_advanced' => $student->total_point,
                     ]);
                     Students::where('id', $request->studentId[$i])->update([
                         'total_point' => $student->total_point +  30,
@@ -247,6 +249,7 @@ class AttendanceController extends Controller
                                     'total_point' =>  $pointCategories[$pos]->point,
                                     'type' => 'in',
                                     'keterangan' =>  $pointCategories[$pos]->name,
+                                    'balance_in_advanced' => $student->total_point,
                                 ]);
                             }
                             // return ([

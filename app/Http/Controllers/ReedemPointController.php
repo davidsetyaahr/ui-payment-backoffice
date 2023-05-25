@@ -42,6 +42,7 @@ class ReedemPointController extends Controller
         try {
 
             $student = $request->student == null && $request->id_student != null ? $request->id_student : $request->student;
+            $findPointStudent = Students::find($student);
             ReedemPoint::create([
                 'point' => intval($request->total_point),
                 'student_id' => $student,
@@ -52,6 +53,7 @@ class ReedemPointController extends Controller
                 'total_point' => intval($request->total_point),
                 'type' => 'redeem',
                 'keterangan' => 'Reedem Point',
+                'balance_in_advanced' => $findPointStudent->total_point,
             ]);
             $newPoint = intval($request->point) - intval($request->total_point);
             Students::where('id', $student)
@@ -227,6 +229,23 @@ class ReedemPointController extends Controller
         try {
             foreach ($request->studentId as $key => $value) {
                 $student = Students::find($value);
+
+                $pointHistory = PointHistory::where('student_id', $student->id)->where('keterangan', 'Opening Balance')->first();
+                if ($pointHistory == null) {
+                    $model = new PointHistory();
+                    $model->student_id = $student->id;
+                    $model->date = now();
+                    $model->total_point = $request->saldo_awal[$key];
+                    $model->keterangan = 'Opening Balance';
+                    $model->type = 'in';
+                    $model->balance_in_advanced = $student->total_point;
+                    $model->save();
+                } else {
+                    $pointHistory->date = now();
+                    $pointHistory->total_point = $request->saldo_awal[$key];
+                    $pointHistory->balance_in_advanced = $student->total_point;
+                    $pointHistory->save();
+                }
                 $student->total_point = $request->saldo_awal[$key];
                 $student->save();
             }
@@ -253,7 +272,7 @@ class ReedemPointController extends Controller
         if ($request->student) {
             $data = $data->where('student_id', $request->student)->limit(20)->orderBy('date', 'ASC');
         }
-        $data = $data->get();
+        $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
 }

@@ -23,6 +23,7 @@ class LandingPageController extends Controller
     public function storeReedemPoint(Request $request)
     {
         $student = $request->student;
+        $findPointStudent = Students::find($student);
         ReedemPoint::create([
             'point' => intval($request->total_point),
             'student_id' => $student,
@@ -33,6 +34,7 @@ class LandingPageController extends Controller
             'total_point' => intval($request->total_point),
             'type' => 'redeem',
             'keterangan' => 'Reedem Point',
+            'balance_in_advanced' => $findPointStudent->total_point,
         ]);
         $newPoint = intval($request->point) - intval($request->total_point);
         Students::where('id', $student)

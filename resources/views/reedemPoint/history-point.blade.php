@@ -69,10 +69,14 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
+                                            @if (Request::get('student'))
+                                                <th>Opening Balance</th>
+                                            @endif
                                             <th>Date</th>
                                             <th>Point</th>
                                             <th>Keterangan</th>
                                             <th>Type</th>
+                                            <th>Saldo Point</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,13 +84,26 @@
                                             $no = 1;
                                         @endphp
                                         @foreach ($data as $item)
+                                            @php
+                                                if (Request::get('student')) {
+                                                    $openingBalance = DB::table('point_histories')
+                                                        ->where('student_id', $item->student->id)
+                                                        ->where('keterangan', 'Opening Balance')
+                                                        ->first();
+                                                }
+                                            @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $item->student->name }}</td>
+                                                @if (Request::get('student'))
+                                                    <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
+                                                    </td>
+                                                @endif
                                                 <td>{{ $item->date }}</td>
                                                 <td>{{ $item->total_point }}</td>
                                                 <td>{{ $item->keterangan }}</td>
                                                 <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
+                                                <td>{{ $item->balance_in_advanced }}</td>
                                         @endforeach
                                     </tbody>
                                 </table>
