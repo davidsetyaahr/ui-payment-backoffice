@@ -348,8 +348,9 @@
                 $('#cbAbsent' + i).click('change', function() {
                     var dataHour = $(this).data('hour');
                     var dataClass = $(this).data('class');
-                    var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
-                        parseInt(dataHour + '0') : pointDay
+                    // var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
+                    //     parseInt(dataHour + '0') : pointDay
+                    var conditionPoint = 10
                     if ($(this).is(':checked')) {
                         $("#inPointAbsent" + i).text(parseInt(conditionPoint));
                         $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
