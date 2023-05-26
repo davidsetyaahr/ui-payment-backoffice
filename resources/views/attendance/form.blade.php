@@ -98,10 +98,17 @@
 
                                                 <tbody>
                                                     @php
+                                                        $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
+                                                        
                                                         $no = 1;
                                                     @endphp
-                                                    @foreach ($student as $it)
+                                                    @foreach ($student as $keyIt => $it)
                                                         @php
+                                                            if ($keyIt == 0) {
+                                                                $agenda = $agenda->where('student_id', $it->id);
+                                                            } else {
+                                                                $agenda = $agenda->orWhere('student_id', $it->id);
+                                                            }
                                                             $birthDayPoint = 0;
                                                             if ($it->birthday == date('M d')) {
                                                                 $birthDayPoint = 30;
@@ -119,11 +126,32 @@
                                                                 <input type="hidden"
                                                                     name="isAbsent[{{ $no }}][]" value="0">
                                                                 @php
+                                                                    $cekAbsen = \DB::table('attendance_details')
+                                                                        ->where('attendance_id', $data->attendanceId)
+                                                                        ->where('student_id', $it->id)
+                                                                        ->where('is_absent', '1')
+                                                                        ->count();
+                                                                    $studentPointCategory = [];
+                                                                    $getStudentPointCategory = \DB::table('attendance_detail_points')
+                                                                        ->join('attendance_details', 'attendance_detail_points.attendance_detail_id', 'attendance_details.id')
+                                                                        ->where('student_id', $it->id)
+                                                                        ->where('attendance_id', $data->attendanceId)
+                                                                        ->get();
+                                                                    
+                                                                    foreach ($getStudentPointCategory as $k => $v) {
+                                                                        array_push($studentPointCategory, $v->point_category_id);
+                                                                    }
+                                                                    
                                                                     $isChecked = false;
                                                                     if ($data->type == 'create') {
                                                                         $isChecked = false;
                                                                     } else {
-                                                                        if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
+                                                                        // if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
+                                                                        //     $isChecked = true;
+                                                                        // }
+                                                                        if ($cekAbsen == 0) {
+                                                                            $isChecked = false;
+                                                                        } else {
                                                                             $isChecked = true;
                                                                         }
                                                                     }
@@ -142,7 +170,7 @@
                                                                     if ($data->type == 'create') {
                                                                         $isAbsent = false;
                                                                     } else {
-                                                                        if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent) {
+                                                                        if ($cekAbsen == 1) {
                                                                             $isAbsent = true;
                                                                         }
                                                                     }
@@ -180,7 +208,7 @@
 
                                                                     @foreach ($pointCategories as $st)
                                                                         <option value="{{ $st->id }}"
-                                                                            {{ $data->type == 'update' && in_array(intval($st->id), $data->students[$no - 1]->category) ? 'selected' : '' }}>
+                                                                            {{ $data->type == 'update' && in_array(intval($st->id), $studentPointCategory) ? 'selected' : '' }}>
                                                                             {{ $st->name }}
                                                                         </option>
                                                                     @endforeach
@@ -209,8 +237,13 @@
                                                                     if ($data->type == 'create') {
                                                                         $totalPoint = 0;
                                                                     } else {
-                                                                        if ($data->students[$no - 1]->student_id == $it->id) {
-                                                                            $totalPoint = $data->students[$no - 1]->total_point;
+                                                                        $cekTotalPoint = \DB::table('attendance_details')
+                                                                            ->where('attendance_id', $data->attendanceId)
+                                                                            ->where('student_id', $it->id);
+                                                                    
+                                                                        if ($cekTotalPoint->count() == 1) {
+                                                                            $getTotalPoint = $cekTotalPoint->first();
+                                                                            $totalPoint = $getTotalPoint->total_point;
                                                                         }
                                                                     }
                                                                 @endphp
@@ -255,8 +288,7 @@
                                         <div class="form-group">
                                             <label for="">Text Book</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $data->type == 'update' ? $data->textBook : '' }}"
-                                                name="textBook">
+                                                value="{{ $cekAbsen != 0 ? $data->textBook : '' }}" name="textBook">
                                         </div>
 
                                     </div>
@@ -284,6 +316,17 @@
                             </div>
                             {{-- @endif --}}
                         </div>
+                        @php
+                            $agenda = $agenda
+                                ->where('day1', $reqDay1)
+                                ->where('day2', $reqDay2)
+                                ->where('teacher_id', $reqTeacher)
+                                ->where('course_time', $reqTime)
+                                ->orderBy('attendances.id', 'DESC')
+                                ->groupBy('attendances.id')
+                                ->get();
+                            
+                        @endphp
 
                         @if (Auth::guard('teacher')->check() == true)
                             <div class="card">

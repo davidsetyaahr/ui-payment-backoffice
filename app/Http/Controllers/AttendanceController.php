@@ -84,9 +84,11 @@ class AttendanceController extends Controller
             ->where('day1', $reqDay1)
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
+            ->where('teacher_id', $reqTeacher)
             ->orderBy('id', 'DESC')
             ->first();
-        $agenda = [];
+        // $agenda = [];
+
 
         $class = Price::where('id', $priceId)->first();
         $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
@@ -127,14 +129,9 @@ class AttendanceController extends Controller
                 'excerciseBook' => $cek->excercise_book,
                 'students' => $detail,
             ];
-            $agenda =  Attendance::where('price_id', $priceId)
-                ->where('day1', $reqDay1)
-                ->where('day2', $reqDay2)
-                ->where('teacher_id', $reqTeacher)
-                ->orderBy('id', 'DESC')->get();
             // return $data;
         } else {
-            $agenda = [];
+            // $agenda = [];
             $data = (object)[
                 'type' => 'create',
                 'id' => $class->id,
@@ -162,7 +159,7 @@ class AttendanceController extends Controller
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'agenda'));
+        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
     }
 
     /**
@@ -335,16 +332,31 @@ class AttendanceController extends Controller
             ]);
             for ($i = 0; $i < count($request->totalPoint); $i++) {
                 $dataDetail = AttendanceDetail::where('attendance_id', $request->attendanceId)
-                    ->where('student_id', $request->studentId[$i])
-                    ->first();
-                AttendanceDetail::where('attendance_id', $request->attendanceId)
-                    ->where('student_id', $request->studentId[$i])
-                    ->update([
+                    ->where('student_id', $request->studentId[$i]);
+                if ($dataDetail->count() == 0) {
+                    //insert
+                    $insert = AttendanceDetail::create([
+                        'attendance_id' => $request->attendanceId,
+                        'student_id' => $request->studentId[$i],
                         'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
                         'total_point' => $request->totalPoint[$i],
                     ]);
+
+                    $detailTotalPoint = 0;
+                    $attendanceDetailId = $insert->id;
+                } else {
+                    $dataDetail = $dataDetail->first();
+                    $attendanceDetailId = $dataDetail->id;
+                    $detailTotalPoint = $dataDetail->total_point;
+                    AttendanceDetail::where('attendance_id', $request->attendanceId)
+                        ->where('student_id', $request->studentId[$i])
+                        ->update([
+                            'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
+                            'total_point' => $request->totalPoint[$i],
+                        ]);
+                }
                 $student = Students::where('id', $request->studentId[$i])->first();
-                $tmpPoint = $student->total_point - $dataDetail->total_point;
+                $tmpPoint = $student->total_point - $detailTotalPoint;
                 Students::where('id', $request->studentId[$i])->update([
                     'total_point' => $tmpPoint +  $request->totalPoint[$i],
                 ]);
@@ -368,7 +380,7 @@ class AttendanceController extends Controller
                                     $pos = $key;
                                 }
                             }
-                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
+                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
                                 ->get();
                             $tmpDetail = [];
 
@@ -380,7 +392,7 @@ class AttendanceController extends Controller
                             }
                             if (in_array($request->categories[$i + 1][$x], $tmpDetail) == false) {
                                 AttendanceDetailPoint::create([
-                                    'attendance_detail_id' => $dataDetail->id,
+                                    'attendance_detail_id' => $attendanceDetailId,
                                     'point_category_id' => $request->categories[$i + 1][$x],
                                     'point' => $pointCategories[$pos]->point,
                                 ]);
@@ -599,6 +611,21 @@ class AttendanceController extends Controller
             $reqDay2 = $request->update_day2;
             $reqTime = $request->update_time;
             $priceId = $request->update_class;
+            $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+                ->where("day2", $reqDay2)
+                ->where('course_time', $reqTime)->get();
+            foreach ($student as $key => $value) {
+                if ($value->priceid != $request->update_level) {
+                    $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
+                    $mutasi = new Mutasi;
+                    $mutasi->student_id = $value->id;
+                    $mutasi->price_id = $priceId;
+                    if ($score != null) {
+                        $mutasi->score_id = $score->id;
+                    }
+                    $mutasi->save();
+                }
+            }
             DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->update([
@@ -608,6 +635,7 @@ class AttendanceController extends Controller
                     "priceid" => $request->update_level,
                     "id_teacher" => $request->update_teacher,
                 ]);
+
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
