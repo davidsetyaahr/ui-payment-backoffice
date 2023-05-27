@@ -99,7 +99,7 @@
                                                 <tbody>
                                                     @php
                                                         $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-                                                        
+
                                                         $no = 1;
                                                     @endphp
                                                     @foreach ($student as $keyIt => $it)
@@ -137,11 +137,11 @@
                                                                         ->where('student_id', $it->id)
                                                                         ->where('attendance_id', $data->attendanceId)
                                                                         ->get();
-                                                                    
+
                                                                     foreach ($getStudentPointCategory as $k => $v) {
                                                                         array_push($studentPointCategory, $v->point_category_id);
                                                                     }
-                                                                    
+
                                                                     $isChecked = false;
                                                                     if ($data->type == 'create') {
                                                                         $isChecked = false;
@@ -185,7 +185,7 @@
                                                                             } else {
                                                                                 $pointDay = 10;
                                                                             }
-                                                                            
+
                                                                             if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
                                                                                 $totalPoint = $it->course_hour . '0';
                                                                             } else {
@@ -240,7 +240,7 @@
                                                                         $cekTotalPoint = \DB::table('attendance_details')
                                                                             ->where('attendance_id', $data->attendanceId)
                                                                             ->where('student_id', $it->id);
-                                                                    
+
                                                                         if ($cekTotalPoint->count() == 1) {
                                                                             $getTotalPoint = $cekTotalPoint->first();
                                                                             $totalPoint = $getTotalPoint->total_point;
@@ -325,7 +325,7 @@
                                 ->orderBy('attendances.id', 'DESC')
                                 ->groupBy('attendances.id')
                                 ->get();
-                            
+
                         @endphp
 
                         @if (Auth::guard('teacher')->check() == true)
@@ -391,9 +391,8 @@
                 $('#cbAbsent' + i).click('change', function() {
                     var dataHour = $(this).data('hour');
                     var dataClass = $(this).data('class');
-                    // var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
-                    //     parseInt(dataHour + '0') : pointDay
-                    var conditionPoint = 10
+                    var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
+                        parseInt(10) : pointDay
                     if ($(this).is(':checked')) {
                         $("#inPointAbsent" + i).text(parseInt(conditionPoint));
                         $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
