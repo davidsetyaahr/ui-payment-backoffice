@@ -134,7 +134,7 @@
                                                                     ->where('course_time', $item->course_time)
                                                                     ->first();
                                                             @endphp
-                                                            <b> {{ $studentName->name }}</b>
+                                                            <b> {{ ucwords($studentName->name) }}</b>
                                                             <br>
                                                         </div>
                                                     </div> <i class="fa fas fa-angle-right"></i>

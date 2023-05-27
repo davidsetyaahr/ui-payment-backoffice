@@ -123,7 +123,7 @@
                                                 @foreach ($data as $item)
                                                     <tr>
                                                         <td>{{ $no++ }}</td>
-                                                        <td>{{ $item[0]->name }}</td>
+                                                        <td>{{ ucwords($item[0]->name) }}</td>
                                                         <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>
                                                         {{-- <td>{{ $item->program }}</td> --}}

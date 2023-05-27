@@ -90,7 +90,7 @@
                                                         <tr style="height: 40px!important">
                                                             <td class="text-center" style="">{{ $no }}
                                                             </td>
-                                                            <td style="">{{ $it->name }}</td>
+                                                            <td style="">{{ ucwords($it->name) }}</td>
                                                             <input type="hidden" readonly name="studentId[]"
                                                                 value="{{ $it->id }}">
                                                             <td>

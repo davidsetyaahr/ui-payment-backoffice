@@ -62,7 +62,7 @@
                                         @foreach ($data as $item)
                                             <tr>
 
-                                                <td>{{ $item->name }}</td>
+                                                <td>{{ ucwords($item->name) }}</td>
                                                 <td>{{ $item->no_hp }}</td>
                                                 <td>
                                                     @php
@@ -77,7 +77,7 @@
                                                             {{-- {{ $ks++ == count($student) ? 'asd' : 'ccd' }}
                                                             {{ $ks }}
                                                             {{ count($student) }} --}}
-                                                            <li>{{ $vs->name }}</li>
+                                                            <li>{{ ucwords($vs->name) }}</li>
                                                         @endforeach
                                                     @endif
                                                 </td>

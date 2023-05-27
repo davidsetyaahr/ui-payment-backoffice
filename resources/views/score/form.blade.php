@@ -71,7 +71,7 @@
                                                                         ->where('course_time', $item->course_time)
                                                                         ->first();
                                                                 @endphp
-                                                                <b>{{ $studentName->name }}</b>
+                                                                <b>{{ ucwords($studentName->name) }}</b>
                                                             @else
                                                                 <b> {{ $item->program }}</b>
                                                             @endif

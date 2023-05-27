@@ -51,7 +51,7 @@
                                             @foreach ($student as $item)
                                                 <option value="{{ $item->id }}"
                                                     {{ Request::get('student') == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->name }}</option>
+                                                    {{ ucwords($item->name) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -94,7 +94,7 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ $item->student->name }}</td>
+                                                <td>{{ ucwords($item->student->name) }}</td>
                                                 @if (Request::get('student'))
                                                     <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
                                                     </td>

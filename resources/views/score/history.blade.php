@@ -43,7 +43,7 @@
                                             @foreach ($students as $student)
                                                 <option value="{{ $student->id }}"
                                                     {{ $student->id == Request::get('student') ? 'selected' : '' }}>
-                                                    {{ $student->name }}</option>
+                                                    {{ ucwords($student->name) }}</option>
                                             @endforeach
                                         </select>
                                     </div>

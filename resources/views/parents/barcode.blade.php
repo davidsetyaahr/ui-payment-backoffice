@@ -58,7 +58,7 @@
                                         @foreach ($data as $item)
                                             <tr>
                                                 <td>{{ $item->id }}</td>
-                                                <td>{{ $item->name }}</td>
+                                                <td>{{ ucwords($item->name) }}</td>
                                                 <td><img src="{{ url('storage/barcode/' . $item->id . '.jpg') }}">
                                                 </td>
                                                 <td><a href="{{ url('barcode-download/' . $item->id) }}"

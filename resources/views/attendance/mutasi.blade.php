@@ -81,7 +81,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4 class="card-title">Jump Level Student
-                                        {{ Request::get('student') ? $getStudent->name : '' }}</h4>
+                                        {{ Request::get('student') ? ucwords($getStudent->name) : '' }}</h4>
                                 </div>
                                 <div class="col-md-6" style="text-align:end;">
                                     @if (Request::get('student'))
@@ -239,6 +239,15 @@
     </div>
     <script>
         $(document).ready(function() {
+            function capitalize(str) {
+                strVal = '';
+                str = str.split(' ');
+                for (var chr = 0; chr < str.length; chr++) {
+                    strVal += str[chr].substring(0, 1).toUpperCase() + str[chr].substring(1, str[chr].length) + ' '
+                }
+                return strVal
+            }
+
             function getStudent() {
                 var typeClass = $('#price').val();
                 $.ajax({
@@ -252,7 +261,7 @@
                         $students.append('<option value="">Select Student</option>');
                         for (var i = 0; i < data.length; i++) {
                             $students.append(
-                                `<option id='${data[i].id}' value='${data[i].id}' ${data[i].id == "{{ Request::get('student') }}" ? 'selected' : ''}>${data[i].name}</option>`
+                                `<option id='${data[i].id}' value='${data[i].id}' ${data[i].id == "{{ Request::get('student') }}" ? 'selected' : ''}>${capitalize(data[i].name)}</option>`
                             );
                         }
                         $students.change();

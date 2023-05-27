@@ -101,7 +101,7 @@
                                             name="student" id="student">
                                             <option value="">Select Student</option>
                                             @foreach ($students as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                <option value="{{ $item->id }}">{{ ucwords($item->name) }}</option>
                                             @endforeach
                                             <option value=""></option>
                                         </select>
@@ -250,6 +250,15 @@
 
 
         $(document).ready(function() {
+            function capitalize(str) {
+                strVal = '';
+                str = str.split(' ');
+                for (var chr = 0; chr < str.length; chr++) {
+                    strVal += str[chr].substring(0, 1).toUpperCase() + str[chr].substring(1, str[chr].length) + ' '
+                }
+                return strVal
+            }
+
             $('#student').on('change', function() {
                 $('#history-point').empty();
                 $('#id_student').val('')
@@ -261,7 +270,7 @@
                         $("#point_show").css("display", "block");
                         $("#target").css("display", "block");
                         $(".button-add").css("display", "block");
-                        $('#student_name').text(item.name);
+                        $('#student_name').text(capitalize(item.name));
                         $('#student_point').text(item.total_point);
                         $('#point_total').val(item.total_point);
 

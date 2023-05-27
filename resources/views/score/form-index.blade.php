@@ -113,7 +113,7 @@
                                                     @endphp
                                                     <tr>
                                                         <td>{{ $no++ }}</td>
-                                                        <td>{{ $itemSValue->name }}</td>
+                                                        <td>{{ ucwords($itemSValue->name) }}</td>
                                                         @foreach ($testItem as $itemTestKey => $itemTestValue)
                                                             @php
                                                                 $detail = null;
