@@ -36,8 +36,8 @@ class ScoreController extends Controller
         try {
             $sc = StudentScore::where('student_id', $studentId)->get();
             $class = Students::join('price', 'price.id', 'student.priceid')
-                        ->select('price.program')
-                        ->where('student.id', $studentId)->first();
+                ->select('price.program')
+                ->where('student.id', $studentId)->first();
             $test = Tests::count();
             $totalScore = 0;
             $totalTest = 0;
@@ -69,9 +69,11 @@ class ScoreController extends Controller
     public function getScoreByTest($studentId, $testId)
     {
         try {
+            $getStudent = Students::find($studentId);
             $score = StudentScore::join('tests as t', 't.id', 'student_scores.test_id')
                 ->select('t.name', 'student_scores.average_score', 'student_scores.average_score', 'student_scores.id as scoreId', 'student_scores.comment')
                 ->where('student_scores.test_id', $testId)
+                ->where('student_scores.price_id', $getStudent->priceid)
                 ->where('student_scores.student_id', $studentId)
                 ->first();
             $item = StudentScoreDetail::join('test_items as ti', 'ti.id', 'student_score_details.test_item_id')

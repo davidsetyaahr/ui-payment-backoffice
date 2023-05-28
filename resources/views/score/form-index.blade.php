@@ -106,6 +106,7 @@
                                                     @php
                                                         $average = DB::table('student_scores')
                                                             ->where('student_id', $itemSValue->id)
+                                                            ->where('price_id', $itemSValue->priceid)
                                                             ->where('test_id', Request::get('test'))
                                                             ->orderBy('id', 'ASC')
                                                             ->limit(1)
