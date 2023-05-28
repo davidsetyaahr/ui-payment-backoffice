@@ -34,25 +34,35 @@ class ScoreController extends Controller
     public function getResult($studentId)
     {
         try {
-            $sc = StudentScore::where('student_id', $studentId)->get();
             $class = Students::join('price', 'price.id', 'student.priceid')
                 ->select('price.program')
                 ->where('student.id', $studentId)->first();
-            $test = Tests::count();
-            $totalScore = 0;
-            $totalTest = 0;
-            foreach ($sc as $s) {
-                $totalScore += $s->average_score;
-                $totalTest += 1;
+            $sc = StudentScore::where('student_id', $studentId)->where('price_id', $class->priceid)->get();
+            if (count($sc) != 0) {
+                $test = Tests::count();
+                $totalScore = 0;
+                $totalTest = 0;
+                foreach ($sc as $s) {
+                    $totalScore += $s->average_score;
+                    $totalTest += 1;
+                }
+                $total = $totalScore / $totalTest;
+                $data = ([
+                    'total_score' => $total,
+                    'class' => $class->program,
+                    'grade' => Helper::getGrade($total),
+                    'total_test' => $test,
+                    'total_test_passed' => $totalTest,
+                ]);
+            } else {
+                $data = ([
+                    'total_score' => 0,
+                    'class' => $class->program,
+                    'grade' => Helper::getGrade(0),
+                    'total_test' => 0,
+                    'total_test_passed' => 0,
+                ]);
             }
-            $total = $totalScore / $totalTest;
-            $data = ([
-                'total_score' => $total,
-                'class' => $class->program,
-                'grade' => Helper::getGrade($total),
-                'total_test' => $test,
-                'total_test_passed' => $totalTest,
-            ]);
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
@@ -60,7 +70,7 @@ class ScoreController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'code' => '400',
-                'error' => 'internal server error',
+                'error' => 'internal server error ' . $th,
                 'message' => $th,
             ], 403);
         }
