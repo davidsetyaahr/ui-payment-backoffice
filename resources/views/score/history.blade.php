@@ -112,7 +112,7 @@
                                                                         ->where('test_item_id', $itemTestValue->id)
                                                                         ->first();
                                                                 @endphp
-                                                                <td>{{ $detail->score }}</td>
+                                                                <td>{{ $detail == null ? '-' : $detail->score }}</td>
                                                             @endforeach
                                                             <td>{{ $item->average_score }}</td>
                                                             <td>{{ Helper::getGrade($item->average_score) }}</td>

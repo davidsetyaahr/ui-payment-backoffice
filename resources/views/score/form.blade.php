@@ -80,7 +80,8 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <b>{{ $item->day_one }} & {{ $item->day_two }}</b>
+                                                    <b>{{ $item->day_one }}
+                                                        {{ $item->day_two != $item->day_one ? ' & ' . $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>
                                                 </span>
