@@ -222,22 +222,22 @@ class PaymentController extends Controller
                 $month = explode('-', $exMonth[1]);
                 $detailPaid->month = (int)$month[0];
                 if ($detailPaid->month != now()->month) {
-                    $model = new PaymentBill();
-                    $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
-                    $model->total_price = $price->course;
-                    $model->created_by = Auth::guard('parent')->user()->name;
-                    $model->updated_by = Auth::guard('parent')->user()->name;
-                    $model->save();
+                    // $model = new PaymentBill();
+                    // $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
+                    // $model->total_price = $price->course;
+                    // $model->created_by = Auth::guard('parent')->user()->name;
+                    // $model->updated_by = Auth::guard('parent')->user()->name;
+                    // $model->save();
 
-                    $modelDetail = new PaymentBillDetail();
-                    $modelDetail->id_payment_bill = $model->id;
-                    $modelDetail->student_id = $studentId;
-                    $modelDetail->category = 'COURSE';
-                    $modelDetail->price = $price->course;
-                    $modelDetail->unique_code = '-';
-                    $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
-                    $modelDetail->status = 'Waiting';
-                    $modelDetail->save();
+                    // $modelDetail = new PaymentBillDetail();
+                    // $modelDetail->id_payment_bill = $model->id;
+                    // $modelDetail->student_id = $studentId;
+                    // $modelDetail->category = 'COURSE';
+                    // $modelDetail->price = $price->course;
+                    // $modelDetail->unique_code = '-';
+                    // $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
+                    // $modelDetail->status = 'Waiting';
+                    // $modelDetail->save();
                     return response()->json([
                         'code' => '00',
                         'payload' => 'Success1',
