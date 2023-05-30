@@ -273,7 +273,6 @@ class ReedemPointController extends Controller
             $data = $data->where('student_id', $request->student)->limit(20)->orderBy('date', 'ASC');
         }
         $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
-        return $data;
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
 }
