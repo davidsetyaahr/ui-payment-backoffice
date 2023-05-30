@@ -36,66 +36,68 @@
                     });
                 </script>
             @endif
-            <div class="row mt--2">
-                <div class="col-sm-6 col-md-4">
-                    <div class="card card-stats card-warning card-round">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="flaticon-users"></i>
+            @if (Auth::guard('teacher')->check() == false)
+                <div class="row mt--2">
+                    <div class="col-sm-6 col-md-4">
+                        <div class="card card-stats card-warning card-round">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div class="icon-big text-center">
+                                            <i class="flaticon-users"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-7 col-stats">
-                                    <div class="numbers">
-                                        <p class="card-category">Student</p>
-                                        <h4 class="card-title">{{ $data->student }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="card card-stats card-info card-round">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                                <div class="col-7 col-stats">
-                                    <div class="numbers">
-                                        <p class="card-category">Parent</p>
-                                        <h4 class="card-title">{{ $data->parent }}</h4>
+                                    <div class="col-7 col-stats">
+                                        <div class="numbers">
+                                            <p class="card-category">Student</p>
+                                            <h4 class="card-title">{{ $data->student }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="card card-stats card-success card-round">
-                        <div class="card-body ">
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="icon-big text-center">
-                                        <i class="fas fa-user-graduate"></i>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="card card-stats card-info card-round">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div class="icon-big text-center">
+                                            <i class="fas fa-users"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-7 col-stats">
-                                    <div class="numbers">
-                                        <p class="card-category">Teacher </p>
-                                        <h4 class="card-title">{{ $data->teacher }}</h4>
+                                    <div class="col-7 col-stats">
+                                        <div class="numbers">
+                                            <p class="card-category">Parent</p>
+                                            <h4 class="card-title">{{ $data->parent }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="card card-stats card-success card-round">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div class="icon-big text-center">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-stats">
+                                        <div class="numbers">
+                                            <p class="card-category">Teacher </p>
+                                            <h4 class="card-title">{{ $data->teacher }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            </div>
+                </div>
+            @endif
 
             <div class="row">
                 <div class="col-md-12">
