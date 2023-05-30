@@ -266,12 +266,13 @@ class ReedemPointController extends Controller
 
     public function histori(Request $request)
     {
-        $title = 'History Point';
+        $title = 'Point Histories';
         $student = Students::where('status', 'ACTIVE')->get();
         $data = PointHistory::with('student');
         if ($request->student) {
             $data = $data->where('student_id', $request->student)->limit(20)->orderBy('date', 'ASC');
         }
+        return $data;
         $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
