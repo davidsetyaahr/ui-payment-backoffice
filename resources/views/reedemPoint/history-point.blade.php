@@ -94,7 +94,7 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ ucwords($item->student->name) }}</td>
+                                                {{-- <td>{{ ucwords($item->student->name) }}</td> --}}
                                                 @if (Request::get('student'))
                                                     <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
                                                     </td>
