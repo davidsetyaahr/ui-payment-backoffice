@@ -60,6 +60,41 @@
             <div class="row">
 
                 <div class="col-md-12">
+                    <div class="card card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Nama</th>
+                                        @foreach ($attendance as $item)
+                                            <th width="5%">{{date('d/m',strtotime($item->date))}}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($student as $item)
+                                        <tr>
+                                            <td width="10%">{{$item->name}}</td>
+                                            @foreach ($attendance as $i)
+                                                @php
+                                                    $cek = App\Models\AttendanceDetail::where('attendance_id',$i->id)->where('student_id',$item->id);
+                                                    $count = $cek->count();
+                                                    if($count == 1 && $cek->first()->is_absent == '1'){
+                                                        $absen = true;
+                                                    }
+                                                    else{
+                                                        $absen = false;
+                                                    }
+                                                @endphp
+                                                <td  width="5%" <?= !$absen ? "bgcolor='yellow'" : '' ?>><?= !$absen ? '' : '<span class="fa fa-check"></span>' ?></td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+    
+                    </div>
                     <form
                         action="{{ $data->type == 'create' ? url('attendance/store') : url('attendance/update', $data->id) }}"
                         method="POST" enctype="multipart/form-data" id="form-submit">

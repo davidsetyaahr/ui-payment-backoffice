@@ -158,8 +158,15 @@ class AttendanceController extends Controller
 
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
+        $attendance = Attendance::where('price_id', $priceId)
+            ->where('day1', $reqDay1)
+            ->where('day2', $reqDay2)
+            ->where('course_time', $reqTime)
+            ->orderBy('id', 'asc')
+            ->get();
+
         // return $student;
-        return view('attendance.form', compact('title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
+        return view('attendance.form', compact('attendance','title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
     }
 
     /**
