@@ -27,7 +27,7 @@ class LandingPageController extends Controller
             throw $th;
         }
     }
-    
+
     public function redeemPointStudent($id)
     {
         $student = Students::find($id);
@@ -36,7 +36,7 @@ class LandingPageController extends Controller
 
     public function storeReedemPoint(Request $request)
     {
-        $student = $request->student;
+        $student = $request->id_student == null ? $request->student : $request->id_student;
         $findPointStudent = Students::find($student);
         ReedemPoint::create([
             'point' => intval($request->total_point),

@@ -98,10 +98,10 @@
                                 </li>
                             </ul>
                         </div>
-        
+
                     </div>
                 </div>
-        
+
                 <div class="page-inner mt--5">
                     @if (session('status'))
                         <script>
@@ -129,7 +129,8 @@
                     @endif
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{ url('/landing-page/store-redeem-point') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ url('/landing-page/store-redeem-point') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="card">
                                     <div class="card-header">
@@ -138,7 +139,7 @@
                                     <div class="card-body">
                                         <div class="row">
                                             {{-- <div class="col-md-3">
-        
+
                                                 <label for="email2">Class</label>
                                                 <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
                                                     name="class" id="class">
@@ -151,53 +152,57 @@
                                                 @error('student')
                                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                                 @enderror
-        
+
                                                 @error('class')
                                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                                 @enderror
-        
-        
+
+
                                             </div>
                                             <div class="col-md-3">
-        
+
                                                 <label for="email2">Students</label>
                                                 <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
                                                     name="student" id="student">
                                                     <option value="">Select Student</option>
-        
+
                                                 </select>
                                                 @error('student')
                                                     <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                                 @enderror
-        
-        
+
+
                                             </div> --}}
                                             <div class="col-md-3">
-        
+
                                                 <label for="email2">Students</label>
-                                                <select class="form-control select2 select2-hidden-accessible" style="width:100%;"
-                                                    name="student" id="student">
+                                                <select class="form-control select2 select2-hidden-accessible"
+                                                    style="width:100%;" name="student" id="student">
                                                     <option value="">Select Student</option>
                                                     @foreach ($students as $item)
-                                                        <option value="{{ $item->id }}">{{ ucwords($item->name) }}</option>
+                                                        <option value="{{ $item->id }}">{{ ucwords($item->name) }}
+                                                        </option>
                                                     @endforeach
                                                     <option value=""></option>
                                                 </select>
                                                 @error('student')
-                                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                                    <label class="mt-1"
+                                                        style="color: red!important">{{ $message }}</label>
                                                 @enderror
-        
-        
+
+
                                             </div>
                                             <div class="col-md-3">
-        
+
                                                 <label for="email2">Id Student</label>
-                                                <input type="number" name="id_student" id="id_student" class="form-control">
+                                                <input type="number" name="id_student" id="id_student"
+                                                    class="form-control">
                                                 @error('student')
-                                                    <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                                    <label class="mt-1"
+                                                        style="color: red!important">{{ $message }}</label>
                                                 @enderror
-        
-        
+
+
                                             </div>
                                             {{-- <div class="col-md-4">
                                             <div class="form-group">
@@ -207,7 +212,7 @@
                                                     <option value="">Select Student
                                                     </option>
                                                     @foreach ($students as $st)
-        
+
                                                     <option value="{{$st->id}}">{{$st->name}}</option>
                                                     @endforeach
                                                 </select>
@@ -224,7 +229,8 @@
                                                     <div class="card-body mx-auto">
                                                         <h6 class="card-title" id="student_name"></h6>
                                                         <h1 class="text-center" id="student_point"></h1>
-                                                        <input type="hidden" name="point" id="point_total" readonly>
+                                                        <input type="hidden" name="point" id="point_total"
+                                                            readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,7 +241,7 @@
                                                 {{-- Otomatis --}}
                                                 {{-- <div class="col-md-4" style="padding-right: 0px!important">
                                                     <div class="form-group">
-        
+
                                                         <select name="item[]" class="form-control text-black">
                                                             <option>Select Item</option>
                                                             @foreach ($item as $mt)
@@ -248,14 +254,14 @@
                                                                 <strong>{{ $message }}</strong>
                                                             </span>
                                                         @enderror
-        
+
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3" style="padding-left: 0px!important">
                                                     <div class="form-group">
                                                         <input type="number" class="form-control" placeholder="Quantity reedem"
                                                             required name="qty[]">
-        
+
                                                     </div>
                                                 </div> --}}
                                                 <div class="col-md-12">
@@ -285,9 +291,9 @@
                                                 </div>
                                                 <div class="col-md-3" style="padding-left: 0px!important">
                                                     <div class="form-group">
-                                                        <input type="number" class="form-control" placeholder="Reedem Point"
-                                                            required name="total_point">
-        
+                                                        <input type="number" class="form-control"
+                                                            placeholder="Reedem Point" required name="total_point">
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -316,7 +322,8 @@
                                 <p>Apakah anda yakin ingin membatalkan proses?</p>
                             </div>
                             <div class="modal-footer">
-                                <a href="{{ url('/advertise') }}"><button type="button" class="btn btn-success">Ya</button></a>
+                                <a href="{{ url('/advertise') }}"><button type="button"
+                                        class="btn btn-success">Ya</button></a>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
                             </div>
                         </div>
@@ -325,8 +332,8 @@
             </div>
             <script>
                 var dataStudent = {!! json_encode($students) !!};
-        
-        
+
+
                 $(document).ready(function() {
                     function capitalize(str) {
                         strVal = '';
@@ -336,22 +343,22 @@
                         }
                         return strVal
                     }
-        
+
                     $('#student').on('change', function() {
                         $('#history-point').empty();
-                        $('#id_student').val('')
+                        // $('#id_student').val('')
                         var no = 1;
                         var idStudent = $('select[name=student] option').filter(':selected').val();
                         jQuery.each(dataStudent, function(index, item) {
                             if (item.id == idStudent) {
-        
+
                                 $("#point_show").css("display", "block");
                                 $("#target").css("display", "block");
                                 $(".button-add").css("display", "block");
                                 $('#student_name').text(capitalize(item.name));
                                 $('#student_point').text(item.total_point);
                                 $('#point_total').val(item.total_point);
-        
+
                             }
                         });
                         $.ajax({
@@ -374,15 +381,16 @@
                             }
                         });
                     });
-        
+
                     $('#id_student').on('keyup', function() {
                         $('#history-point').empty();
                         $('#student').val(0);
                         var no = 1;
-                        var idStudent = $('input[name=id_student]').val();
-                        jQuery.each(dataStudent, function(index, item) {
+                        var idStudent = $(this).val();
+                        jQuery.each(dataStudent, function(index,
+                            item) {
                             if (item.id == idStudent) {
-        
+
                                 $("#point_show").css("display", "block");
                                 $("#target").css("display", "block");
                                 $(".button-add").css("display", "block");
@@ -411,7 +419,7 @@
                             }
                         });
                     });
-        
+
                     var length = $("#target").length;
                     if (length == 1) {
                         $("#remove-target").hide();
@@ -440,30 +448,30 @@
                 });
             </script>
 
-                <script>
-                    $(document).ready(function() {
-                        $('#class').on('change', function() {
-                            var typeClass = $(this).val();
-                            $.ajax({
-                                type: 'GET',
-                                url: '{{ url('') }}/score/students/filter?class=' + typeClass,
-                                dataType: 'JSON',
-                                success: function(data) {
+            <script>
+                $(document).ready(function() {
+                    $('#class').on('change', function() {
+                        var typeClass = $(this).val();
+                        $.ajax({
+                            type: 'GET',
+                            url: '{{ url('') }}/score/students/filter?class=' + typeClass,
+                            dataType: 'JSON',
+                            success: function(data) {
 
-                                    var $student = $('#student');
-                                    $student.empty();
-                                    $student.append('<option value="">Select Student</option>');
-                                    for (var i = 0; i < data.length; i++) {
-                                        $student.append('<option id=' + data[i].id + ' value=' + data[i]
-                                            .id + '>' + data[i].name + '</option>');
-                                    }
-                                    $student.change();
-
+                                var $student = $('#student');
+                                $student.empty();
+                                $student.append('<option value="">Select Student</option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    $student.append('<option id=' + data[i].id + ' value=' + data[i]
+                                        .id + '>' + data[i].name + '</option>');
                                 }
-                            });
+                                $student.change();
+
+                            }
                         });
                     });
-                </script>
+                });
+            </script>
 
 
             <footer class="footer">
