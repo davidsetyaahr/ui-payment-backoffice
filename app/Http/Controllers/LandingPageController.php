@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Price;
 use App\Models\PointHistory;
 use App\Models\ReedemPoint;
+use App\Models\ReedemItems;
 use App\Models\Staff;
 use App\Models\Students;
 use Illuminate\Http\Request;
@@ -12,12 +14,24 @@ class LandingPageController extends Controller
 {
     public function redeemPoint(Request $request)
     {
-        $students = Students::where('status', 'ACTIVE')->get();
-        $staffs = Staff::get();
-        $reqStudent = $request->student != null ? $request->student : $request->id_student;
-        $reqStaff = $request->staff;
-        $student  = Students::where('id', $reqStudent)->where('id_staff', $reqStaff)->first();
-        return view('landing-page.redeem-point', compact('students', 'staffs', 'reqStudent', 'reqStaff', 'student'));
+        try {
+            $class = Price::all();
+            // $students = Students::join('price as p', 'p.id', 'student.priceid')
+            //     ->select('student.name', 'student.id', 'student.total_point')
+            //     ->get();
+            $students = Students::where('status', 'ACTIVE')->get();
+            $item = ReedemItems::all();
+            $title = 'Landing Page Reedem Point';
+            return view('landing-page.redeem-point', compact('students', 'title', 'item', 'class'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    
+    public function redeemPointStudent($id)
+    {
+        $student = Students::find($id);
+        return $student;
     }
 
     public function storeReedemPoint(Request $request)

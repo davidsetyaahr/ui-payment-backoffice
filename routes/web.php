@@ -37,6 +37,7 @@ Route::get('/printInvoice/{paymentId}', [PaymentController::class, 'printInvoice
 Route::prefix('landing-page')->group(
     function () {
         Route::get('/redeem-point', [LandingPageController::class, 'redeemPoint']);
+        Route::get('/redeem-point/{studentId}', [LandingPageController::class, 'redeemPointStudent']);
         Route::post('/store-redeem-point', [LandingPageController::class, 'storeReedemPoint']);
     }
 );
