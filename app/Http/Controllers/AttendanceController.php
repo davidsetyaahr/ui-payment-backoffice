@@ -166,7 +166,7 @@ class AttendanceController extends Controller
             ->get();
 
         // return $student;
-        return view('attendance.form', compact('attendance','title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
+        return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
     }
 
     /**
@@ -459,8 +459,14 @@ class AttendanceController extends Controller
                 ->join('price as p', 'p.id', 'st.priceid')
                 ->join('attendances as a', 'a.id', 'attendance_details.attendance_id')
                 ->join('teacher as t', 't.id', 'a.teacher_id')
-                ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id')
+                ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id', 'st.id_staff')
                 ->where('attendance_details.student_id', $value->id);
+            if (Auth::guard('teacher')->user() != null) {
+                $attendance = $attendance->where('teacher_id', Auth::guard('teacher')->user()->id);
+            }
+            if (Auth::guard('staff')->user() != null && Auth::guard('staff')->user()->id != 7) {
+                $attendance = $attendance->where('id_staff', Auth::guard('staff')->user()->id);
+            }
 
             $attendance = $attendance->orderBy('attendance_details.id', 'desc')->limit(2)->get();
             $countA = count($attendance);
@@ -644,6 +650,20 @@ class AttendanceController extends Controller
                 ]);
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        }
+    }
+
+    public function addComment($id, Request $request)
+    {
+        return $request->all();
+        try {
+            AttendanceDetail::find($id);
+
+            // return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
         } catch (\Illuminate\Database\QueryException $e) {

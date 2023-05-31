@@ -109,13 +109,6 @@
                             </a>
 
                         </li>
-                        <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
-                            <a href="{{ url('/attendance/reminder') }}" class="collapsed">
-                                <i class="fas fa-bell"></i>
-                                <p>Reminder</p>
-                            </a>
-
-                        </li>
                         <li class="nav-item {{ Request::segment(1) == 'mutasi' ? 'active' : '' }}">
                             <a href="{{ url('/mutasi') }}" class="collapsed">
                                 <i class="fas fa-users"></i>
@@ -131,6 +124,14 @@
 
                         </li>
                     @endif
+
+                    <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
+                        <a href="{{ url('/attendance/reminder') }}" class="collapsed">
+                            <i class="fas fa-bell"></i>
+                            <p>Reminder</p>
+                        </a>
+
+                    </li>
                     <li class="nav-item {{ Request::segment(1) == 'saldo-awal' ? 'active' : '' }}">
                         <a href="{{ url('/saldo-awal') }}" class="collapsed">
                             <i class="fas fa-upload"></i>

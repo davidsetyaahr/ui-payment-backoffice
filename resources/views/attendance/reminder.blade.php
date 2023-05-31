@@ -80,18 +80,20 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-md-5">
-                                                <label for="email2">Teacher</label>
-                                                <select class="form-control select2 select2-hidden-accessible"
-                                                    style="width:100%;" name="teacher" id="teacher">
-                                                    <option value="">Select Teacher</option>
-                                                    @foreach ($teachers as $item1)
-                                                        <option value="{{ $item1->id }}"
-                                                            {{ Request::get('teacher') == $item1->id ? 'selected' : '' }}>
-                                                            {{ $item1->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                            @if (Auth::guard('staff')->user() != null)
+                                                <div class="col-md-5">
+                                                    <label for="email2">Teacher</label>
+                                                    <select class="form-control select2 select2-hidden-accessible"
+                                                        style="width:100%;" name="teacher" id="teacher">
+                                                        <option value="">Select Teacher</option>
+                                                        @foreach ($teachers as $item1)
+                                                            <option value="{{ $item1->id }}"
+                                                                {{ Request::get('teacher') == $item1->id ? 'selected' : '' }}>
+                                                                {{ $item1->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            @endif
                                             <div class="col-md-2" style="margin-top:20px">
                                                 <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i>
                                                     Filter</button>
@@ -122,7 +124,7 @@
                                                 @endphp
                                                 @foreach ($data as $item)
                                                     <tr>
-                                                        <td>{{ $no++ }}</td>
+                                                        <td>{{ $item[0]->id }}</td>
                                                         <td>{{ ucwords($item[0]->name) }}</td>
                                                         <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>
@@ -136,6 +138,13 @@
                                                             @else
                                                                 <a href="{{ url('attendance/reminder-done') . '?student=' . $item[0]->student_id }}"
                                                                     class="btn btn-sm btn-primary text-white">Done</a>
+                                                                <a href="javascript:void(0)"
+                                                                    data-tipe="{{ Auth::guard('staff')->user() != null ? 'staff' : 'teacher' }}"
+                                                                    data-id="{{ $item[0]->id }}"
+                                                                    data-name="{{ ucwords($item[0]->name) }}"
+                                                                    class="btn btn-sm btn-success text-white modalAction"
+                                                                    data-toggle="modal"
+                                                                    data-target="#exampleModal">Comment</a>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -170,4 +179,58 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="formModal" method="POST">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="email2">Comment</label>
+                                    <textarea name="comment" id="" cols="30" rows="10" class="form-control" placeholder="Comment"
+                                        required></textarea>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function capitalize(str) {
+            strVal = '';
+            str = str.split(' ');
+            for (var chr = 0; chr < str.length; chr++) {
+                strVal += str[chr].substring(0, 1).toUpperCase() + str[chr].substring(1, str[chr].length) + ' '
+            }
+            return strVal
+        }
+        $('.modalAction').click(function() {
+            var id = $(this).data('id');
+            var tipe = $(this).data('tipe');
+            var name = $(this).data('name');
+            $('#exampleModalLabel').html('Comment student ' + name + ' for ' + capitalize(tipe));
+            $('#formModal').attr('action', "{{ url('attendance/reminder-comment/') }}/" + id);
+            console.log($(this).data('id'));
+            console.log($(this).data('tipe'));
+
+        });
+    </script>
 @endsection
