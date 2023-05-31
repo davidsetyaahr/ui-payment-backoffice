@@ -114,6 +114,8 @@
                                                     <th class="text-center">Name</th>
                                                     <th class="text-center">Teacher</th>
                                                     <th class="text-center">Level</th>
+                                                    <th class="text-center">Comment Teacher</th>
+                                                    <th class="text-center">Comment Staff</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -128,6 +130,10 @@
                                                         <td>{{ ucwords($item[0]->name) }}</td>
                                                         <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>
+                                                        <td>{{ $item[0]->comment_teacher != null ? $item[0]->comment_teacher : '-' }}
+                                                        </td>
+                                                        <td>{{ $item[0]->comment_staff != null ? $item[0]->comment_staff : '-' }}
+                                                        </td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                         <td>
                                                             @if ($item[0]->is_done == true)
@@ -227,7 +233,7 @@
             var tipe = $(this).data('tipe');
             var name = $(this).data('name');
             $('#exampleModalLabel').html('Comment student ' + name + ' for ' + capitalize(tipe));
-            $('#formModal').attr('action', "{{ url('attendance/reminder-comment/') }}/" + id);
+            $('#formModal').attr('action', "{{ url('attendance/reminder-comment/') }}/" + id + '?type=' + tipe);
             console.log($(this).data('id'));
             console.log($(this).data('tipe'));
 

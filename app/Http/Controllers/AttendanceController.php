@@ -659,11 +659,15 @@ class AttendanceController extends Controller
 
     public function addComment($id, Request $request)
     {
-        return $request->all();
         try {
-            AttendanceDetail::find($id);
-
-            // return redirect()->back()->with('message', 'Berhasil diupdate');
+            $model = AttendanceDetail::find($id);
+            if ($request->type == 'teacher') {
+                $model->comment_teacher = $request->comment;
+            } else {
+                $model->comment_staff = $request->comment;
+            }
+            $model->save();
+            return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
         } catch (\Illuminate\Database\QueryException $e) {

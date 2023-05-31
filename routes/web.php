@@ -75,7 +75,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/reminder', [AttendanceController::class, 'reminder']);
         Route::get('/reminder-done', [AttendanceController::class, 'reminderDone']);
         Route::get('/reminder-absen', [AttendanceController::class, 'reminderAbsen']);
-        Route::post('/reminder-comment/{id}', [AttendanceController::class, 'reminderAbsen']);
+        Route::post('/reminder-comment/{id}', [AttendanceController::class, 'addComment']);
         Route::get('/get-class', [AttendanceController::class, 'getClass']);
         Route::post('/update-class', [AttendanceController::class, 'updateClass']);
     });
