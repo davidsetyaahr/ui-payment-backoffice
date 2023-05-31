@@ -67,33 +67,33 @@
                                     <tr>
                                         <th width="10%">Nama</th>
                                         @foreach ($attendance as $item)
-                                            <th width="5%">{{date('d/m',strtotime($item->date))}}</th>
+                                            <th width="5%">{{ date('d/m', strtotime($item->date)) }}</th>
                                         @endforeach
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($student as $item)
                                         <tr>
-                                            <td width="10%">{{$item->name}}</td>
+                                            <td width="10%">{{ $item->name }}</td>
                                             @foreach ($attendance as $i)
                                                 @php
-                                                    $cek = App\Models\AttendanceDetail::where('attendance_id',$i->id)->where('student_id',$item->id);
+                                                    $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
                                                     $count = $cek->count();
-                                                    if($count == 1 && $cek->first()->is_absent == '1'){
+                                                    if ($count == 1 && $cek->first()->is_absent == '1') {
                                                         $absen = true;
-                                                    }
-                                                    else{
+                                                    } else {
                                                         $absen = false;
                                                     }
                                                 @endphp
-                                                <td  width="5%" <?= !$absen ? "bgcolor='yellow'" : '' ?>><?= !$absen ? '' : '<span class="fa fa-check"></span>' ?></td>
+                                                <td width="5%" <?= !$absen ? "bgcolor='yellow'" : '' ?>>
+                                                    <?= !$absen ? '' : '<span class="fa fa-check"></span>' ?></td>
                                             @endforeach
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-    
+
                     </div>
                     <form
                         action="{{ $data->type == 'create' ? url('attendance/store') : url('attendance/update', $data->id) }}"
@@ -107,6 +107,7 @@
                             <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
                             <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
                             <input type="hidden" name="time" value="{{ request()->get('time') }}">
+                            <input type="hidden" name="teacher" value="{{ request()->get('teacher') }}">
                             <div class="card-body">
                                 <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
                                 <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
@@ -134,7 +135,7 @@
                                                 <tbody>
                                                     @php
                                                         $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-
+                                                        
                                                         $no = 1;
                                                     @endphp
                                                     @foreach ($student as $keyIt => $it)
@@ -172,11 +173,11 @@
                                                                         ->where('student_id', $it->id)
                                                                         ->where('attendance_id', $data->attendanceId)
                                                                         ->get();
-
+                                                                    
                                                                     foreach ($getStudentPointCategory as $k => $v) {
                                                                         array_push($studentPointCategory, $v->point_category_id);
                                                                     }
-
+                                                                    
                                                                     $isChecked = false;
                                                                     if ($data->type == 'create') {
                                                                         $isChecked = false;
@@ -220,7 +221,7 @@
                                                                             } else {
                                                                                 $pointDay = 10;
                                                                             }
-
+                                                                            
                                                                             if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
                                                                                 $totalPoint = $it->course_hour . '0';
                                                                             } else {
@@ -239,7 +240,8 @@
                                                                     style="width:100%;"
                                                                     name="categories[{{ $no }}][]"
                                                                     placeholder="Select Category"
-                                                                    id="categories{{ $no }}" multiple="multiple">
+                                                                    id="categories{{ $no }}"
+                                                                    multiple="multiple">
 
                                                                     @foreach ($pointCategories as $st)
                                                                         <option value="{{ $st->id }}"
@@ -275,7 +277,7 @@
                                                                         $cekTotalPoint = \DB::table('attendance_details')
                                                                             ->where('attendance_id', $data->attendanceId)
                                                                             ->where('student_id', $it->id);
-
+                                                                    
                                                                         if ($cekTotalPoint->count() == 1) {
                                                                             $getTotalPoint = $cekTotalPoint->first();
                                                                             $totalPoint = $getTotalPoint->total_point;
@@ -360,7 +362,7 @@
                                 ->orderBy('attendances.id', 'DESC')
                                 ->groupBy('attendances.id')
                                 ->get();
-
+                            
                         @endphp
 
                         @if (Auth::guard('teacher')->check() == true)

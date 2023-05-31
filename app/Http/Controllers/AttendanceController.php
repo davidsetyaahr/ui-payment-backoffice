@@ -92,7 +92,6 @@ class AttendanceController extends Controller
 
         $class = Price::where('id', $priceId)->first();
         $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
-        // return $cek;
         if ($cek) {
             $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
             foreach ($detail as $key => $id) {
@@ -185,7 +184,7 @@ class AttendanceController extends Controller
                 'day2' => (int)$request->day2,
                 'course_time' => $request->time,
                 'date' => date('Y-m-d'),
-                'teacher_id' => Auth::guard('teacher')->check() == true ? Auth::guard('teacher')->user()->id : Auth::guard('staff')->user()->id,
+                'teacher_id' => $request->teacher,
                 'activity' => $request->comment,
                 'text_book' => $request->textBook,
                 'excercise_book' => $request->excerciseBook,
