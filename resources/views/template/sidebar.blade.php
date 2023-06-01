@@ -142,7 +142,7 @@
                     <li class="nav-item {{ Request::segment(1) == 'history-point' ? 'active' : '' }}">
                         <a href="{{ url('/history-point') }}" class="collapsed">
                             <i class="fas fa-book"></i>
-                            <p>Point Histories</p>
+                            <p>Point History</p>
                         </a>
 
                     </li>
