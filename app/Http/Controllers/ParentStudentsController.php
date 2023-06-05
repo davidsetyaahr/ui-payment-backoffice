@@ -105,7 +105,7 @@ class ParentStudentsController extends Controller
 
     public function barcode()
     {
-        $data = Students::where('status', 'ACTIVE')->limit(10)->get();
+        $data = Students::where('status', 'ACTIVE')->get();
         return view('parents.barcode', compact('data'));
     }
 
