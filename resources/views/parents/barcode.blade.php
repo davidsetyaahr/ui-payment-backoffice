@@ -67,7 +67,7 @@
                                             <tr>
                                                 <td>{{ $item->id }}</td>
                                                 <td>{{ ucwords($item->name) }}</td>
-                                                <td><img src="{{ url('storage/barcode/' . $item->barcode . '.jpg') }}">
+                                                <td><img src="{{ url('storage/barcode/' . $item->barcode) }}">
                                                 </td>
                                                 <td><a href="{{ url('barcode-download/' . $item->barcode) }}"
                                                         class="btn btn-sm btn-primary">Download</a>
