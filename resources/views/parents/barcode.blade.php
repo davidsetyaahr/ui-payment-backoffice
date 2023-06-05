@@ -41,7 +41,15 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Data Parents</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="card-title">Data Parents</h4>
+                                </div>
+                                <div class="col-md-6" style="text-align: end
+                                ">
+                                    <a href="{{ url('get-barcode-student') }}" class="btn btn-primary">Update Barcode</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -59,11 +67,11 @@
                                             <tr>
                                                 <td>{{ $item->id }}</td>
                                                 <td>{{ ucwords($item->name) }}</td>
-                                                <td><img src="{{ url('storage/barcode/' . $item->id . '.jpg') }}">
+                                                <td><img src="{{ url('storage/barcode/' . $item->barcode . '.jpg') }}">
                                                 </td>
-                                                <td><a href="{{ url('barcode-download/' . $item->id) }}"
+                                                <td><a href="{{ url('barcode-download/' . $item->barcode) }}"
                                                         class="btn btn-sm btn-primary">Download</a>
-                                                    <a href="{{ url('barcode-print/' . $item->id) }}" target="_blank"
+                                                    <a href="{{ url('barcode-print/' . $item->barcode) }}" target="_blank"
                                                         class="btn btn-sm btn-success">Print</a>
                                                 </td>
                                                 </td>

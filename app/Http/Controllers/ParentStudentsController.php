@@ -92,16 +92,20 @@ class ParentStudentsController extends Controller
 
     public function student()
     {
-        $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
-        $student = Students::where('status', 'ACTIVE')->get();
+        // $generator = new \Picqer\Barcode\BarcodeGeneratorJPG();
+        $student = Students::where('status', 'ACTIVE')->whereBetween('id', [1, 4533])->get();
         foreach ($student as $key => $value) {
-            File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
+            $getStudent = Students::find($value->id);
+            $getStudent->barcode = $value->id . '.jpg';
+            $getStudent->save();
+            // File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
         }
+        return redirect('/barcode-student')->with('status', 'Berhasil mengupdate barcode');
     }
 
     public function barcode()
     {
-        $data = Students::where('status', 'ACTIVE')->get();
+        $data = Students::where('status', 'ACTIVE')->limit(10)->get();
         return view('parents.barcode', compact('data'));
     }
 
