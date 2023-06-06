@@ -210,7 +210,7 @@ class ReedemPointController extends Controller
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime);
-        if (Auth::guard('teacher')->check() == true) {
+        if (Auth::guard('teacher')->check() == true && Auth::guard('teacher')->user()->id != 21 && Auth::guard('teacher')->user()->id != 22) {
             $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
         } else {
             $student = $student->where('id_teacher', $reqTeacher);
