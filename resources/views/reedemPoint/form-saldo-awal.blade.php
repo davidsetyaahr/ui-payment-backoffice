@@ -79,6 +79,7 @@
                                                         <th class="text-center">No</th>
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center">Opening Balance</th>
+                                                        <th class="text-center"></th>
                                                     </tr>
                                                 </thead>
 
@@ -96,6 +97,14 @@
                                                             <td>
                                                                 <input type="text" class="form-control"
                                                                     name="saldo_awal[]" value="{{ $it->total_point }}">
+                                                            </td>
+                                                            <td>
+                                                                <a href="javascript:void(0)" class="btn btn-success btn-sm"
+                                                                    data-toggle="modal" data-target="#mdlTambahPoint"
+                                                                    data-id="{{ $it->id }}"
+                                                                    data-name="{{ ucwords($it->name) }}"
+                                                                    id="addPointButton">Add
+                                                                    Point</a>
                                                             </td>
                                                         </tr>
                                                         @php
@@ -119,6 +128,33 @@
                             </div>
                             {{-- @endif --}}
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="mdlTambahPoint" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nameStudent">Add Point Student</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="submitPoint" action="{{ url('pemberian-saldo') }}" method="POST">
+                        <div class="modal-body">
+                            @csrf
+                            <div class="form-group">
+                                <label for="">Point</label>
+                                <input type="number" class="form-control" name="addPoint" id="addPoint" required>
+                                <input type="hidden" class="form-control" name="idStudent" id="idStudent" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+
                     </form>
                 </div>
             </div>
@@ -211,6 +247,13 @@
                 window.location.href = "{{ url('/attendance/form/' . $data->id) }}?day=" + day + "&time=" + time;
             }
         }
+
+        $('#addPointButton').click(function() {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            $('#idStudent').val(id);
+            $('#nameStudent').html('Add Point ' + name);
+        });
     </script>
 
     <script></script>

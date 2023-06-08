@@ -275,4 +275,21 @@ class ReedemPointController extends Controller
         $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
+
+    public function giftPoint(Request $request)
+    {
+        $student = Students::find($request->idStudent);
+        $point = new PointHistory();
+        $point->student_id = $request->idStudent;
+        $point->date = date('Y-m-d');
+        $point->total_point = $request->addPoint;
+        $point->keterangan = 'Gift';
+        $point->type = 'in';
+        $point->balance_in_advanced = $student->total_point;
+        $point->save();
+        Students::where('id', $request->idStudent)->update([
+            'total_point' => $student->total_point + $request->addPoint,
+        ]);
+        return redirect()->back()->withStatus('Data berhasil diperbarui ');
+    }
 }
