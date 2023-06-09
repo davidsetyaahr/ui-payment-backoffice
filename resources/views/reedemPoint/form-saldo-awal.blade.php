@@ -92,19 +92,20 @@
                                                             <td class="text-center" style="">{{ $no }}
                                                             </td>
                                                             <td style="">{{ ucwords($it->name) }}</td>
-                                                            <input type="hidden" readonly name="studentId[]"
-                                                                value="{{ $it->id }}">
+                                                            <input type="hidden"
+                                                                {{ $it->total_point != 0 ? 'readonly disabled' : '' }}
+                                                                name="studentId[]" value="{{ $it->id }}">
                                                             <td>
                                                                 <input type="text" class="form-control"
                                                                     name="saldo_awal[]" value="{{ $it->total_point }}"
                                                                     {{ $it->total_point != 0 ? 'readonly disabled' : '' }}>
                                                             </td>
                                                             <td>
-                                                                <a href="javascript:void(0)" class="btn btn-success btn-sm"
+                                                                <a href="javascript:void(0)"
+                                                                    class="btn btn-success btn-sm addPointButton"
                                                                     data-toggle="modal" data-target="#mdlTambahPoint"
                                                                     data-id="{{ $it->id }}"
-                                                                    data-name="{{ ucwords($it->name) }}"
-                                                                    id="addPointButton">Add
+                                                                    data-name="{{ ucwords($it->name) }}">Add
                                                                     Point</a>
                                                             </td>
                                                         </tr>
@@ -249,7 +250,7 @@
             }
         }
 
-        $('#addPointButton').click(function() {
+        $('.addPointButton').click(function() {
             var id = $(this).data('id');
             var name = $(this).data('name');
             $('#idStudent').val(id);
