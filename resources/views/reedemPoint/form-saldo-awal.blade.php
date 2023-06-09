@@ -96,7 +96,8 @@
                                                                 value="{{ $it->id }}">
                                                             <td>
                                                                 <input type="text" class="form-control"
-                                                                    name="saldo_awal[]" value="{{ $it->total_point }}">
+                                                                    name="saldo_awal[]" value="{{ $it->total_point }}"
+                                                                    {{ $it->total_point == 0 ? 'readonly' : '' }}>
                                                             </td>
                                                             <td>
                                                                 <a href="javascript:void(0)" class="btn btn-success btn-sm"
