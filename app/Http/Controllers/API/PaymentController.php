@@ -214,74 +214,78 @@ class PaymentController extends Controller
     public function getBillMonth($studentId)
     {
         try {
-            $detailPaid = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->orderBy('id', 'DESC')->first();
-            $payDetail = DB::table('paydetail')->where('studentid', $studentId)->where('category', 'COURSE')->first();
-            $exPayDetailMonth = explode('-', $payDetail->monthpay);
-            $getPayDetailMonth = (int)$exPayDetailMonth[1]/*  . '-' . $exPayDetailMonth[0] */;
-            $student = Students::find($studentId);
-            $price = Price::find($student->priceid);
-            if ($detailPaid != null) {
-                $exMonth = explode(' ', $detailPaid->payment);
-                $month = explode('-', $exMonth[1]);
-                $detailPaid->month = (int)$month[0];
-                $exCourse = explode('COURSE ', $detailPaid->payment);
-                $exCourseMonth = explode('-', $exCourse[1]);
-                if ($getPayDetailMonth != (int)$exCourseMonth[0]) {
-                    if ($detailPaid->month != now()->month) {
-                        $model = new PaymentBill();
-                        $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
-                        $model->total_price = $price->course;
-                        $model->created_by = Auth::guard('parent')->user()->name;
-                        $model->updated_by = Auth::guard('parent')->user()->name;
-                        $model->save();
+            // $detailPaid = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->orderBy('id', 'DESC')->first();
+            // $payDetail = DB::table('paydetail')->where('studentid', $studentId)->where('category', 'COURSE')->first();
+            // $exPayDetailMonth = explode('-', $payDetail->monthpay);
+            // $getPayDetailMonth = (int)$exPayDetailMonth[1]/*  . '-' . $exPayDetailMonth[0] */;
+            // $student = Students::find($studentId);
+            // $price = Price::find($student->priceid);
+            // if ($detailPaid != null) {
+            //     $exMonth = explode(' ', $detailPaid->payment);
+            //     $month = explode('-', $exMonth[1]);
+            //     $detailPaid->month = (int)$month[0];
+            //     $exCourse = explode('COURSE ', $detailPaid->payment);
+            //     $exCourseMonth = explode('-', $exCourse[1]);
+            //     if ($getPayDetailMonth != (int)$exCourseMonth[0]) {
+            //         if ($detailPaid->month != now()->month) {
+            //             $model = new PaymentBill();
+            //             $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
+            //             $model->total_price = $price->course;
+            //             $model->created_by = Auth::guard('parent')->user()->name;
+            //             $model->updated_by = Auth::guard('parent')->user()->name;
+            //             $model->save();
 
-                        $modelDetail = new PaymentBillDetail();
-                        $modelDetail->id_payment_bill = $model->id;
-                        $modelDetail->student_id = $studentId;
-                        $modelDetail->category = 'COURSE';
-                        $modelDetail->price = $price->course;
-                        $modelDetail->unique_code = '-';
-                        $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
-                        $modelDetail->status = 'Waiting';
-                        $modelDetail->save();
-                        return response()->json([
-                            'code' => '00',
-                            'payload' => 'Success1 ' . $detailPaid->id . '/' . $payDetail->id
-                        ], 200);
-                    } else {
-                        return response()->json([
-                            'code' => '00',
-                            'payload' => 'Pembayaran untuk bulan ini sudah tertagih',
-                        ], 200);
-                    }
-                } else {
-                    return response()->json([
-                        'code' => '00',
-                        'payload' => 'Pembayaran untuk bulan ini sudah terbayar',
-                    ], 200);
-                }
-            } else {
-                $model = new PaymentBill();
-                $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
-                $model->total_price = $price->course;
-                $model->created_by = Auth::guard('parent')->user()->name;
-                $model->updated_by = Auth::guard('parent')->user()->name;
-                $model->save();
+            //             $modelDetail = new PaymentBillDetail();
+            //             $modelDetail->id_payment_bill = $model->id;
+            //             $modelDetail->student_id = $studentId;
+            //             $modelDetail->category = 'COURSE';
+            //             $modelDetail->price = $price->course;
+            //             $modelDetail->unique_code = '-';
+            //             $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
+            //             $modelDetail->status = 'Waiting';
+            //             $modelDetail->save();
+            //             return response()->json([
+            //                 'code' => '00',
+            //                 'payload' => 'Success1 ' . $detailPaid->id . '/' . $payDetail->id
+            //             ], 200);
+            //         } else {
+            //             return response()->json([
+            //                 'code' => '00',
+            //                 'payload' => 'Pembayaran untuk bulan ini sudah tertagih',
+            //             ], 200);
+            //         }
+            //     } else {
+            //         return response()->json([
+            //             'code' => '00',
+            //             'payload' => 'Pembayaran untuk bulan ini sudah terbayar',
+            //         ], 200);
+            //     }
+            // } else {
+            //     $model = new PaymentBill();
+            //     $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
+            //     $model->total_price = $price->course;
+            //     $model->created_by = Auth::guard('parent')->user()->name;
+            //     $model->updated_by = Auth::guard('parent')->user()->name;
+            //     $model->save();
 
-                $modelDetail = new PaymentBillDetail();
-                $modelDetail->id_payment_bill = $model->id;
-                $modelDetail->student_id = $studentId;
-                $modelDetail->category = 'COURSE';
-                $modelDetail->price = $price->course;
-                $modelDetail->unique_code = '-';
-                $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
-                $modelDetail->status = 'Waiting';
-                $modelDetail->save();
-                return response()->json([
-                    'code' => '00',
-                    'payload' => 'Success3',
-                ], 200);
-            }
+            //     $modelDetail = new PaymentBillDetail();
+            //     $modelDetail->id_payment_bill = $model->id;
+            //     $modelDetail->student_id = $studentId;
+            //     $modelDetail->category = 'COURSE';
+            //     $modelDetail->price = $price->course;
+            //     $modelDetail->unique_code = '-';
+            //     $modelDetail->payment = now()->month < 10 ? 'COURSE 0' . now()->month . '-' . now()->year : 'COURSE ' . now()->month . '-' . now()->year;
+            //     $modelDetail->status = 'Waiting';
+            //     $modelDetail->save();
+            //     return response()->json([
+            //         'code' => '00',
+            //         'payload' => 'Success3',
+            //     ], 200);
+            // }
+            return response()->json([
+                'code' => '00',
+                'payload' => 'Nothing Happend',
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'code' => '400',
