@@ -78,6 +78,7 @@ Route::middleware(['web'])->group(function () {
         Route::post('/reminder-comment/{id}', [AttendanceController::class, 'addComment']);
         Route::get('/get-class', [AttendanceController::class, 'getClass']);
         Route::post('/update-class', [AttendanceController::class, 'updateClass']);
+        Route::get('/get-student', [AttendanceController::class, 'ajaxStudent']);
     });
     Route::get('/mutasi', [AttendanceController::class, 'mutasi']);
     Route::post('/mutasi', [AttendanceController::class, 'storeMutasi']);

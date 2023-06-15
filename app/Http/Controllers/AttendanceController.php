@@ -632,35 +632,83 @@ class AttendanceController extends Controller
 
     public function updateClass(Request $request)
     {
+        // try {
+        //     $reqDay1 = $request->update_day1;
+        //     $reqDay2 = $request->update_day2;
+        //     $reqTime = $request->update_time;
+        //     $priceId = $request->update_class;
+        //     $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+        //         ->where("day2", $reqDay2)
+        //         ->where('course_time', $reqTime)->get();
+        //     foreach ($student as $key => $value) {
+        //         if ($value->priceid != $request->update_level) {
+        //             $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
+        //             $mutasi = new Mutasi;
+        //             $mutasi->student_id = $value->id;
+        //             $mutasi->price_id = $priceId;
+        //             if ($score != null) {
+        //                 $mutasi->score_id = $score->id;
+        //             }
+        //             $mutasi->save();
+        //         }
+        //     }
+        //     DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+        //         ->where("day2", $reqDay2)
+        //         ->where('course_time', $reqTime)->update([
+        //             "day1" => $request->update_day_one,
+        //             "day2" => $request->update_day_two,
+        //             "course_time" => $request->update_course_time,
+        //             "priceid" => $request->update_level,
+        //             "id_teacher" => $request->update_teacher,
+        //         ]);
+
+        //     return redirect()->back()->with('message', 'Berhasil diupdate');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
+        // } catch (\Illuminate\Database\QueryException $e) {
+        //     return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
+        // }
+        // return $request->all();
         try {
             $reqDay1 = $request->update_day1;
             $reqDay2 = $request->update_day2;
             $reqTime = $request->update_time;
             $priceId = $request->update_class;
-            $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->get();
-            foreach ($student as $key => $value) {
-                if ($value->priceid != $request->update_level) {
-                    $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
+            foreach ($request->studentId as $keyS => $valueS) {
+                $student = DB::table('student')->where('id', $valueS)->where('priceid', $priceId)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->first();
+                if ($student->priceid != $request->update_level) {
+                    $score = StudentScore::where('student_id', $request->student)->where('price_id', $student->priceid)->orderBy('id', 'desc')->first();
                     $mutasi = new Mutasi;
-                    $mutasi->student_id = $value->id;
+                    $mutasi->student_id = $student->id;
                     $mutasi->price_id = $priceId;
                     if ($score != null) {
                         $mutasi->score_id = $score->id;
                     }
                     $mutasi->save();
                 }
+
+                if ($student->is_class_new == false) {
+                    DB::table('student')->where('id', $student->id)->update([
+                        "is_class_new" => true,
+                    ]);
+                }
+                if ($student->is_class_new == true) {
+                    DB::table('student')->where('id', $student->id)->update([
+                        "is_class_new" => false,
+                    ]);
+                }
+                DB::table('student')->where('id', $valueS)->where('priceid', $priceId)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->update([
+                        "day1" => $request->update_day_one,
+                        "day2" => $request->update_day_two,
+                        "course_time" => $request->update_course_time,
+                        "priceid" => $request->update_level,
+                        "id_teacher" => $request->update_teacher,
+                    ]);
             }
-            DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->update([
-                    "day1" => $request->update_day_one,
-                    "day2" => $request->update_day_two,
-                    "course_time" => $request->update_course_time,
-                    "priceid" => $request->update_level,
-                    "id_teacher" => $request->update_teacher,
-                ]);
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
@@ -686,5 +734,16 @@ class AttendanceController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan pada database : ' . $e->getMessage());
         }
+    }
+
+
+    function ajaxStudent(Request $request)
+    {
+        $student = Students::where('status', 'ACTIVE')->where('priceid', $request->class)
+            ->where("day1", $request->day1)
+            ->where("day2", $request->day2)
+            ->where('course_time', $request->time)
+            ->where('id_teacher', $request->teacher)->get();
+        return $student;
     }
 }
