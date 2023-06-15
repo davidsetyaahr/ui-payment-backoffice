@@ -356,23 +356,23 @@
             $('select[name="update_day_two"]').select2("val", day2);
             $('#update_level').select2("val", course);
             $('select[name="update_teacher"]').select2("val", idTeacher);
-            $('.rowStudent').empty();
-            $.ajax({
-                type: "get",
-                url: "{{ url('attendance/get-student/') }}?class=" + course + "&day1=" + day1 + "&day2=" + day2 +
-                    "&time=" + courseTime + "&teacher=" + idTeacher,
-                dataType: "json",
-                success: function(response) {
-                    $(response).each(function(i, v) {
-                        $('.rowStudent').append(`
-                                        <div class="form-group">
-                                            <label for="">${v.name}</label>
-                                            <input type="checkbox" name="studentId[]" value="${v.id}">
-                                        </div>
-                                    `);
-                    });
-                }
-            });
+            // $('.rowStudent').empty();
+            // $.ajax({
+            //     type: "get",
+            //     url: "{{ url('attendance/get-student/') }}?class=" + course + "&day1=" + day1 + "&day2=" + day2 +
+            //         "&time=" + courseTime + "&teacher=" + idTeacher,
+            //     dataType: "json",
+            //     success: function(response) {
+            //         $(response).each(function(i, v) {
+            //             $('.rowStudent').append(`
+        //                             <div class="form-group">
+        //                                 <label for="">${v.name}</label>
+        //                                 <input type="checkbox" name="studentId[]" value="${v.id}">
+        //                             </div>
+        //                         `);
+            //         });
+            //     }
+            // });
         }
 
         function updateModalPrv(id) {
