@@ -163,6 +163,7 @@ class AttendanceController extends Controller
             ->where('day1', $reqDay1)
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
+            ->where('teacher_id', $reqTeacher)
             ->orderBy('id', 'asc')
             ->get();
 
