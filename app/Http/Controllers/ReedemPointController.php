@@ -40,63 +40,72 @@ class ReedemPointController extends Controller
     public function store(Request $request)
     {
         try {
-
-            $student = $request->student == null && $request->id_student != null ? $request->id_student : $request->student;
-            $findPointStudent = Students::find($student);
-            ReedemPoint::create([
-                'point' => intval($request->total_point),
-                'student_id' => $student,
-            ]);
-            PointHistory::create([
-                'student_id' => $student,
-                'date' => date('Y-m-d'),
-                'total_point' => intval($request->total_point),
-                'type' => 'redeem',
-                'keterangan' => 'Reedem Point',
-                'balance_in_advanced' => $findPointStudent->total_point,
-            ]);
-            $newPoint = intval($request->point) - intval($request->total_point);
-            Students::where('id', $student)
-                ->update([
-                    'total_point' =>  $newPoint,
-                ]);
-            return redirect('/reedemPoint')->with('status', 'Success Reedem Point');
-            // for ($i = 0; $i < count($request->item); $i++) {
-            //     $items = ReedemItems::where('id', $request->item[$i])->first();
-            //     $subTotal = intval($items->point) * intval($request->qty[$i]);
-            //     $tmpTotal += $subTotal;
-            // }
-            // if ($request->point < $tmpTotal) {
-            //     return back()->with('error', 'Point tidak cukup');
-            // } else {
-            //     for ($i = 0; $i < count($request->item); $i++) {
-            //         $items = ReedemItems::where('id', $request->item[$i])->first();
-            //         $subTotal = intval($items->point) * intval($request->qty[$i]);
-            //         ReedemPoint::create([
-            //             'item_id' => $request->item[$i],
-            //             'point' => intval($items->point),
-            //             'student_id' => $student,
-            //             'qty' => $request->qty[$i],
-            //         ]);
-            //         PointHistory::create([
-            //             'student_id' => $student,
-            //             'date' => date('Y-m-d'),
-            //             'total_point' => intval($items->point),
-            //             'type' => 'redeem',
-            //             'keterangan' => $items->item,
-            //         ]);
-            //         // PointHistoryCategory::create([
-            //         //     'point_history_id' => $history->id,
-            //         //     'point_category_id' =>  $request->item[$i],
-            //         // ]);
-            //     }
-            //     $newPoint = intval($request->point) - $subTotal;
-            //     Students::where('id', $student)
-            //         ->update([
-            //             'total_point' =>  $newPoint,
-            //         ]);
-            //     return redirect('/reedemPoint')->with('status', 'Success Reedem Point');
-            // }
+            if ($request->point >= $request->total_point) {
+                $student = $request->student == null && $request->id_student != null ? $request->id_student : $request->student;
+                $cek = ReedemPoint::where('student_id', $student)->where('date', date('Y-m-d'))->first();
+                if (!$cek) {
+                    $findPointStudent = Students::find($student);
+                    ReedemPoint::create([
+                        'point' => intval($request->total_point),
+                        'student_id' => $student,
+                        'date' => date('Y-m-d'),
+                    ]);
+                    PointHistory::create([
+                        'student_id' => $student,
+                        'date' => date('Y-m-d'),
+                        'total_point' => intval($request->total_point),
+                        'type' => 'redeem',
+                        'keterangan' => 'Reedem Point',
+                        'balance_in_advanced' => $findPointStudent->total_point,
+                    ]);
+                    $newPoint = intval($request->point) - intval($request->total_point);
+                    Students::where('id', $student)
+                        ->update([
+                            'total_point' =>  $newPoint,
+                        ]);
+                    return redirect('/reedemPoint')->with('status', 'Success Reedem Point');
+                    // for ($i = 0; $i < count($request->item); $i++) {
+                    //     $items = ReedemItems::where('id', $request->item[$i])->first();
+                    //     $subTotal = intval($items->point) * intval($request->qty[$i]);
+                    //     $tmpTotal += $subTotal;
+                    // }
+                    // if ($request->point < $tmpTotal) {
+                    //     return back()->with('error', 'Point tidak cukup');
+                    // } else {
+                    //     for ($i = 0; $i < count($request->item); $i++) {
+                    //         $items = ReedemItems::where('id', $request->item[$i])->first();
+                    //         $subTotal = intval($items->point) * intval($request->qty[$i]);
+                    //         ReedemPoint::create([
+                    //             'item_id' => $request->item[$i],
+                    //             'point' => intval($items->point),
+                    //             'student_id' => $student,
+                    //             'qty' => $request->qty[$i],
+                    //         ]);
+                    //         PointHistory::create([
+                    //             'student_id' => $student,
+                    //             'date' => date('Y-m-d'),
+                    //             'total_point' => intval($items->point),
+                    //             'type' => 'redeem',
+                    //             'keterangan' => $items->item,
+                    //         ]);
+                    //         // PointHistoryCategory::create([
+                    //         //     'point_history_id' => $history->id,
+                    //         //     'point_category_id' =>  $request->item[$i],
+                    //         // ]);
+                    //     }
+                    //     $newPoint = intval($request->point) - $subTotal;
+                    //     Students::where('id', $student)
+                    //         ->update([
+                    //             'total_point' =>  $newPoint,
+                    //         ]);
+                    //     return redirect('/reedemPoint')->with('status', 'Success Reedem Point');
+                    // }
+                } else {
+                    return redirect('/reedemPoint')->with('error', 'Reedem Point Failed!');
+                }
+            } else {
+                return redirect('/reedemPoint')->with('error', 'Reedem Point Failed');
+            }
         } catch (\Throwable $th) {
             return back()->with('error', 'Failed Reedem Point');
             //throw $th;
@@ -260,7 +269,7 @@ class ReedemPointController extends Controller
 
     public function historiAjax($id)
     {
-        $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'ASC')->get();
+        $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'DESC')->get();
         return $data;
     }
 

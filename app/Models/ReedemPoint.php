@@ -10,5 +10,5 @@ class ReedemPoint extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'redeem_points';
-    protected $fillable = ['item_id', 'point', 'student_id', 'qty'];
+    protected $fillable = ['item_id', 'point', 'student_id', 'qty', 'date'];
 }
