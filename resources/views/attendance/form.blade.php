@@ -344,7 +344,9 @@
                                     </div>
                                 </div>
 
-
+                                <input type="hidden" class="form-control"
+                                    value="{{ $data->is_presence != false ? '1' : '0' }}" name="cekAllAbsen"
+                                    id="cekAllAbsen">
                             </div>
                             <div class="card-action mt-3">
                                 <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success">Submit</a>
@@ -440,6 +442,11 @@
                         $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
                             "#inpTotalPoint" + i).val() : 0) - conditionPoint);
                         $("#inPointAbsent" + i).text(0);
+                    }
+                    if ($('.cekBox:checked').length != 0) {
+                        $('#cekAllAbsen').val(1);
+                    } else {
+                        $('#cekAllAbsen').val(0);
                     }
                 });
 
