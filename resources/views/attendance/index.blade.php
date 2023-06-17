@@ -27,6 +27,17 @@
                         },
                     });
                 </script>
+            @elseif(session('error'))
+                <script>
+                    swal("Success", "{{ session('error') }}!", {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    });
+                </script>
             @endif
             <div class="row">
                 <div class="col-md-12">

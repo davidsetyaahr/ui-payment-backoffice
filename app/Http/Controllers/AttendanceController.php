@@ -168,7 +168,27 @@ class AttendanceController extends Controller
             ->get();
 
         // return $student;
-        return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
+        if (count($student) != 0) {
+            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
+        } else {
+            $inStudent = Students::where('status', 'INACTIVE')->where('priceid', $class->id)
+                ->where("day1", $reqDay1)
+                ->where("day2", $reqDay2)
+                ->where('course_time', $reqTime);
+            if (Auth::guard('teacher')->check() == true) {
+                $inStudent = $inStudent->where('id_teacher', Auth::guard('teacher')->user()->id);
+            } else {
+                $inStudent = $inStudent->where('id_teacher', $reqTeacher);
+            }
+            $inStudent =   $inStudent->update([
+                'day1' => null,
+                'day2' => null,
+                'course_time' => null,
+                'id_teacher' => null,
+                'id_staff' => null,
+            ]);
+            return redirect('/attendance/class')->with('error', 'There is no student');
+        }
     }
 
     /**
