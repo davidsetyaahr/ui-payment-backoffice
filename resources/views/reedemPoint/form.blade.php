@@ -51,7 +51,7 @@
             @endif
             <div class="row">
                 <div class="col-md-12">
-                    <form action="{{ url('/reedemPoint') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('/reedemPoint') }}" id="form-submit" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card">
                             <div class="card-header">
@@ -208,7 +208,7 @@
                                         <div class="col-md-3" style="padding-left: 0px!important">
                                             <div class="form-group">
                                                 <input type="number" class="form-control" placeholder="Reedem Point"
-                                                    required name="total_point">
+                                                    required name="total_point" id="total_point">
 
                                             </div>
                                         </div>
@@ -216,7 +216,7 @@
                                 </div>
                             </div>
                             <div class="card-action mt-3">
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-success" id="btnSubmit">Submit</button>
                                 <button type="button" data-toggle="modal" data-target="#mdlCancel"
                                     class="btn btn-danger">Cancel</button>
                             </div>
@@ -383,6 +383,28 @@
 
                     }
                 });
+            });
+        });
+
+        $('#btnSubmit').click(function() {
+            var point = $('#total_point').val();
+            swal("Are you sure to reedem " + point + " point?", "Data will be updated", {
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-success',
+                        text: 'Sure'
+                    },
+                    dismiss: {
+                        className: 'btn btn-secondary',
+                        text: 'Cancel'
+                    },
+                },
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result == true) {
+                    $('#form-submit').submit();
+                }
             });
         });
     </script>

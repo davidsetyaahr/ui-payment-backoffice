@@ -73,10 +73,10 @@
                                                 <th>Opening Balance</th>
                                             @endif
                                             <th>Date</th>
-                                            <th>Point</th>
-                                            <th>Keterangan</th>
+                                            <th>Point History</th>
+                                            <th>Detail</th>
                                             <th>Type</th>
-                                            <th>Saldo Point</th>
+                                            <th>Last Balance</th>
                                         </tr>
                                     </thead>
                                     <tbody>
