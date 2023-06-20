@@ -6,7 +6,7 @@
             <!-- Logo Header -->
             <div class="logo-header justify-content-center" data-background-color="blue">
 
-                <a href="{{ url('/dashboard') }}" class="logo">
+                <a href="{{ url('/landing-page/redeem-point') }}" class="logo">
                     <img src="{{ asset('assets/img/ui4.png') }}" width="100px" alt="navbar brand" class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"

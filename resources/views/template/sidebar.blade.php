@@ -171,6 +171,6 @@
     </div>
 @else
     <script>
-        window.location = "https://primtech-sistem.com/ui-payment-backoffice/public/";
+        window.location = "{{ url('/') }}";
     </script>
 @endif
