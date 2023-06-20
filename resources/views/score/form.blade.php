@@ -99,6 +99,14 @@
                                                                 <a class="dropdown-item"
                                                                     href="{{ url('score/form-create?test=') . $itemt->id . '&class=' . $item->priceid . '&day1=' . $item->d1 . '&day2=' . $item->d2 . '&teacher=' . $item->teacher_id . '&time=' . $item->course_time }}">{{ $itemt->name }}</a>
                                                             @endforeach
+                                                            {{-- <a class="dropdown-item" id="getStudent{{ $key }}"
+                                                                href="javascript:void(0)" data-class="{{ $item->priceid }}"
+                                                                data-day1="{{ $item->day1 }}"
+                                                                data-day2="{{ $item->day2 }}"
+                                                                data-teacher="{{ $item->id_teacher }}"
+                                                                data-course="{{ $item->course_time }}"
+                                                                onclick="updateModalReg({{ $key }})">Last Score
+                                                                Student</a> --}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -116,4 +124,31 @@
 
         </div>
     </div>
+    <script>
+        function updateModalReg(id) {
+            var price = $('#getStudent' + id).data('class');
+            var day1 = $('#getStudent' + id).data('day1');
+            var day2 = $('#getStudent' + id).data('day2');
+            var teacher = $('#getStudent' + id).data('teacher');
+            var course = $('#getStudent' + id).data('course');
+            // $('.rowStudent').empty();
+            $.ajax({
+                type: "get",
+                url: "{{ url('attendance/get-student/') }}?class=" + price + "&day1=" + day1 + "&day2=" + day2 +
+                    "&time=" + course + "&teacher=" + teacher,
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    // $(response).each(function(i, v) {
+                    //     $('.rowStudent').append(`
+                //                 <div class="form-group">
+                //                     <label for="">${v.name}</label>
+                //                     <input type="checkbox" name="studentId[]" value="${v.id}">
+                //                 </div>
+                //             `);
+                    // });
+                }
+            });
+        }
+    </script>
 @endsection
