@@ -199,6 +199,7 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         try {
             if ($request->cekAllAbsen == true) {
                 $pointCategories = PointCategories::all();
@@ -221,6 +222,8 @@ class AttendanceController extends Controller
                         'student_id' => $request->studentId[$i],
                         'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
                         'total_point' => $request->totalPoint[$i],
+                        'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                        'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
                     ]);
                     $student = Students::where('id', $request->studentId[$i])->first();
                     Students::where('id', $request->studentId[$i])->update([
@@ -376,6 +379,8 @@ class AttendanceController extends Controller
                             'student_id' => $request->studentId[$i],
                             'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
                             'total_point' => $request->totalPoint[$i],
+                            'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                            'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
                         ]);
 
                         $detailTotalPoint = 0;
@@ -389,6 +394,8 @@ class AttendanceController extends Controller
                             ->update([
                                 'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
                                 'total_point' => $request->totalPoint[$i],
+                                'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                                'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
                             ]);
                     }
                     $student = Students::where('id', $request->studentId[$i])->first();

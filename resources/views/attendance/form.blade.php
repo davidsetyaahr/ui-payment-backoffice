@@ -14,6 +14,127 @@
             height: 35px !important;
             padding: 8px 16px !important;
         }
+
+        .permission {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 22px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .permission input[type=checkbox] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .permissionCheckBox {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: green;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .permission:hover input[type=checkbox]~.permissionCheckBox {
+            background-color: green;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .permission input[type=checkbox]:checked~.permissionCheckBox {
+            background-color: green;
+        }
+
+        /* Create the permissionCheckBox/indicator (hidden when not checked) */
+        .permissionCheckBox:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the permissionCheckBox when checked */
+        .permission input[type=checkbox]:checked~.permissionCheckBox:after {
+            display: block;
+        }
+
+        /* Style the permissionCheckBox/indicator */
+        .permission .permissionCheckBox:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        /* Hide the browser's default checkbox */
+        .alpha input[type=checkbox] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .alphaCheckBox {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: red;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .alpha:hover input[type=checkbox]~.alphaCheckBox {
+            background-color: red;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .alpha input[type=checkbox]:checked~.alphaCheckBox {
+            background-color: red;
+        }
+
+        /* Create the alphaCheckBox/indicator (hidden when not checked) */
+        .alphaCheckBox:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the alphaCheckBox when checked */
+        .alpha input[type=checkbox]:checked~.alphaCheckBox:after {
+            display: block;
+        }
+
+        /* Style the alphaCheckBox/indicator */
+        .alpha .alphaCheckBox:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
     </style>
     <div class="content">
         <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
@@ -85,8 +206,17 @@
                                                         $absen = false;
                                                     }
                                                 @endphp
-                                                <td width="5%" <?= !$absen ? "bgcolor='yellow'" : '' ?>>
-                                                    <?= !$absen ? '' : '<span class="fa fa-check"></span>' ?></td>
+                                                @if ($count == 1 && $cek->first()->is_absent == '1')
+                                                    <td width="5%">
+                                                        <span class="fa fa-check"></span>
+                                                    </td>
+                                                @elseif ($count == 1 && $cek->first()->is_permission == true)
+                                                    <td width="5%" bgcolor='green'></td>
+                                                @elseif ($count == 1 && $cek->first()->is_alpha == true)
+                                                    <td width="5%" bgcolor='red'></td>
+                                                @else
+                                                    <td width="5%" bgcolor='yellow'></td>
+                                                @endif
                                             @endforeach
                                         </tr>
                                     @endforeach
@@ -123,6 +253,7 @@
                                                         <th class="text-center">Name</th>
                                                         <th class="text-center" scope="col" class="w-5"
                                                             style="min-width:3px;">Presence</th>
+                                                        <th class="text-center">Absent</th>
                                                         <th class="text-center">In-Point</th>
                                                         <th class="text-center">Category</th>
                                                         {{-- <th class="text-center">In Point Category</th> --}}
@@ -199,6 +330,69 @@
                                                                     name="isAbsent[{{ $no }}][]"
                                                                     data-hour="{{ $it->course_hour }}"
                                                                     data-class="{{ $it->priceid }}">
+                                                            </td>
+                                                            <td class=" text-center" scope="col"">
+                                                                @php
+                                                                    $isCekPermission = false;
+                                                                    $isCekAlpha = false;
+                                                                    $cekPermission = \DB::table('attendance_details')
+                                                                        ->where('attendance_id', $data->attendanceId)
+                                                                        ->where('student_id', $it->id)
+                                                                        ->where('is_permission', true)
+                                                                        ->count();
+                                                                    $cekAlpha = \DB::table('attendance_details')
+                                                                        ->where('attendance_id', $data->attendanceId)
+                                                                        ->where('student_id', $it->id)
+                                                                        ->where('is_alpha', true)
+                                                                        ->count();
+                                                                    if ($data->type == 'create') {
+                                                                        $isCekAlpha = false;
+                                                                        $isCekPermission = false;
+                                                                    } else {
+                                                                        if ($cekAlpha == 1) {
+                                                                            $isCekAlpha = true;
+                                                                        } else {
+                                                                            $isCekAlpha = false;
+                                                                        }
+                                                                        if ($cekPermission == 1) {
+                                                                            $isCekPermission = true;
+                                                                        } else {
+                                                                            $isCekPermission = false;
+                                                                        }
+                                                                    }
+                                                                @endphp
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <label class="permission">
+                                                                            <input type="hidden"
+                                                                                name="isPermission[{{ $no }}][]"
+                                                                                value="0">
+                                                                            <input type="checkbox"
+                                                                                name="isPermission[{{ $no }}][]"
+                                                                                id="permissionCheckBox{{ $keyIt }}"
+                                                                                value="0"
+                                                                                onclick="permission('{{ $keyIt }}')"
+                                                                                {{ $isCekPermission ? 'checked' : '' }}>
+                                                                            <span class="permissionCheckBox"
+                                                                                style=""></span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="alpha">
+                                                                            <input type="hidden"
+                                                                                name="isAlpha[{{ $no }}][]"
+                                                                                value="0">
+                                                                            <input type="checkbox"
+                                                                                name="isAlpha[{{ $no }}][]"
+                                                                                id="alphaCheckBox{{ $keyIt }}"
+                                                                                value="0"
+                                                                                onclick="alpha('{{ $keyIt }}')"
+                                                                                {{ $isCekAlpha ? 'checked' : '' }}>
+                                                                            <span class="alphaCheckBox"
+                                                                                style=""></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
                                                             </td>
                                                             <td class="text-center" style="">
                                                                 @php
@@ -494,6 +688,27 @@
             // }
             else {
                 window.location.href = "{{ url('/attendance/form/' . $data->id) }}?day=" + day + "&time=" + time;
+            }
+        }
+
+        function permission(key) {
+            if ($('#permissionCheckBox' + key).val() == 0) {
+                $('#permissionCheckBox' + key).val(1);
+                $('#permissionCheckBox').attr('checked', 'checked');
+            } else {
+                $('#permissionCheckBox' + key).val(0);
+                $('#permissionCheckBox').removeAttr('checked');
+            }
+        }
+
+        function alpha(key) {
+            if ($('#alphaCheckBox' + key).val() == 0) {
+                $('#alphaCheckBox' + key).val(1);
+                $('#alphaCheckBox').attr('checked', 'checked');
+            } else {
+                $('#alphaCheckBox' + key).val(0);
+                $('#alphaCheckBox').removeAttr('checked');
+                console.log(key);
             }
         }
 

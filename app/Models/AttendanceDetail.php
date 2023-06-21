@@ -10,5 +10,5 @@ class AttendanceDetail extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'attendance_details';
-    protected $fillable = ['attendance_id', 'student_id', 'is_absent', 'total_point'];
+    protected $fillable = ['attendance_id', 'student_id', 'is_absent', 'total_point', 'is_permission', 'is_alpha'];
 }
