@@ -100,13 +100,22 @@
                                                                     href="{{ url('score/form-create?test=') . $itemt->id . '&class=' . $item->priceid . '&day1=' . $item->d1 . '&day2=' . $item->d2 . '&teacher=' . $item->teacher_id . '&time=' . $item->course_time }}">{{ $itemt->name }}</a>
                                                             @endforeach
                                                             {{-- <a class="dropdown-item" id="getStudent{{ $key }}"
-                                                                href="javascript:void(0)" data-class="{{ $item->priceid }}"
+                                                                href="{{ url('score/form-last/' . $item->priceid) . '?teacher=' . $item->teacher_id . '&day1=' . $item->d1 . '&day2=' . $item->d2 . '&time=' . $item->course_time }}">Last
+                                                                Score
+                                                                Student</a> --}}
+                                                            <a href="javascript:void(0)" class="dropdown-item"
+                                                                onclick="getStudent({{ $key }})"
+                                                                id="lastScore{{ $key }}" data-toggle="modal"
+                                                                data-target="#exampleModal"
+                                                                data-priceid="{{ $item->priceid }}"
+                                                                data-teacher="{{ $item->teacher_id }}"
                                                                 data-day1="{{ $item->day1 }}"
                                                                 data-day2="{{ $item->day2 }}"
-                                                                data-teacher="{{ $item->id_teacher }}"
-                                                                data-course="{{ $item->course_time }}"
-                                                                onclick="updateModalReg({{ $key }})">Last Score
-                                                                Student</a> --}}
+                                                                data-time="{{ $item->course_time }}">
+                                                                Last
+                                                                Score
+                                                                Student
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -124,31 +133,120 @@
 
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email2">Student</label>
+                                <select name="" id="getStudentLast" class="form-control">
+                                    <option value="">---Choose Student---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email2">Class</label>
+                                <select name="" id="getClassLast" class="form-control">
+                                    <option value="">---Choose Class---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email2">Test</label>
+                                <select name="" id="getTestLast" class="form-control">
+                                    <option value="">---Choose Test---</option>
+                                    @foreach ($test as $itemt)
+                                        <option value="{{ $itemt->id }}">{{ $itemt->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createScore">Create Score Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        function updateModalReg(id) {
-            var price = $('#getStudent' + id).data('class');
-            var day1 = $('#getStudent' + id).data('day1');
-            var day2 = $('#getStudent' + id).data('day2');
-            var teacher = $('#getStudent' + id).data('teacher');
-            var course = $('#getStudent' + id).data('course');
-            // $('.rowStudent').empty();
+        function getStudent(key) {
+            var selector = $('#lastScore' + key)
+            var priceid = $(selector).data('priceid');
+            var day1 = $(selector).data('day1');
+            var day2 = $(selector).data('day2');
+            var teacher = $(selector).data('teacher');
+            var time = $(selector).data('time');
+            // Ajax student
             $.ajax({
                 type: "get",
-                url: "{{ url('attendance/get-student/') }}?class=" + price + "&day1=" + day1 + "&day2=" + day2 +
-                    "&time=" + course + "&teacher=" + teacher,
+                url: "{{ url('attendance/get-student/') }}?class=" + priceid + "&day1=" + day1 + "&day2=" + day2 +
+                    "&time=" + time + "&teacher=" + teacher,
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
-                    // $(response).each(function(i, v) {
-                    //     $('.rowStudent').append(`
-                //                 <div class="form-group">
-                //                     <label for="">${v.name}</label>
-                //                     <input type="checkbox" name="studentId[]" value="${v.id}">
-                //                 </div>
-                //             `);
-                    // });
+                    $('#getStudentLast').empty();
+                    $('#getStudentLast').append(`
+                            <option value="">---Choose Student---</option>
+                    `);
+                    $(response).each(function(i, v) {
+                        $('#getStudentLast').append(`
+                                    <option value="${v.id}">${v.name}</option>
+                            `);
+                    });
                 }
             });
         }
+
+        $('#getStudentLast').change(function() {
+            $.ajax({
+                type: "get",
+                url: "{{ url('score/ajax-last-class/') }}?id=" + $(this).val(),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    $('#getClassLast').empty();
+                    $('#getClassLast').append(`
+                        <option value="">---Choose Class---</option>
+                `);
+                    $(response).each(function(i, v) {
+                        $('#getClassLast').append(`
+                                <option value="${v.price_id}">${v.program}</option>
+                        `);
+                    });
+                }
+            });
+        });
+
+        $('#createScore').click(function() {
+            var student = $('#getStudentLast').val();
+            var price = $('#getClassLast').val();
+            var test = $('#getTestLast').val();
+            if (price != '') {
+                window.location.href = "{{ url('score/create-last') }}?type=create&class=" + price + "&student=" +
+                    student +
+                    "&test=" + test;
+            } else {
+                swal("Warning", "Choose class!", {
+                    icon: "warning",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                });
+            }
+        });
     </script>
 @endsection

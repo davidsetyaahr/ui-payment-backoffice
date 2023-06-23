@@ -88,6 +88,24 @@ class ScoreController extends Controller
         return view('score.form-create', compact('class', 'test', 'title', 'data', 'item', 'students'));
     }
 
+    public function createLastFrom(Request $request)
+    {
+        $students = Students::where('status', 'ACTIVE')->get();
+        $test = ModelsTests::all();
+        $item = '';
+        if ($request->class == 1 || $request->class == 2 || $request->class == 3 || $request->class == 4 || $request->class == 5 || $request->class == 6) {
+            $item = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->orderBy('id', 'ASC')->get();
+        } else {
+            $item = TestItems::orderBy('id', 'ASC')->get();
+        }
+        $class = Price::all();
+        $title = 'Input Score';
+        $data = (object)[
+            'type' => 'create',
+        ];
+        return view('score.form-create-last', compact('class', 'test', 'title', 'data', 'item', 'students'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -96,7 +114,6 @@ class ScoreController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
         try {
             $scores = new StudentScore;
             $scores->test_id = $request->test;
@@ -113,7 +130,11 @@ class ScoreController extends Controller
                     'score' => $request->score[$i],
                 ]);
             }
-            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
+            if ($request->day1 != null) {
+                return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
+            } else {
+                return redirect()->back()->with('success', 'Success add Score');
+            }
         } catch (\Throwable $th) {
             return back()->with('error', 'Failed to save data');
             return $th;
@@ -159,6 +180,7 @@ class ScoreController extends Controller
                 'average_score' => round($request->total),
                 'comment' => $request->comment ?? '-',
                 'price_id' => $request->classt,
+                'date' => $request->date,
             ]);
             for ($i = 0; $i < count($request->items); $i++) {
                 StudentScoreDetail::where('id',  $request->idScore[$i])
@@ -166,7 +188,11 @@ class ScoreController extends Controller
                         'score' => $request->score[$i],
                     ]);
             }
-            return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
+            if ($request->day1 != null) {
+                return redirect('score/form-create?test=' . $request->test . '&class=' . $request->classt . '&day1=' . $request->day1 . '&day2=' . $request->day2 . '&teacher=' . $request->teacher . '&time=' . $request->time)->with('success', 'Success add Score');
+            } else {
+                return redirect()->back()->with('success', 'Success edit Score');
+            }
         } catch (\Throwable $th) {
             return $th;
             return back()->with('error', 'Failed to update data');
@@ -251,5 +277,26 @@ class ScoreController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+    public function createLast($priceId, Request $request)
+    {
+        $students = Students::where('status', 'ACTIVE')->where('id_teacher', $request->teacher)->where('course_time', $request->time)->where('day1', $request->day1)->where('day2', $request->day2)->where('priceid', $priceId)->get();
+        return view('score.form-last-class', compact('students'));
+    }
+
+    public function ajaxLastClass(Request $request)
+    {
+        $students = DB::table('mutasi_siswa as ms')
+            ->join('student as s', 's.id', 'ms.student_id')
+            ->join('price as p', 'p.id', 'ms.price_id')
+            ->select(
+                'ms.student_id',
+                'ms.price_id',
+                'p.program',
+            )
+            ->where('student_id', $request->id)
+            ->get();
+        return $students;
     }
 }
