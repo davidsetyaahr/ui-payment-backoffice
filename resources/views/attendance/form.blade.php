@@ -387,7 +387,8 @@
                                                                                 id="alphaCheckBox{{ $keyIt }}"
                                                                                 value="0"
                                                                                 onclick="alpha('{{ $keyIt }}')"
-                                                                                {{ $isCekAlpha ? 'checked' : '' }}>
+                                                                                {{ $isCekAlpha ? 'checked' : '' }}
+                                                                                class="form-check-input cekBoxAlpha">
                                                                             <span class="alphaCheckBox"
                                                                                 style=""></span>
                                                                         </label>
@@ -540,7 +541,7 @@
 
                                 <input type="hidden" class="form-control"
                                     value="{{ $data->is_presence != false ? '1' : '0' }}" name="cekAllAbsen"
-                                    id="cekAllAbsen">
+                                    id="cekAllAbsen" class="checkAllAbsen">
                             </div>
                             <div class="card-action mt-3">
                                 <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success">Submit</a>
@@ -694,21 +695,27 @@
         function permission(key) {
             if ($('#permissionCheckBox' + key).val() == 0) {
                 $('#permissionCheckBox' + key).val(1);
-                $('#permissionCheckBox').attr('checked', 'checked');
+                $('#permissionCheckBox' + key).attr('checked', 'checked');
             } else {
                 $('#permissionCheckBox' + key).val(0);
-                $('#permissionCheckBox').removeAttr('checked');
+                $('#permissionCheckBox' + key).removeAttr('checked');
             }
+
         }
 
         function alpha(key) {
             if ($('#alphaCheckBox' + key).val() == 0) {
                 $('#alphaCheckBox' + key).val(1);
-                $('#alphaCheckBox').attr('checked', 'checked');
+                $('#alphaCheckBox' + key).attr('checked', 'checked');
             } else {
                 $('#alphaCheckBox' + key).val(0);
-                $('#alphaCheckBox').removeAttr('checked');
-                console.log(key);
+                $('#alphaCheckBox' + key).removeAttr('checked');
+            }
+
+            if ($('.cekBoxAlpha:checked').length != 0) {
+                $('#cekAllAbsen').val(1);
+            } else {
+                $('#cekAllAbsen').val(0);
             }
         }
 
