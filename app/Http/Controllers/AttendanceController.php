@@ -500,7 +500,7 @@ class AttendanceController extends Controller
                 ->join('price as p', 'p.id', 'st.priceid')
                 ->join('attendances as a', 'a.id', 'attendance_details.attendance_id')
                 ->join('teacher as t', 't.id', 'a.teacher_id')
-                ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id', 'st.id_staff')
+                ->select('attendance_details.*', 'st.name', 'p.program', 't.name as teacher', 'a.price_id', 'a.teacher_id', 'st.id_staff', 'a.date')
                 ->where('attendance_details.student_id', $value->id);
             if (Auth::guard('teacher')->user() != null) {
                 $attendance = $attendance->where('teacher_id', Auth::guard('teacher')->user()->id);

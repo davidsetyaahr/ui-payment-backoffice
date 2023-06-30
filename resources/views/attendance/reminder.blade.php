@@ -116,6 +116,7 @@
                                                     <th class="text-center">Level</th>
                                                     <th class="text-center">Comment Teacher</th>
                                                     <th class="text-center">Comment Staff</th>
+                                                    <th class="text-center">Date</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -133,6 +134,8 @@
                                                         <td>{{ $item[0]->comment_teacher != null ? $item[0]->comment_teacher : '-' }}
                                                         </td>
                                                         <td>{{ $item[0]->comment_staff != null ? $item[0]->comment_staff : '-' }}
+                                                        </td>
+                                                        <td>{{ $item[0]->date != null ? $item[0]->date : '-' }}
                                                         </td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                         <td>
