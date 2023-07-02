@@ -65,6 +65,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/ajax-last-class', [ScoreController::class, 'ajaxLastClass']);
         Route::get('/create', [ScoreController::class, 'create']);
         Route::get('/create-last', [ScoreController::class, 'createLastFrom']);
+        Route::get('/last', [ScoreController::class, 'lastForm']);
         Route::get('/students/filter', [ScoreController::class, 'filterStudent']);
         Route::get('/filterScore', [ScoreController::class, 'filter']);
         Route::post('/store', [ScoreController::class, 'store']);

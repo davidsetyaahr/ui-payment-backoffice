@@ -161,7 +161,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <div class="form-group">
                                 <label for="email2">Test</label>
                                 <select name="" id="getTestLast" class="form-control">
@@ -171,7 +171,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -234,9 +234,11 @@
             var price = $('#getClassLast').val();
             var test = $('#getTestLast').val();
             if (price != '') {
-                window.location.href = "{{ url('score/create-last') }}?type=create&class=" + price + "&student=" +
-                    student +
-                    "&test=" + test;
+                // window.location.href = "{{ url('score/create-last') }}?type=create&class=" + price + "&student=" +
+                //     student +
+                //     "&test=" + test;
+
+                window.location.href = "{{ url('score/last') }}?id=" + student + "&class=" + price;
             } else {
                 swal("Warning", "Choose class!", {
                     icon: "warning",

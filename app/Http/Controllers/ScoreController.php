@@ -106,6 +106,22 @@ class ScoreController extends Controller
         return view('score.form-create-last', compact('class', 'test', 'title', 'data', 'item', 'students'));
     }
 
+    public function lastForm(Request $request)
+    {
+        $student = Students::find($request->id);
+        $class = Price::find($request->class);
+        $testItem = '';
+        if ($request->class == 1 || $request->class == 2 || $request->class == 3 || $request->class == 4 || $request->class == 5 || $request->class == 6) {
+            $testItem = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->get();
+        } else {
+            $testItem = TestItems::get();
+        }
+        $studentScore1 = StudentScore::where('student_id', $request->id)->where('price_id', $request->class)->where('test_id', 1)->count();
+        $studentScore2 = StudentScore::where('student_id', $request->id)->where('price_id', $request->class)->where('test_id', 2)->count();
+        $studentScore3 = StudentScore::where('student_id', $request->id)->where('price_id', $request->class)->where('test_id', 3)->count();
+        return view('score.last', compact('student', 'class', 'testItem', 'studentScore1', 'studentScore2', 'studentScore3'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
