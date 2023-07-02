@@ -6,7 +6,7 @@
             <div class="page-inner py-5">
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
-                        <h2 class="text-white pb-2 fw-bold">Parents </h2>
+                        <h2 class="text-white pb-2 fw-bold">Student’s Barcode</h2>
                         {{-- <h5 class="text-white op-7 mb-2">Free Bootstrap 4 Admin Dashboard</h5> --}}
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4 class="card-title">Data Parents</h4>
+                                    <h4 class="card-title">Data Student’s Barcode</h4>
                                 </div>
                                 <div class="col-md-6" style="text-align: end
                                 ">

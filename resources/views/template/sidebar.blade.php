@@ -119,7 +119,7 @@
                         <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
                             <a href="{{ url('/history-test') }}" class="collapsed">
                                 <i class="fas fa-book"></i>
-                                <p>History Test</p>
+                                <p>Test History</p>
                             </a>
 
                         </li>
@@ -128,7 +128,7 @@
                     <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
                         <a href="{{ url('/attendance/reminder') }}" class="collapsed">
                             <i class="fas fa-bell"></i>
-                            <p>Reminder</p>
+                            <p>Absence Reminder</p>
                         </a>
 
                     </li>
@@ -160,7 +160,7 @@
                         <li class="nav-item {{ Request::segment(1) == 'barcode-student' ? 'active' : '' }}">
                             <a href="{{ url('/barcode-student') }}" class="collapsed">
                                 <i class="fas fa-barcode"></i>
-                                <p>Barcode Student</p>
+                                <p>Student’s Barcode</p>
                             </a>
 
                         </li>

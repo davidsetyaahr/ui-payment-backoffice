@@ -316,11 +316,11 @@ class AttendanceController extends Controller
                     //     }
                     // }
                 }
+                return redirect('/attendance/class')->with('message', 'Schedule student update');
             } else {
-                # data ga ke insert
-            }
 
-            return redirect('/attendance/class')->with('message', 'Schedule student update');
+                return redirect()->back()->with('status', 'Schedule failed to update');
+            }
         } catch (\Throwable $th) {
             ddd($th);
         }
@@ -505,7 +505,7 @@ class AttendanceController extends Controller
             if (Auth::guard('teacher')->user() != null) {
                 $attendance = $attendance->where('teacher_id', Auth::guard('teacher')->user()->id);
             }
-            if (Auth::guard('staff')->user() != null && Auth::guard('staff')->user()->id != 7) {
+            if (Auth::guard('staff')->user() != null && Auth::guard('staff')->user()->id != 7 && Auth::guard('staff')->user()->id != 1) {
                 $attendance = $attendance->where('id_staff', Auth::guard('staff')->user()->id);
             }
 

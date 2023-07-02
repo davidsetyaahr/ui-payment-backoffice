@@ -76,30 +76,43 @@ class ScoreController extends Controller
         }
     }
 
-    public function getScoreByTest($studentId, $testId)
+    public function getScoreByTest($studentId, $testId, Request $request)
     {
         try {
             $getStudent = Students::find($studentId);
             $score = StudentScore::join('tests as t', 't.id', 'student_scores.test_id')
                 ->select('t.name', 'student_scores.average_score', 'student_scores.average_score', 'student_scores.id as scoreId', 'student_scores.comment')
-                ->where('student_scores.test_id', $testId)
-                ->where('student_scores.price_id', $getStudent->priceid)
-                ->where('student_scores.student_id', $studentId)
-                ->first();
-            $item = StudentScoreDetail::join('test_items as ti', 'ti.id', 'student_score_details.test_item_id')
-                ->select('ti.name', 'student_score_details.*')
-                ->where('student_score_details.student_score_id', $score->scoreId)
-                ->get();
-            $score['grade'] = Helper::getGrade($score->average_score);
-            $items = [];
-            foreach ($item as $value) {
-                $value['grade'] = Helper::getGrade($value->score);
-                array_push($items, $value);
+                ->where('student_scores.test_id', $testId);
+            if ($request->class) {
+                $score = $score->where('student_scores.price_id', $request->class);
+            } else {
+                $score = $score->where('student_scores.price_id', $getStudent->priceid);
             }
-            $data = ([
-                'score' => $score,
-                'scoreItems' => $items,
-            ]);
+
+            $score = $score->where('student_scores.student_id', $studentId)
+                ->first();
+            if ($score != null) {
+                $item = StudentScoreDetail::join('test_items as ti', 'ti.id', 'student_score_details.test_item_id')
+                    ->select('ti.name', 'student_score_details.*')
+                    ->where('student_score_details.student_score_id', $score->scoreId)
+                    ->get();
+                $score['grade'] = Helper::getGrade($score->average_score);
+                $items = [];
+                foreach ($item as $value) {
+                    $value['grade'] = Helper::getGrade($value->score);
+                    array_push($items, $value);
+                }
+                $data = ([
+                    'score' => $score,
+                    'scoreItems' => $items,
+                ]);
+            } else {
+                $data = ([
+                    'score' => [],
+                    'scoreItems' => [],
+                ]);
+            };
+
             return response()->json([
                 'code' => '00',
                 'payload' => $data,
