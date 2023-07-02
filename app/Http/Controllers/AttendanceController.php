@@ -128,6 +128,9 @@ class AttendanceController extends Controller
                 'excerciseBook' => $cek->excercise_book,
                 'students' => $detail,
                 'is_presence' => $cek->is_presence,
+                'id_test' => $cek->id_test,
+                'date_review' => $cek->date_review,
+                'date_test' => $cek->date_test,
             ];
             // return $data;
         } else {
@@ -141,6 +144,9 @@ class AttendanceController extends Controller
                 'excerciseBook' => '',
                 'students' => [],
                 'is_presence' => '',
+                'id_test' => '',
+                'date_review' => '',
+                'date_test' => '',
             ];
         }
 
@@ -214,6 +220,9 @@ class AttendanceController extends Controller
                     'text_book' => $request->textBook,
                     'excercise_book' => $request->excerciseBook,
                     'is_presence' => true,
+                    'id_test' => $request->id_test,
+                    'date_review' => $request->date_review,
+                    'date_test' => $request->date_test,
                 ];
                 $attendance = Attendance::create($createAttendance);
                 for ($i = 0; $i < count($request->totalPoint); $i++) {
@@ -343,9 +352,101 @@ class AttendanceController extends Controller
      * @param  \App\Models\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    public function edit(Attendance $attendance)
+    public function edit(Request $request, $id)
     {
-        //
+        $reqDay1 = $request->day1;
+        $reqDay2 = $request->day2;
+        $reqTime = $request->time;
+        $reqTeacher = $request->teacher;
+        $priceId = $request->class;
+        $student = "";
+        $day = DB::table('day')->get();
+        $cek = Attendance::where('id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        // $agenda = [];
+
+
+        $class = Price::where('id', $priceId)->first();
+        $title = $class->level == 'Private' ? 'Private Class ' . $class->program : 'Regular';
+        if ($cek) {
+            $detail = AttendanceDetail::where('attendance_id', $cek->id)->get();
+            foreach ($detail as $key => $idDetail) {
+                // multiple
+                $points = [];
+                $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $idDetail->id)
+                    ->select('point_category_id')
+                    ->get();
+
+                foreach ($attPoint as $idp) {
+                    array_push($points, intval($idp->point_category_id));
+                }
+                $idDetail['category'] = $points;
+
+                // manual
+                // $points = [];
+                // $catPoints = [];
+                // $attPoint = AttendanceDetailPoint::where('attendance_detail_id', $id->id)
+                //     ->get();
+
+                // foreach ($attPoint as $idp) {
+                //     array_push($points, $idp->point);
+                //     array_push($catPoints, $idp->point_category);
+                // }
+                // $id->categoryPoint = $points != null ? $points[0] : '';
+                // $id->category = $catPoints != null ? $catPoints[0] : '';
+            }
+            $data = (object)[
+                'type' => 'update',
+                'id' => $class->id,
+                'attendanceId' => $cek->id,
+                'comment' => $cek->activity,
+                'textBook' => $cek->text_book,
+                'excerciseBook' => $cek->excercise_book,
+                'students' => $detail,
+                'is_presence' => $cek->is_presence,
+                'id_test' => $cek->id_test,
+                'date_review' => $cek->date_review,
+                'date_test' => $cek->date_test,
+            ];
+            // return $data;
+        } else {
+            // $agenda = [];
+            $data = (object)[
+                'type' => 'create',
+                'id' => $class->id,
+                'attendanceId' => 0,
+                'comment' => '',
+                'textBook' => '',
+                'excerciseBook' => '',
+                'students' => [],
+                'is_presence' => '',
+                'id_test' => '',
+                'date_review' => '',
+                'date_test' => '',
+            ];
+        }
+
+
+        $student = Students::where('status', 'ACTIVE')->where('priceid', $class->id)
+            ->where("day1", $reqDay1)
+            ->where("day2", $reqDay2)
+            ->where('course_time', $reqTime);
+        if (Auth::guard('teacher')->check() == true) {
+            $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
+        } else {
+            $student = $student->where('id_teacher', $reqTeacher);
+        }
+
+        $student =   $student->get();
+
+
+        $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
+        $attendance = Attendance::where('id', $id)
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
     }
 
     /**
@@ -368,6 +469,9 @@ class AttendanceController extends Controller
                     'activity' => $request->comment,
                     'text_book' => $request->textBook,
                     'excercise_book' => $request->excerciseBook,
+                    'id_test' => $request->id_test,
+                    'date_review' => $request->date_review,
+                    'date_test' => $request->date_test,
                 ]);
                 for ($i = 0; $i < count($request->totalPoint); $i++) {
                     $dataDetail = AttendanceDetail::where('attendance_id', $request->attendanceId)

@@ -75,6 +75,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/form/{priceId}', [AttendanceController::class, 'create']);
         Route::get('/class', [AttendanceController::class, 'index']);
         Route::post('/store', [AttendanceController::class, 'store']);
+        Route::get('/edit/{attendance}', [AttendanceController::class, 'edit']);
         Route::post('/update/{attendance}', [AttendanceController::class, 'update']);
         Route::get('/reminder', [AttendanceController::class, 'reminder']);
         Route::get('/reminder-done', [AttendanceController::class, 'reminderDone']);

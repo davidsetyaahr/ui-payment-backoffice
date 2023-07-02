@@ -187,8 +187,21 @@
                                 <thead>
                                     <tr>
                                         <th width="10%">Nama</th>
-                                        @foreach ($attendance as $item)
-                                            <th width="5%">{{ date('d/m', strtotime($item->date)) }}</th>
+                                        @foreach ($attendance as $key => $item)
+                                            <th width="5%">{{ date('d/m', strtotime($item->date)) }}
+                                                @php
+                                                    $count = $loop->count - 2;
+                                                @endphp
+                                                @if ($count == $key || $count + 1 == $key)
+                                                    @if (Request::segment(2) != 'edit')
+                                                        <br>
+                                                        <a href="{{ url('attendance/edit/') . '/' . $item->id . '?day1=' . Request::get('day1') . '&day2=' . Request::get('day2') . '&time=' . Request::get('time') . '&teacher=' . Request::get('teacher') . '&class=' . $data->id }}"
+                                                            class="btn btn-sm btn-success">Edit
+                                                        </a>
+                                                        <br>
+                                                    @endif
+                                                @endif
+                                            </th>
                                         @endforeach
                                     </tr>
                                 </thead>
@@ -225,367 +238,400 @@
                         </div>
 
                     </div>
-                    <form
-                        action="{{ $data->type == 'create' ? url('attendance/store') : url('attendance/update', $data->id) }}"
-                        method="POST" enctype="multipart/form-data" id="form-submit">
-                        @csrf
+                    @if (Request::segment(2) == 'edit')
+                        <form action="{{ url('attendance/update', $data->id) }}" method="POST"
+                            enctype="multipart/form-data" id="form-submit">
+                            @csrf
+                        @else
+                            <form
+                                action="{{ $data->type == 'create' ? url('attendance/store') : url('attendance/update', $data->id) }}"
+                                method="POST" enctype="multipart/form-data" id="form-submit">
+                                @csrf
+                    @endif
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">{{ $data->type == 'create' ? 'Presence' : 'Edit Presence' }}</h4>
-                            </div>
-                            <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
-                            <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
-                            <input type="hidden" name="time" value="{{ request()->get('time') }}">
-                            <input type="hidden" name="teacher" value="{{ request()->get('teacher') }}">
-                            <div class="card-body">
-                                <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
-                                <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">{{ $data->type == 'create' ? 'Presence' : 'Edit Presence' }}</h4>
+                        </div>
+                        <input type="hidden" name="day1" value="{{ request()->get('day1') }}">
+                        <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
+                        <input type="hidden" name="time" value="{{ request()->get('time') }}">
+                        <input type="hidden" name="teacher" value="{{ request()->get('teacher') }}">
+                        <div class="card-body">
+                            <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
+                            <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
 
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <div class="">
-                                            <table
-                                                class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center">No</th>
-                                                        <th class="text-center">Name</th>
-                                                        <th class="text-center" scope="col" class="w-5"
-                                                            style="min-width:3px;">Presence</th>
-                                                        <th class="text-center">Absent</th>
-                                                        <th class="text-center">In-Point</th>
-                                                        <th class="text-center">Category</th>
-                                                        {{-- <th class="text-center">In Point Category</th> --}}
-                                                        <th class="text-center">
-                                                            Total
-                                                        </th>
-                                                    </tr>
-                                                </thead>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <table
+                                            class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">No</th>
+                                                    <th class="text-center">Name</th>
+                                                    <th class="text-center" scope="col" class="w-5"
+                                                        style="min-width:3px;">Presence</th>
+                                                    <th class="text-center">Absent</th>
+                                                    <th class="text-center">In-Point</th>
+                                                    <th class="text-center">Category</th>
+                                                    {{-- <th class="text-center">In Point Category</th> --}}
+                                                    <th class="text-center">
+                                                        Total
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                                <tbody>
+                                            <tbody>
+                                                @php
+                                                    $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
+                                                    
+                                                    $no = 1;
+                                                @endphp
+                                                @foreach ($student as $keyIt => $it)
                                                     @php
-                                                        $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-                                                        
-                                                        $no = 1;
+                                                        if ($keyIt == 0) {
+                                                            $agenda = $agenda->where('student_id', $it->id);
+                                                        } else {
+                                                            $agenda = $agenda->orWhere('student_id', $it->id);
+                                                        }
+                                                        $birthDayPoint = 0;
+                                                        if ($it->birthday == date('M d')) {
+                                                            $birthDayPoint = 30;
+                                                        }
                                                     @endphp
-                                                    @foreach ($student as $keyIt => $it)
-                                                        @php
-                                                            if ($keyIt == 0) {
-                                                                $agenda = $agenda->where('student_id', $it->id);
-                                                            } else {
-                                                                $agenda = $agenda->orWhere('student_id', $it->id);
-                                                            }
-                                                            $birthDayPoint = 0;
-                                                            if ($it->birthday == date('M d')) {
-                                                                $birthDayPoint = 30;
-                                                            }
-                                                        @endphp
-                                                        <tr style="height: 40px!important">
-                                                            <td class="text-center" style="">{{ $no }}
-                                                            </td>
-                                                            <td style="">{{ ucwords($it->name) }}
-                                                            </td>
-                                                            <input type="hidden" readonly name="studentId[]"
-                                                                value="{{ $it->id }}">
-                                                            <td class=" text-center" scope="col"
-                                                                style="width:3px!important;">
-                                                                <input type="hidden"
-                                                                    name="isAbsent[{{ $no }}][]" value="0">
-                                                                @php
-                                                                    $cekAbsen = \DB::table('attendance_details')
-                                                                        ->where('attendance_id', $data->attendanceId)
-                                                                        ->where('student_id', $it->id)
-                                                                        ->where('is_absent', '1')
-                                                                        ->count();
-                                                                    $studentPointCategory = [];
-                                                                    $getStudentPointCategory = \DB::table('attendance_detail_points')
-                                                                        ->join('attendance_details', 'attendance_detail_points.attendance_detail_id', 'attendance_details.id')
-                                                                        ->where('student_id', $it->id)
-                                                                        ->where('attendance_id', $data->attendanceId)
-                                                                        ->get();
-                                                                    
-                                                                    foreach ($getStudentPointCategory as $k => $v) {
-                                                                        array_push($studentPointCategory, $v->point_category_id);
-                                                                    }
-                                                                    
+                                                    <tr style="height: 40px!important">
+                                                        <td class="text-center" style="">{{ $no }}
+                                                        </td>
+                                                        <td style="">{{ ucwords($it->name) }}
+                                                        </td>
+                                                        <input type="hidden" readonly name="studentId[]"
+                                                            value="{{ $it->id }}">
+                                                        <td class=" text-center" scope="col"
+                                                            style="width:3px!important;">
+                                                            <input type="hidden" name="isAbsent[{{ $no }}][]"
+                                                                value="0">
+                                                            @php
+                                                                $cekAbsen = \DB::table('attendance_details')
+                                                                    ->where('attendance_id', $data->attendanceId)
+                                                                    ->where('student_id', $it->id)
+                                                                    ->where('is_absent', '1')
+                                                                    ->count();
+                                                                $studentPointCategory = [];
+                                                                $getStudentPointCategory = \DB::table('attendance_detail_points')
+                                                                    ->join('attendance_details', 'attendance_detail_points.attendance_detail_id', 'attendance_details.id')
+                                                                    ->where('student_id', $it->id)
+                                                                    ->where('attendance_id', $data->attendanceId)
+                                                                    ->get();
+                                                                
+                                                                foreach ($getStudentPointCategory as $k => $v) {
+                                                                    array_push($studentPointCategory, $v->point_category_id);
+                                                                }
+                                                                
+                                                                $isChecked = false;
+                                                                if ($data->type == 'create') {
                                                                     $isChecked = false;
-                                                                    if ($data->type == 'create') {
+                                                                } else {
+                                                                    // if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
+                                                                    //     $isChecked = true;
+                                                                    // }
+                                                                    if ($cekAbsen == 0) {
                                                                         $isChecked = false;
                                                                     } else {
-                                                                        // if ($data->students[$no - 1]->student_id == $it->id && $data->students[$no - 1]->is_absent == '1') {
-                                                                        //     $isChecked = true;
-                                                                        // }
-                                                                        if ($cekAbsen == 0) {
-                                                                            $isChecked = false;
-                                                                        } else {
-                                                                            $isChecked = true;
-                                                                        }
+                                                                        $isChecked = true;
                                                                     }
-                                                                @endphp
-                                                                <input type="checkbox" class="form-check-input cekBox"
-                                                                    id="cbAbsent{{ $no }}" value="1"
-                                                                    {{ $isChecked ? 'checked' : '' }}
-                                                                    aria-label="Checkbox for following text input"
-                                                                    name="isAbsent[{{ $no }}][]"
-                                                                    data-hour="{{ $it->course_hour }}"
-                                                                    data-class="{{ $it->priceid }}">
-                                                            </td>
-                                                            <td class=" text-center" scope="col"">
-                                                                @php
-                                                                    $isCekPermission = false;
+                                                                }
+                                                            @endphp
+                                                            <input type="checkbox" class="form-check-input cekBox"
+                                                                id="cbAbsent{{ $no }}" value="1"
+                                                                {{ $isChecked ? 'checked' : '' }}
+                                                                aria-label="Checkbox for following text input"
+                                                                name="isAbsent[{{ $no }}][]"
+                                                                data-hour="{{ $it->course_hour }}"
+                                                                data-class="{{ $it->priceid }}">
+                                                        </td>
+                                                        <td class=" text-center" scope="col"">
+                                                            @php
+                                                                $isCekPermission = false;
+                                                                $isCekAlpha = false;
+                                                                $cekPermission = \DB::table('attendance_details')
+                                                                    ->where('attendance_id', $data->attendanceId)
+                                                                    ->where('student_id', $it->id)
+                                                                    ->where('is_permission', true)
+                                                                    ->count();
+                                                                $cekAlpha = \DB::table('attendance_details')
+                                                                    ->where('attendance_id', $data->attendanceId)
+                                                                    ->where('student_id', $it->id)
+                                                                    ->where('is_alpha', true)
+                                                                    ->count();
+                                                                if ($data->type == 'create') {
                                                                     $isCekAlpha = false;
-                                                                    $cekPermission = \DB::table('attendance_details')
-                                                                        ->where('attendance_id', $data->attendanceId)
-                                                                        ->where('student_id', $it->id)
-                                                                        ->where('is_permission', true)
-                                                                        ->count();
-                                                                    $cekAlpha = \DB::table('attendance_details')
-                                                                        ->where('attendance_id', $data->attendanceId)
-                                                                        ->where('student_id', $it->id)
-                                                                        ->where('is_alpha', true)
-                                                                        ->count();
-                                                                    if ($data->type == 'create') {
+                                                                    $isCekPermission = false;
+                                                                } else {
+                                                                    if ($cekAlpha == 1) {
+                                                                        $isCekAlpha = true;
+                                                                    } else {
                                                                         $isCekAlpha = false;
+                                                                    }
+                                                                    if ($cekPermission == 1) {
+                                                                        $isCekPermission = true;
+                                                                    } else {
                                                                         $isCekPermission = false;
-                                                                    } else {
-                                                                        if ($cekAlpha == 1) {
-                                                                            $isCekAlpha = true;
-                                                                        } else {
-                                                                            $isCekAlpha = false;
-                                                                        }
-                                                                        if ($cekPermission == 1) {
-                                                                            $isCekPermission = true;
-                                                                        } else {
-                                                                            $isCekPermission = false;
-                                                                        }
                                                                     }
-                                                                @endphp
-                                                                <div class="row">
-                                                                    <div class="col-6">
-                                                                        <label class="permission">
-                                                                            <input type="hidden"
-                                                                                name="isPermission[{{ $no }}][]"
-                                                                                value="0">
-                                                                            <input type="checkbox"
-                                                                                name="isPermission[{{ $no }}][]"
-                                                                                id="permissionCheckBox{{ $keyIt }}"
-                                                                                value="0"
-                                                                                onclick="permission('{{ $keyIt }}')"
-                                                                                {{ $isCekPermission ? 'checked' : '' }}>
-                                                                            <span class="permissionCheckBox"
-                                                                                style=""></span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label class="alpha">
-                                                                            <input type="hidden"
-                                                                                name="isAlpha[{{ $no }}][]"
-                                                                                value="0">
-                                                                            <input type="checkbox"
-                                                                                name="isAlpha[{{ $no }}][]"
-                                                                                id="alphaCheckBox{{ $keyIt }}"
-                                                                                value="0"
-                                                                                onclick="alpha('{{ $keyIt }}')"
-                                                                                {{ $isCekAlpha ? 'checked' : '' }}
-                                                                                class="form-check-input cekBoxAlpha">
-                                                                            <span class="alphaCheckBox"
-                                                                                style=""></span>
-                                                                        </label>
-                                                                    </div>
+                                                                }
+                                                            @endphp
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <label class="permission">
+                                                                        <input type="hidden"
+                                                                            name="isPermission[{{ $no }}][]"
+                                                                            value="0">
+                                                                        <input type="checkbox"
+                                                                            name="isPermission[{{ $no }}][]"
+                                                                            id="permissionCheckBox{{ $keyIt }}"
+                                                                            value="0"
+                                                                            onclick="permission('{{ $keyIt }}')"
+                                                                            {{ $isCekPermission ? 'checked' : '' }}>
+                                                                        <span class="permissionCheckBox"
+                                                                            style=""></span>
+                                                                    </label>
                                                                 </div>
-                                                            </td>
-                                                            <td class="text-center" style="">
-                                                                @php
+                                                                <div class="col-6">
+                                                                    <label class="alpha">
+                                                                        <input type="hidden"
+                                                                            name="isAlpha[{{ $no }}][]"
+                                                                            value="0">
+                                                                        <input type="checkbox"
+                                                                            name="isAlpha[{{ $no }}][]"
+                                                                            id="alphaCheckBox{{ $keyIt }}"
+                                                                            value="0"
+                                                                            onclick="alpha('{{ $keyIt }}')"
+                                                                            {{ $isCekAlpha ? 'checked' : '' }}
+                                                                            class="form-check-input cekBoxAlpha">
+                                                                        <span class="alphaCheckBox" style=""></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center" style="">
+                                                            @php
+                                                                $isAbsent = false;
+                                                                if ($data->type == 'create') {
                                                                     $isAbsent = false;
-                                                                    if ($data->type == 'create') {
-                                                                        $isAbsent = false;
-                                                                    } else {
-                                                                        if ($cekAbsen == 1) {
-                                                                            $isAbsent = true;
-                                                                        }
+                                                                } else {
+                                                                    if ($cekAbsen == 1) {
+                                                                        $isAbsent = true;
                                                                     }
-                                                                @endphp
-                                                                <h5 id="inPointAbsent{{ $no }}">
-                                                                    @if ($isAbsent)
-                                                                        @php
-                                                                            $pointDay = 0;
-                                                                            $pointHour = 0;
-                                                                            if (Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2')) {
-                                                                                $pointDay = 20;
-                                                                            } else {
-                                                                                $pointDay = 10;
-                                                                            }
-                                                                            
-                                                                            if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
-                                                                                $totalPoint = $it->course_hour . '0';
-                                                                            } else {
-                                                                                $totalPoint = $pointDay;
-                                                                            }
-                                                                        @endphp
-                                                                        {{ $totalPoint }}
-                                                                    @else
-                                                                        0
-                                                                    @endif
-                                                                    {{-- {{ $isAbsent ? '10' : '0' }}</h5> --}}
-                                                            </td>
-                                                            <td style="">
-                                                                <select
-                                                                    class="form-control select2 select2-hidden-accessible"
-                                                                    style="width:100%;"
-                                                                    name="categories[{{ $no }}][]"
-                                                                    placeholder="Select Category"
-                                                                    id="categories{{ $no }}"
-                                                                    multiple="multiple">
+                                                                }
+                                                            @endphp
+                                                            <h5 id="inPointAbsent{{ $no }}">
+                                                                @if ($isAbsent)
+                                                                    @php
+                                                                        $pointDay = 0;
+                                                                        $pointHour = 0;
+                                                                        if (Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2')) {
+                                                                            $pointDay = 20;
+                                                                        } else {
+                                                                            $pointDay = 10;
+                                                                        }
+                                                                        
+                                                                        if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
+                                                                            $totalPoint = $it->course_hour . '0';
+                                                                        } else {
+                                                                            $totalPoint = $pointDay;
+                                                                        }
+                                                                    @endphp
+                                                                    {{ $totalPoint }}
+                                                                @else
+                                                                    0
+                                                                @endif
+                                                                {{-- {{ $isAbsent ? '10' : '0' }}</h5> --}}
+                                                        </td>
+                                                        <td style="">
+                                                            <select class="form-control select2 select2-hidden-accessible"
+                                                                style="width:100%;"
+                                                                name="categories[{{ $no }}][]"
+                                                                placeholder="Select Category"
+                                                                id="categories{{ $no }}" multiple="multiple">
 
-                                                                    @foreach ($pointCategories as $st)
-                                                                        <option value="{{ $st->id }}"
-                                                                            {{ $data->type == 'update' && in_array(intval($st->id), $studentPointCategory) ? 'selected' : '' }}>
-                                                                            {{ $st->name }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                {{-- @if ($birthDayPoint != 0)
+                                                                @foreach ($pointCategories as $st)
+                                                                    <option value="{{ $st->id }}"
+                                                                        {{ $data->type == 'update' && in_array(intval($st->id), $studentPointCategory) ? 'selected' : '' }}>
+                                                                        {{ $st->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            {{-- @if ($birthDayPoint != 0)
                                                                     <span class="center"
                                                                         style="color: red
                                                                 ">+
                                                                         Extra Birthday</span>
                                                                 @endif --}}
-                                                                {{-- <input type="text" class="form-control"
+                                                            {{-- <input type="text" class="form-control"
                                                                     placeholder="Enter Category"
                                                                     name="category[{{ $no }}][]"
                                                                     value="{{ $data->type == 'update' ? $data->students[$no - 1]->category : '' }}"> --}}
-                                                            </td>
-                                                            {{-- <td>
+                                                        </td>
+                                                        {{-- <td>
                                                                 <input type="number" class="form-control"
                                                                     placeholder="Enter In Point Category"
                                                                     name="point_category[{{ $no }}][]"
                                                                     id="point_category{{ $no }}"
                                                                     value="{{ $data->type == 'update' ? $data->students[$no - 1]->categoryPoint : '' }}">
                                                             </td> --}}
-                                                            <td class="text-center" style="">
-                                                                @php
+                                                        <td class="text-center" style="">
+                                                            @php
+                                                                $totalPoint = 0;
+                                                                if ($data->type == 'create') {
                                                                     $totalPoint = 0;
-                                                                    if ($data->type == 'create') {
-                                                                        $totalPoint = 0;
-                                                                    } else {
-                                                                        $cekTotalPoint = \DB::table('attendance_details')
-                                                                            ->where('attendance_id', $data->attendanceId)
-                                                                            ->where('student_id', $it->id);
-                                                                    
-                                                                        if ($cekTotalPoint->count() == 1) {
-                                                                            $getTotalPoint = $cekTotalPoint->first();
-                                                                            $totalPoint = $getTotalPoint->total_point;
-                                                                        }
+                                                                } else {
+                                                                    $cekTotalPoint = \DB::table('attendance_details')
+                                                                        ->where('attendance_id', $data->attendanceId)
+                                                                        ->where('student_id', $it->id);
+                                                                
+                                                                    if ($cekTotalPoint->count() == 1) {
+                                                                        $getTotalPoint = $cekTotalPoint->first();
+                                                                        $totalPoint = $getTotalPoint->total_point;
                                                                     }
-                                                                @endphp
-                                                                <input type="hidden" name="totalPoint[]"
-                                                                    id="inpTotalPoint{{ $no }}"
-                                                                    value="{{ $totalPoint }}" readonly>
-                                                                <input type="hidden"
-                                                                    name="birthdaypoint[{{ $no }}][]"
-                                                                    value="{{ $birthDayPoint }}">
-                                                                {{-- <input type="text" name="totalPointCategory[]"
+                                                                }
+                                                            @endphp
+                                                            <input type="hidden" name="totalPoint[]"
+                                                                id="inpTotalPoint{{ $no }}"
+                                                                value="{{ $totalPoint }}" readonly>
+                                                            <input type="hidden"
+                                                                name="birthdaypoint[{{ $no }}][]"
+                                                                value="{{ $birthDayPoint }}">
+                                                            {{-- <input type="text" name="totalPointCategory[]"
                                                                     id="inpTotalPointCategory{{ $no }}"
                                                                     value="{{ $totalPoint }}" readonly> --}}
-                                                                <h5 id="totalPoint{{ $no }}">
-                                                                    {{ $totalPoint }}</h5>
-                                                            </td>
+                                                            <h5 id="totalPoint{{ $no }}">
+                                                                {{ $totalPoint }}</h5>
+                                                        </td>
 
-                                                        </tr>
-                                                        @php
-                                                            $no++;
-                                                        @endphp
-                                                    @endforeach
+                                                    </tr>
+                                                    @php
+                                                        $no++;
+                                                    @endphp
+                                                @endforeach
 
-                                                </tbody>
+                                            </tbody>
 
-                                            </table>
-                                        </div>
+                                        </table>
                                     </div>
                                 </div>
-                                <h2 class="mt-3">Agenda</h2>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Topic</label>
-                                            <textarea name="comment" class="form-control" id="" cols="30" rows="3">{{ $data->type == 'update' ? $data->comment : '' }}</textarea>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Text Book</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $cekAbsen != 0 ? $data->textBook : '' }}" name="textBook">
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Excercise Book</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $data->type == 'update' ? $data->excerciseBook : '' }}"
-                                                name="excerciseBook">
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <input type="hidden" class="form-control"
-                                    value="{{ $data->is_presence != false ? '1' : '0' }}" name="cekAllAbsen"
-                                    id="cekAllAbsen" class="checkAllAbsen">
                             </div>
-                            <div class="card-action mt-3">
-                                <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success">Submit</a>
-                                <button type="button" data-toggle="modal" data-target="#mdlCancel"
-                                    class="btn btn-danger">Cancel</button>
+                            <h2 class="mt-3">Agenda</h2>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Topic</label>
+                                        <textarea name="comment" class="form-control" id="" cols="30" rows="3">{{ $data->type == 'update' ? $data->comment : '' }}</textarea>
+                                    </div>
+                                </div>
                             </div>
-                            {{-- @endif --}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Text Book</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $cekAbsen != 0 ? $data->textBook : '' }}" name="textBook">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @php
+                                            $tests = DB::table('tests')->get();
+                                        @endphp
+                                        <label for="">Review and Test</label>
+                                        <select name="id_test" id="" class="form-control">
+                                            <option value="">---Choose Test---</option>
+                                            @foreach ($tests as $t)
+                                                <option value="{{ $t->id }}"
+                                                    {{ $cekAbsen != 0 && $data->id_test == $t->id ? 'selected' : '' }}>
+                                                    {{ $t->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Review</label>
+                                        <input type="date" class="form-control"
+                                            value="{{ $cekAbsen != 0 ? $data->date_review : '' }}" name="date_review">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Test</label>
+                                        <input type="date" class="form-control"
+                                            value="{{ $cekAbsen != 0 ? $data->date_test : '' }}" name="date_test">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Excercise Book</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $data->type == 'update' ? $data->excerciseBook : '' }}"
+                                            name="excerciseBook">
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <input type="hidden" class="form-control"
+                                value="{{ $data->is_presence != false ? '1' : '0' }}" name="cekAllAbsen"
+                                id="cekAllAbsen" class="checkAllAbsen">
                         </div>
-                        @php
-                            $agenda = $agenda
-                                ->where('day1', $reqDay1)
-                                ->where('day2', $reqDay2)
-                                ->where('teacher_id', $reqTeacher)
-                                ->where('course_time', $reqTime)
-                                ->orderBy('attendances.id', 'DESC')
-                                ->groupBy('attendances.id')
-                                ->get();
-                            
-                        @endphp
+                        <div class="card-action mt-3">
+                            <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success">Submit</a>
+                            <button type="button" data-toggle="modal" data-target="#mdlCancel"
+                                class="btn btn-danger">Cancel</button>
+                        </div>
+                        {{-- @endif --}}
+                    </div>
+                    @php
+                        $agenda = $agenda
+                            ->where('day1', $reqDay1)
+                            ->where('day2', $reqDay2)
+                            ->where('teacher_id', $reqTeacher)
+                            ->where('course_time', $reqTime)
+                            ->orderBy('attendances.id', 'DESC')
+                            ->groupBy('attendances.id')
+                            ->get();
+                        
+                    @endphp
 
-                        @if (Auth::guard('teacher')->check() == true)
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Last Agenda</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        @foreach ($agenda as $item)
-                                            <div class="col-md-3">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <p>{{ $item->date }}
-                                                            <br>{{ $item->activity }}
-                                                            <br>Text Book : {{ $item->text_book }}
-                                                        </p>
+                    @if (Auth::guard('teacher')->check() == true)
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Last Agenda</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach ($agenda as $item)
+                                        <div class="col-md-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <p>{{ $item->date }}
+                                                        <br>{{ $item->activity }}
+                                                        <br>Text Book : {{ $item->text_book }}
+                                                    </p>
 
-                                                    </div>
                                                 </div>
                                             </div>
-                                        @endforeach
-                                    </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
-                        @endif
+                        </div>
+                    @endif
                     </form>
                 </div>
             </div>
