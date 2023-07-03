@@ -165,6 +165,15 @@
 
                         </li>
                     @endif
+                    @if (Auth::guard('teacher')->user() == null)
+                        <li class="nav-item {{ Request::segment(1) == 'review' ? 'active' : '' }}">
+                            <a href="{{ url('/review') }}" class="collapsed">
+                                <i class="fas fa-book"></i>
+                                <p>Order Review & Test Paper</p>
+                            </a>
+
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>

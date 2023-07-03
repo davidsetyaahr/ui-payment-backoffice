@@ -11,6 +11,7 @@ use App\Http\Controllers\ParentStudentsController;
 use App\Http\Controllers\PointCategoriesController;
 use App\Http\Controllers\ReedemItemsController;
 use App\Http\Controllers\ReedemPointController;
+use App\Http\Controllers\ReviewTestPaperController;
 use App\Http\Controllers\ScheduleClassController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\TestItemsController;
@@ -102,4 +103,6 @@ Route::middleware(['web'])->group(function () {
     Route::get('/barcode-download/{id}', [ParentStudentsController::class, 'download']);
     Route::get('/barcode-print/{id}', [ParentStudentsController::class, 'print']);
     Route::get('/barcode-print-all', [ParentStudentsController::class, 'printAll']);
+    Route::get('/review', [ReviewTestPaperController::class, 'index']);
+    Route::get('/review-done/{id}', [ReviewTestPaperController::class, 'done']);
 });

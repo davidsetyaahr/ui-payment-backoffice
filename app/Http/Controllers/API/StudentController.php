@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\AttendanceDetail;
+use App\Models\OrderReview;
 use App\Models\PaymentBillDetail;
 use App\Models\PointHistory;
 use App\Models\PointHistoryCategory;
@@ -105,16 +106,31 @@ class StudentController extends Controller
 
             $billing = PaymentBillDetail::where('student_id', $studentId)->where('status', 'Waiting')->sum('price');
             $agenda = AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
-                ->select('attendances.activity', 'attendances.date', 'attendances.text_book')
+                ->select('attendances.activity', 'attendances.date', 'attendances.text_book', 'attendances.id')
                 ->where('attendance_details.student_id', $studentId)
                 ->orderBy('attendance_details.id', 'DESC')
                 ->take(5)->get();
-
+            $review = [];
+            $test = [];
+            foreach ($agenda as $key => $value) {
+                $modelReview = OrderReview::where('id_attendance', $value->id)
+                    ->join('attendances', 'attendances.id', 'order_reviews.id_attendance')
+                    ->select('attendances.date_review', 'attendances.date_test', 'attendances.date', 'review_test')
+                    ->where('is_done', true)
+                    ->get();
+                if ($modelReview) {
+                    array_push($review, $modelReview);
+                    // array_push($test, $modelReview);
+                }
+                // array_push($review, $modelReview->class);
+            }
             $point = Students::where('id', $studentId)->select('total_point')->first();
             $data['score'] = $score ? $score->average_score : 0;
             $data['billing'] = $billing ? $billing : 0;
             $data['point'] = $point ? $point->total_point : 0;
             $data['agenda'] = $agenda;
+            $data['review'] = $review;
+            $data['test'] = $test;
             return response()->json([
                 'code' => '00',
                 'payload' => $data,

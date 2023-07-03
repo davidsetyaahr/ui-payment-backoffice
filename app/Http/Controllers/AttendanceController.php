@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\AttendanceDetail;
 use App\Models\AttendanceDetailPoint;
 use App\Models\Mutasi;
+use App\Models\OrderReview;
 use App\Models\PointCategories;
 use App\Models\PointHistory;
 use App\Models\Price;
@@ -208,6 +209,7 @@ class AttendanceController extends Controller
         // return $request->all();
         try {
             if ($request->cekAllAbsen == true) {
+                $countStudent = 0;
                 $pointCategories = PointCategories::all();
                 $createAttendance = [
                     'price_id' => $request->priceId,
@@ -226,6 +228,9 @@ class AttendanceController extends Controller
                 ];
                 $attendance = Attendance::create($createAttendance);
                 for ($i = 0; $i < count($request->totalPoint); $i++) {
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $countStudent += 1;
+                    }
                     $detail = AttendanceDetail::create([
                         'attendance_id' => $attendance->id,
                         'student_id' => $request->studentId[$i],
@@ -325,6 +330,31 @@ class AttendanceController extends Controller
                     //     }
                     // }
                 }
+                $class = Price::find($request->priceId);
+                $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
+                $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
+                if ($request->date_review) {
+                    OrderReview::create(array(
+                        'id_attendance' => $attendance->id,
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Review ' . $request->id_test,
+                        'due_date' => $request->date_review,
+                        'qty' => $countStudent,
+                        'type' => 'review',
+                    ));
+                }
+                if ($request->date_test) {
+                    OrderReview::create(array(
+                        'id_attendance' => $attendance->id,
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Test ' . $request->id_test,
+                        'due_date' => $request->date_test,
+                        'qty' => $countStudent,
+                        'type' => 'test',
+                    ));
+                }
                 return redirect('/attendance/class')->with('message', 'Schedule student update');
             } else {
 
@@ -409,7 +439,6 @@ class AttendanceController extends Controller
                 'date_review' => $cek->date_review,
                 'date_test' => $cek->date_test,
             ];
-            // return $data;
         } else {
             // $agenda = [];
             $data = (object)[
@@ -461,6 +490,7 @@ class AttendanceController extends Controller
         // return $request;
         try {
             if ($request->cekAllAbsen == true) {
+                $countStudent = 0;
                 $pointCategories = PointCategories::all();
                 Attendance::where('id', $request->attendanceId)->update([
                     'price_id' => $request->priceId,
@@ -478,6 +508,9 @@ class AttendanceController extends Controller
                         ->where('student_id', $request->studentId[$i]);
                     if ($dataDetail->count() == 0) {
                         //insert
+                        if (count($request->isAbsent[$i + 1]) > 1) {
+                            $countStudent += 1;
+                        }
                         $insert = AttendanceDetail::create([
                             'attendance_id' => $request->attendanceId,
                             'student_id' => $request->studentId[$i],
@@ -490,6 +523,9 @@ class AttendanceController extends Controller
                         $detailTotalPoint = 0;
                         $attendanceDetailId = $insert->id;
                     } else {
+                        if (count($request->isAbsent[$i + 1]) > 1) {
+                            $countStudent += 1;
+                        }
                         $dataDetail = $dataDetail->first();
                         $attendanceDetailId = $dataDetail->id;
                         $detailTotalPoint = $dataDetail->total_point;
@@ -568,11 +604,32 @@ class AttendanceController extends Controller
                     //     }
                     // }
                 }
+
+                $class = Price::find($request->priceId);
+                $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
+                $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
+                if ($request->date_review) {
+                    OrderReview::where('id_attendance', $request->attendanceId)->where('type', 'review')->update(array(
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Review ' . $request->id_test,
+                        'due_date' => $request->date_review,
+                        'qty' => $countStudent,
+                    ));
+                }
+                if ($request->date_test) {
+                    OrderReview::where('id_attendance', $request->attendanceId)->where('type', 'test')->update(array(
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Test ' . $request->id_test,
+                        'due_date' => $request->date_test,
+                        'qty' => $countStudent,
+                    ));
+                }
             } else {
                 Attendance::where('id', $request->attendanceId)->delete();
                 AttendanceDetail::where('attendance_id', $request->attendanceId)->delete();
             }
-
             return redirect('/attendance/class')->with('message', 'Schedule student update');
         } catch (\Throwable $th) {
             return $th;
