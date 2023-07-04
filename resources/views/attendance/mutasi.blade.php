@@ -160,8 +160,8 @@
                                                     <tr>
                                                         <th class="text-center">No</th>
                                                         <th class="text-center">Kelas</th>
-                                                        <th class="text-center">Average Score</th>
-                                                        <th class="text-center">Average Grade</th>
+                                                        {{-- <th class="text-center">Average Score</th>
+                                                        <th class="text-center">Average Grade</th> --}}
                                                         {{-- <th class="text-center">Action</th> --}}
                                                     </tr>
                                                 </thead>
@@ -175,9 +175,9 @@
                                                             <tr>
                                                                 <td>{{ $no++ }}</td>
                                                                 <td>{{ $item->level->program }}</td>
-                                                                <td>{{ $item->score != null ? $item->score->average_score : '-' }}
+                                                                {{-- <td>{{ $item->score != null ? $item->score->average_score : '-' }}
                                                                 </td>
-                                                                <td>{{ $item->score != null ? Helper::getGrade($item->score->average_score) : '-' }}
+                                                                <td>{{ $item->score != null ? Helper::getGrade($item->score->average_score) : '-' }} --}}
                                                                 </td>
                                                             </tr>
                                                         @endforeach
