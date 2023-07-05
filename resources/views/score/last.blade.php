@@ -86,6 +86,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $total_test1 = 0;
+                                                $total_test2 = 0;
+                                                $total_test3 = 0;
+                                                $total_test = 0;
+                                            @endphp
                                             @foreach ($testItem as $item)
                                                 @php
                                                     $score1 = DB::table('student_scores')
@@ -115,7 +121,11 @@
                                                     $score_test1 = $score1->score_test;
                                                     $score_test2 = $score2->score_test;
                                                     $score_test3 = $score3 ? $score3->score_test : 0;
-                                                    $score_test = ($score_test1 + $score_test2 + $score_test3) / 3;
+                                                    $score_test = round(($score_test1 + $score_test2 + $score_test3) / 3);
+                                                    $total_test1 += $score_test1;
+                                                    $total_test2 += $score_test2;
+                                                    $total_test3 += $score_test3;
+                                                    $total_test += $score_test;
                                                 @endphp
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
@@ -123,10 +133,17 @@
                                                     <td>{{ $score_test1 }}</td>
                                                     <td>{{ $score_test2 }}</td>
                                                     <td>{{ $score_test3 }}</td>
-                                                    <td>{{ round($score_test) }}</td>
-                                                    <td>{{ Helper::getGrade(round($score_test)) }}</td>
+                                                    <td>{{ $score_test }}</td>
+                                                    <td>{{ Helper::getGrade($score_test) }}</td>
                                                 </tr>
                                             @endforeach
+                                            <tr>
+                                                <td colspan="2">Total</td>
+                                                <td>{{ $total_test1 }}</td>
+                                                <td>{{ $total_test2 }}</td>
+                                                <td>{{ $total_test3 }}</td>
+                                                <td colspan="2">{{ $total_test }}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
