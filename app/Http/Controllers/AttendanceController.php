@@ -340,7 +340,8 @@ class AttendanceController extends Controller
                         'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
                         'review_test' => 'Review ' . $request->id_test,
                         'due_date' => $request->date_review,
-                        'qty' => $countStudent,
+                        // 'qty' => $countStudent,
+                        'qty' => count($request->studentId),
                         'type' => 'review',
                     ));
                 }
@@ -351,7 +352,8 @@ class AttendanceController extends Controller
                         'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
                         'review_test' => 'Test ' . $request->id_test,
                         'due_date' => $request->date_test,
-                        'qty' => $countStudent,
+                        'qty' => count($request->studentId),
+                        // 'qty' => $countStudent,
                         'type' => 'test',
                     ));
                 }
@@ -614,7 +616,8 @@ class AttendanceController extends Controller
                         'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
                         'review_test' => 'Review ' . $request->id_test,
                         'due_date' => $request->date_review,
-                        'qty' => $countStudent,
+                        // 'qty' => $countStudent,
+                        'qty' => count($request->studentId),
                     ));
                 }
                 if ($request->date_test) {
@@ -623,7 +626,8 @@ class AttendanceController extends Controller
                         'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
                         'review_test' => 'Test ' . $request->id_test,
                         'due_date' => $request->date_test,
-                        'qty' => $countStudent,
+                        // 'qty' => $countStudent,
+                        'qty' => count($request->studentId),
                     ));
                 }
             } else {

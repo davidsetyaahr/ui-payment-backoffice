@@ -58,6 +58,7 @@
                                             <th>Review / Test</th>
                                             <th>Due Date</th>
                                             <th>QTY</th>
+                                            <th>Comment</th>
                                             <th>Confirm</th>
                                         </tr>
                                     </thead>
@@ -70,12 +71,18 @@
                                                 <td>{{ $item->review_test }}</td>
                                                 <td>{{ $item->due_date }}</td>
                                                 <td>{{ $item->qty }}</td>
+                                                <td>{{ $item->comment }}</td>
                                                 <td>
                                                     @if ($item->is_done == 0)
-                                                        <a href="javascript:void(0)"
-                                                            onclick="confirm({{ $item->id_attendance }})"
+                                                        <a href="javascript:void(0)" onclick="confirm({{ $item->id }})"
                                                             class="btn btn-sm btn-success">Done</a>
+                                                        <br>
                                                     @endif
+                                                    <a href="javascript:void(0)" data-toggle="modal"
+                                                        data-target="#exampleModal" data-id="{{ $item->id }}"
+                                                        data-class="{{ $item->class }}"
+                                                        data-teacher="{{ $item->teacher->name }}"
+                                                        class="btn btn-sm btn-primary modalAction">Add Comment</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -88,7 +95,53 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" id="formModal" enctype="multipart/form-data" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Comment</label>
+                            <input type="text" class="form-control comment" id="comment" name="comment" value=""
+                                required>
+                            <small class="form-text text-danger error"></small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="add-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
+        $('.modalAction').click(function() {
+            var id = $(this).data('id');
+            var teacher = $(this).data('teacher');
+            var clas = $(this).data('class');
+            $('#exampleModalLabel').html('Comment class ' + clas + ' for ' + capitalize(teacher));
+            $('#formModal').attr('action', "{{ url('review-comment') }}/" + id);
+
+        });
+
+        function capitalize(str) {
+            strVal = '';
+            str = str.split(' ');
+            for (var chr = 0; chr < str.length; chr++) {
+                strVal += str[chr].substring(0, 1).toUpperCase() + str[chr].substring(1, str[chr].length) + ' '
+            }
+            return strVal
+        }
+
         function confirm(id) {
             swal("Are you sure ?", "Data will be updated", {
                 icon: "info",

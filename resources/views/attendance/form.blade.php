@@ -534,41 +534,7 @@
                                     <div class="form-group">
                                         <label for="">Text Book</label>
                                         <input type="text" class="form-control"
-                                            value="{{ $cekAbsen != 0 ? $data->textBook : '' }}" name="textBook">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        @php
-                                            $tests = DB::table('tests')->get();
-                                        @endphp
-                                        <label for="">Review and Test</label>
-                                        <select name="id_test" id="" class="form-control">
-                                            <option value="">---Choose Test---</option>
-                                            @foreach ($tests as $t)
-                                                <option value="{{ $t->id }}"
-                                                    {{ $cekAbsen != 0 && $data->id_test == $t->id ? 'selected' : '' }}>
-                                                    {{ $t->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Review</label>
-                                        <input type="date" class="form-control"
-                                            value="{{ $cekAbsen != 0 ? $data->date_review : '' }}" name="date_review">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Test</label>
-                                        <input type="date" class="form-control"
-                                            value="{{ $cekAbsen != 0 ? $data->date_test : '' }}" name="date_test">
+                                            value="{{ $data->type == 'update' ? $data->textBook : '' }}" name="textBook">
                                     </div>
                                 </div>
                             </div>
@@ -584,7 +550,42 @@
 
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @php
+                                            $tests = DB::table('tests')->get();
+                                        @endphp
+                                        <label for="">Review and Test</label>
+                                        <select name="id_test" id="" class="form-control">
+                                            <option value="">---Choose Test---</option>
+                                            @foreach ($tests as $t)
+                                                <option value="{{ $t->id }}"
+                                                    {{ $data->type == 'update' && $data->id_test == $t->id ? 'selected' : '' }}>
+                                                    {{ $t->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Review</label>
+                                        <input type="date" class="form-control"
+                                            value="{{ $data->type == 'update' ? $data->date_review : '' }}"
+                                            name="date_review">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Test</label>
+                                        <input type="date" class="form-control"
+                                            value="{{ $data->type == 'update' ? $data->date_test : '' }}"
+                                            name="date_test">
+                                    </div>
+                                </div>
+                            </div>
                             <input type="hidden" class="form-control"
                                 value="{{ $data->is_presence != false ? '1' : '0' }}" name="cekAllAbsen"
                                 id="cekAllAbsen" class="checkAllAbsen">

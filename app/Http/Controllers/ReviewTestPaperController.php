@@ -10,7 +10,7 @@ class ReviewTestPaperController extends Controller
 {
     public function index()
     {
-        $data = OrderReview::with('teacher')->groupBy('id_attendance')->get();
+        $data = OrderReview::with('teacher')->orderBy('id', 'DESC')->get();
         return view('order-review.index', compact('data'));
     }
 
@@ -18,9 +18,23 @@ class ReviewTestPaperController extends Controller
     {
         DB::beginTransaction();
         try {
-            OrderReview::where('id_attendance', $id)->update([
-                'is_done' => true,
-            ]);
+            $model = OrderReview::find($id);
+            $model->is_done = true;
+            $model->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            throw $th;
+            DB::rollBack();
+        }
+        return redirect('/review')->with('status', 'Berhasil mengupdate');
+    }
+    public function comment($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $model = OrderReview::find($id);
+            $model->comment = $request->comment;
+            $model->save();
             DB::commit();
         } catch (\Throwable $th) {
             throw $th;
