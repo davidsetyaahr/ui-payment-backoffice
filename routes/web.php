@@ -106,4 +106,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('/review', [ReviewTestPaperController::class, 'index']);
     Route::get('/review-done/{id}', [ReviewTestPaperController::class, 'done']);
     Route::post('/review-comment/{id}', [ReviewTestPaperController::class, 'comment']);
+    Route::delete('/review/{id}', [ReviewTestPaperController::class, 'destroy']);
 });

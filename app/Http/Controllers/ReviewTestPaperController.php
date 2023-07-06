@@ -42,4 +42,15 @@ class ReviewTestPaperController extends Controller
         }
         return redirect('/review')->with('status', 'Berhasil mengupdate');
     }
+
+    public function destroy($id)
+    {
+        try {
+            OrderReview::findOrFail($id)->delete();
+            return redirect('/review')->with('status', 'Berhasil menghapus data');
+        } catch (\Throwable $th) {
+            return $th;
+            return redirect('/review')->with('error', 'Gagal menghapus data');
+        }
+    }
 }

@@ -89,6 +89,17 @@
                                                         data-class="{{ $item->class }}"
                                                         data-teacher="{{ $item->teacher->name }}"
                                                         class="btn btn-sm btn-primary modalAction">Add Comment</a>
+
+                                                    @if ($item->is_done == 1)
+                                                        <form action="{{ url('review') . '/' . $item->id }}" method="POST"
+                                                            class="form-inline">
+                                                            @method('delete')
+                                                            @csrf
+                                                            <button type="submit"
+                                                                onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                                class="btn btn-xs btn-danger">Delete</button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -148,25 +159,25 @@
             return strVal
         }
 
-        function confirm(id) {
-            swal("Are you sure ?", "Data will be updated", {
-                icon: "info",
-                buttons: {
-                    confirm: {
-                        className: 'btn btn-success',
-                        text: 'Ok'
-                    },
-                    dismiss: {
-                        className: 'btn btn-secondary',
-                        text: 'Cancel'
-                    },
-                },
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result == true) {
-                    window.location = "{{ url('review-done') . '/' }}" + id
-                }
-            });
-        }
+        // function confirm(id) {
+        //     swal("Are you sure ?", "Data will be updated", {
+        //         icon: "info",
+        //         buttons: {
+        //             confirm: {
+        //                 className: 'btn btn-success',
+        //                 text: 'Ok'
+        //             },
+        //             dismiss: {
+        //                 className: 'btn btn-secondary',
+        //                 text: 'Cancel'
+        //             },
+        //         },
+        //     }).then((result) => {
+        //         /* Read more about isConfirmed, isDenied below */
+        //         if (result == true) {
+        //             window.location = "{{ url('review-done') . '/' }}" + id
+        //         }
+        //     });
+        // }
     </script>
 @endsection
