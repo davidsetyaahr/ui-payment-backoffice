@@ -114,8 +114,8 @@
                                                     <th class="text-center">Name</th>
                                                     <th class="text-center">Teacher</th>
                                                     <th class="text-center">Level</th>
-                                                    <th class="text-center">Comment Teacher</th>
-                                                    <th class="text-center">Comment Staff</th>
+                                                    <th class="text-center">Teacher's Comment</th>
+                                                    <th class="text-center">Staff's Comment</th>
                                                     <th class="text-center">Date</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
