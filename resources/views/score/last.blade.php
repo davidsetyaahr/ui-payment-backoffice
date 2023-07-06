@@ -58,7 +58,7 @@
                                                 <th>No</th>
                                                 <th>Skill</th>
                                                 <th>
-                                                    Test I
+                                                    Test 1
                                                     <br>
                                                     @if ($studentScore1 == 0)
                                                         <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=1' }}"
@@ -66,7 +66,7 @@
                                                     @endif
                                                 </th>
                                                 <th>
-                                                    Test II
+                                                    Test 2
                                                     <br>
                                                     @if ($studentScore2 == 0)
                                                         <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=2' }}"
@@ -74,14 +74,14 @@
                                                     @endif
                                                 </th>
                                                 <th>
-                                                    Test III
+                                                    Test 3
                                                     <br>
                                                     @if ($studentScore3 == 0)
                                                         <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=3' }}"
                                                             class="btn btn-sm btn-success">Add Score</a>
                                                     @endif
                                                 </th>
-                                                <th>AVG</th>
+                                                <th>Average</th>
                                                 <th>Grade</th>
                                             </tr>
                                         </thead>

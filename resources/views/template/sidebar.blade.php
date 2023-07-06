@@ -46,7 +46,7 @@
                     <li class="nav-item {{ Request::segment(1) == 'score' ? 'active' : '' }}">
                         <a href="{{ url('/score/form') }}" class="collapsed">
                             <i class="fas fa-user-alt"></i>
-                            <p>Student Score</p>
+                            <p>Student's Score</p>
                         </a>
 
                     </li>
