@@ -135,7 +135,12 @@
                                                         </td>
                                                         <td>{{ $item[0]->comment_staff != null ? $item[0]->comment_staff : '-' }}
                                                         </td>
-                                                        <td>{{ $item[0]->date != null ? $item[0]->date : '-' }}
+                                                        <td>
+                                                            @foreach ($item as $key => $value)
+                                                                {{ $value->date }}{{ $loop->last ? '' : ',' }}
+                                                            @endforeach
+                                                            {{-- {{ $item[0]->date != null ? $item[0]->date : '-' }},
+                                                            {{ $item[1]->date != null ? $item[1]->date : '-' }} --}}
                                                         </td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                         <td>
