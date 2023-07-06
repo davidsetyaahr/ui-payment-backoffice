@@ -57,6 +57,7 @@
                                             <th>Class</th>
                                             <th>Review / Test</th>
                                             <th>Due Date</th>
+                                            <th>Time</th>
                                             <th>QTY</th>
                                             <th>Comment</th>
                                             <th>Confirm</th>
@@ -64,12 +65,17 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $item)
+                                            @php
+                                                $class = explode(' ', $item->class);
+                                            @endphp
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->teacher->name }}</td>
-                                                <td>{{ $item->class }}</td>
+                                                <td>{{ $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] }}
+                                                </td>
                                                 <td>{{ $item->review_test }}</td>
                                                 <td>{{ $item->due_date }}</td>
+                                                <td>{{ $class[5] }}</td>
                                                 <td>{{ $item->qty }}</td>
                                                 <td>{{ $item->comment }}</td>
                                                 <td>

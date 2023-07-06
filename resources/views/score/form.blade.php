@@ -54,6 +54,17 @@
                             <hr>
                             <div class="row">
                                 @foreach ($class as $key => $item)
+                                    @php
+                                        $test = [];
+                                        if ($item->priceid >= 22 && $item->priceid <= 37) {
+                                            $test = App\Models\Tests::where('id', '!=', 3)->get();
+                                        } elseif ($item->priceid >= 43 && $item->priceid <= 45) {
+                                            $test = App\Models\Tests::where('id', 1)->get();
+                                        } else {
+                                            $test = App\Models\Tests::get();
+                                        }
+                                        
+                                    @endphp
                                     <div class="col-sm-6 col-md-4 ">
                                         <div class="card">
                                             <div class="card-body">

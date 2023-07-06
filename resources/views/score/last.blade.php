@@ -57,30 +57,58 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Skill</th>
-                                                <th>
-                                                    Test 1
-                                                    <br>
-                                                    @if ($studentScore1 == 0)
-                                                        <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=1' }}"
-                                                            class="btn btn-sm btn-success">Add Score</a>
-                                                    @endif
-                                                </th>
-                                                <th>
-                                                    Test 2
-                                                    <br>
-                                                    @if ($studentScore2 == 0)
-                                                        <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=2' }}"
-                                                            class="btn btn-sm btn-success">Add Score</a>
-                                                    @endif
-                                                </th>
-                                                <th>
-                                                    Test 3
-                                                    <br>
-                                                    @if ($studentScore3 == 0)
-                                                        <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=3' }}"
-                                                            class="btn btn-sm btn-success">Add Score</a>
-                                                    @endif
-                                                </th>
+                                                @if (Request::get('class') >= 43 && Request::get('class') <= 45)
+                                                    <th>
+                                                        Test 1
+                                                        <br>
+                                                        @if ($studentScore1 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=1' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                @elseif (Request::get('class') >= 22 && Request::get('class') <= 37)
+                                                    <th>
+                                                        Test 1
+                                                        <br>
+                                                        @if ($studentScore1 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=1' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                    <th>
+                                                        Test 2
+                                                        <br>
+                                                        @if ($studentScore2 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=2' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                @else
+                                                    <th>
+                                                        Test 1
+                                                        <br>
+                                                        @if ($studentScore1 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=1' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                    <th>
+                                                        Test 2
+                                                        <br>
+                                                        @if ($studentScore2 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=2' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                    <th>
+                                                        Test 3
+                                                        <br>
+                                                        @if ($studentScore3 == 0)
+                                                            <a href="{{ url('score/create-last') . '?type=create&class=' . $class->id . '&student=' . $student->id . '&test=3' }}"
+                                                                class="btn btn-sm btn-success">Add Score</a>
+                                                        @endif
+                                                    </th>
+                                                @endif
                                                 <th>Average</th>
                                                 <th>Grade</th>
                                             </tr>
@@ -118,8 +146,8 @@
                                                         ->where('test_id', 3)
                                                         ->where('student_score_details.test_item_id', $item->id)
                                                         ->first();
-                                                    $score_test1 = $score1->score_test;
-                                                    $score_test2 = $score2->score_test;
+                                                    $score_test1 = $score1 ? $score1->score_test : 0;
+                                                    $score_test2 = $score2 ? $score2->score_test : 0;
                                                     $score_test3 = $score3 ? $score3->score_test : 0;
                                                     $score_test = round(($score_test1 + $score_test2 + $score_test3) / 3);
                                                     $total_test1 += $score_test1;
@@ -130,19 +158,37 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->name }}</td>
-                                                    <td>{{ $score_test1 }}</td>
-                                                    <td>{{ $score_test2 }}</td>
-                                                    <td>{{ $score_test3 }}</td>
+                                                    @if (Request::get('class') >= 43 && Request::get('class') <= 45)
+                                                        <td>{{ $score_test1 }}</td>
+                                                    @elseif(Request::get('class') >= 22 && Request::get('class') <= 37)
+                                                        <td>{{ $score_test1 }}</td>
+                                                        <td>{{ $score_test2 }}</td>
+                                                    @else
+                                                        <td>{{ $score_test1 }}</td>
+                                                        <td>{{ $score_test2 }}</td>
+                                                        <td>{{ $score_test3 }}</td>
+                                                    @endif
                                                     <td>{{ $score_test }}</td>
                                                     <td>{{ Helper::getGrade($score_test) }}</td>
                                                 </tr>
                                             @endforeach
                                             <tr>
-                                                <td colspan="2">Total</td>
-                                                <td>{{ $total_test1 }}</td>
-                                                <td>{{ $total_test2 }}</td>
-                                                <td>{{ $total_test3 }}</td>
-                                                <td colspan="2">{{ $total_test }}</td>
+                                                @if (Request::get('class') >= 43 && Request::get('class') <= 45)
+                                                    <td colspan="2">Total</td>
+                                                    <td>{{ $total_test1 }}</td>
+                                                    <td colspan="2">{{ $total_test }}</td>
+                                                @elseif(Request::get('class') >= 22 && Request::get('class') <= 37)
+                                                    <td colspan="2">Total</td>
+                                                    <td>{{ $total_test1 }}</td>
+                                                    <td>{{ $total_test2 }}</td>
+                                                    <td colspan="2">{{ $total_test }}</td>
+                                                @else
+                                                    <td colspan="2">Total</td>
+                                                    <td>{{ $total_test1 }}</td>
+                                                    <td>{{ $total_test2 }}</td>
+                                                    <td>{{ $total_test3 }}</td>
+                                                    <td colspan="2">{{ $total_test }}</td>
+                                                @endif
                                             </tr>
                                         </tbody>
                                     </table>
