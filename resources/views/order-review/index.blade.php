@@ -71,11 +71,11 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->teacher->name }}</td>
-                                                <td>{{ $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] }}
+                                                <td>{{ !empty($class[5]) ? $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] : $class[0] . ' ' . $class[1] . ' ' . $class[2] }}
                                                 </td>
                                                 <td>{{ $item->review_test }}</td>
                                                 <td>{{ $item->due_date }}</td>
-                                                <td>{{ $class[5] }}</td>
+                                                <td>{{ !empty($class[5]) ? $class[5] : $class[4] }}</td>
                                                 <td>{{ $item->qty }}</td>
                                                 <td>{{ $item->comment }}</td>
                                                 <td>
