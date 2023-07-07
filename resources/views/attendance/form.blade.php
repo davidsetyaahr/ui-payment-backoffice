@@ -135,6 +135,42 @@
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
         }
+
+        .rowheaders td:nth-of-type(1) {
+            font-style: italic;
+        }
+
+        .rowheaders th:nth-of-type(3),
+        .rowheaders td:nth-of-type(2) {
+            text-align: right;
+        }
+
+        th {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        th[scope=row] {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background: white;
+            border: 1px solid #48abf7 !important;
+        }
+
+        th[scope=row] {
+            vertical-align: top;
+            background: white;
+            border: 1px solid #48abf7 !important;
+        }
+
+        th:not([scope=row]):first-child {
+            left: 0;
+            z-index: 3;
+        }
     </style>
     <div class="content">
         <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
@@ -186,7 +222,7 @@
                             <table class="table table-sm table-bordered table-head-bg-info table-bordered-bd-info">
                                 <thead>
                                     <tr>
-                                        <th width="10%">Nama</th>
+                                        <th width="10%" class="rowheaders">Nama</th>
                                         @foreach ($attendance as $key => $item)
                                             <th width="5%">{{ date('d/m', strtotime($item->date)) }}
                                                 @php
@@ -208,7 +244,7 @@
                                 <tbody>
                                     @foreach ($student as $item)
                                         <tr>
-                                            <td width="10%" style="">{{ $item->name }}</td>
+                                            <th width="10%" scope="row">{{ $item->name }}</th>
                                             @foreach ($attendance as $i)
                                                 @php
                                                     $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
