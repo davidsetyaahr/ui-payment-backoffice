@@ -208,7 +208,7 @@
                                 <tbody>
                                     @foreach ($student as $item)
                                         <tr>
-                                            <td width="10%">{{ $item->name }}</td>
+                                            <td width="10%" style="">{{ $item->name }}</td>
                                             @foreach ($attendance as $i)
                                                 @php
                                                     $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
@@ -386,7 +386,7 @@
                                                                         <input type="hidden"
                                                                             name="isPermission[{{ $no }}][]"
                                                                             value="0">
-                                                                        <input type="checkbox"
+                                                                        <input type="checkbox" class="cekBoxPermission"
                                                                             name="isPermission[{{ $no }}][]"
                                                                             id="permissionCheckBox{{ $keyIt }}"
                                                                             value="0"
@@ -747,7 +747,12 @@
                 $('#permissionCheckBox' + key).val(0);
                 $('#permissionCheckBox' + key).removeAttr('checked');
             }
-
+            alert($('.cekBoxPermission:checked').length)
+            if ($('.cekBoxPermission:checked').length != 0) {
+                $('#cekAllAbsen').val(1);
+            } else {
+                $('#cekAllAbsen').val(0);
+            }
         }
 
         function alpha(key) {
