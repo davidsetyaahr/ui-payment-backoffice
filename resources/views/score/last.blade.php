@@ -175,19 +175,19 @@
                                             <tr>
                                                 @if (Request::get('class') >= 43 && Request::get('class') <= 45)
                                                     <td colspan="2">Total</td>
-                                                    <td>{{ $total_test1 }}</td>
-                                                    <td colspan="2">{{ $total_test }}</td>
+                                                    <td>{{ $total_test1/count($testItem) }}</td>
+                                                    <td colspan="2">{{ $total_test/count($testItem) }}</td>
                                                 @elseif(Request::get('class') >= 22 && Request::get('class') <= 37)
                                                     <td colspan="2">Total</td>
-                                                    <td>{{ $total_test1 }}</td>
-                                                    <td>{{ $total_test2 }}</td>
-                                                    <td colspan="2">{{ $total_test }}</td>
+                                                    <td>{{ $total_test1/count($testItem) }}</td>
+                                                    <td>{{ $total_test2/count($testItem) }}</td>
+                                                    <td colspan="2">{{ $total_test/count($testItem) }}</td>
                                                 @else
                                                     <td colspan="2">Total</td>
-                                                    <td>{{ $total_test1 }}</td>
-                                                    <td>{{ $total_test2 }}</td>
-                                                    <td>{{ $total_test3 }}</td>
-                                                    <td colspan="2">{{ $total_test }}</td>
+                                                    <td>{{ $total_test1/count($testItem) }}</td>
+                                                    <td>{{ $total_test2/count($testItem) }}</td>
+                                                    <td>{{ $total_test3/count($testItem) }}</td>
+                                                    <td colspan="2">{{ $total_test/count($testItem) }}</td>
                                                 @endif
                                             </tr>
                                         </tbody>
