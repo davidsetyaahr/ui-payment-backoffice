@@ -633,24 +633,36 @@ class AttendanceController extends Controller
                 $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
                 $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
                 if ($request->date_review) {
-                    OrderReview::where('id_attendance', $request->attendanceId)->where('type', 'review')->update(array(
-                        'id_teacher' => $request->teacher,
-                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
-                        'review_test' => 'Review ' . $request->id_test,
-                        'due_date' => $request->date_review,
-                        // 'qty' => $countStudent,
-                        'qty' => count($request->studentId),
-                    ));
+                    OrderReview::where('id_attendance', $request->attendanceId)->delete();
+                    foreach ($request->id_test as $keyReview => $valueReview) {
+                        OrderReview::create(array(
+                            'id_attendance' => $attendance->id,
+                            'test_id' => $valueReview,
+                            'id_teacher' => $request->teacher,
+                            'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                            'review_test' => 'Review ' . $valueReview,
+                            'due_date' => $request->date_review,
+                            // 'qty' => $countStudent,
+                            'qty' => count($request->studentId),
+                            'type' => 'review',
+                        ));
+                    }
                 }
                 if ($request->date_test) {
-                    OrderReview::where('id_attendance', $request->attendanceId)->where('type', 'test')->update(array(
-                        'id_teacher' => $request->teacher,
-                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
-                        'review_test' => 'Test ' . $request->id_test,
-                        'due_date' => $request->date_test,
-                        // 'qty' => $countStudent,
-                        'qty' => count($request->studentId),
-                    ));
+                    OrderReview::where('id_attendance', $request->attendanceId)->delete();
+                    foreach ($request->id_test as $keyTest => $valueTest) {
+                        OrderReview::create(array(
+                            'id_attendance' => $attendance->id,
+                            'test_id' => $valueTest,
+                            'id_teacher' => $request->teacher,
+                            'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                            'review_test' => 'Test ' . $valueTest,
+                            'due_date' => $request->date_test,
+                            'qty' => count($request->studentId),
+                            // 'qty' => $countStudent,
+                            'type' => 'test',
+                        ));
+                    }
                 }
             } else {
                 Attendance::where('id', $request->attendanceId)->delete();
