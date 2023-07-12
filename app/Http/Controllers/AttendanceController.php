@@ -219,11 +219,13 @@ class AttendanceController extends Controller
         try {
             if ($request->cekAllAbsen == true) {
                 $idTest = "";
-                $count = count($request->id_test);
-                for ($i = 0; $i < $count; $i++) {
-                    $file = $request->id_test[$i];
-                    $comma = $i + 1 != $count ? ',' : '';
-                    $idTest .= $file . $comma;
+                if ($request->id_test != null) {
+                    $count = count($request->id_test);
+                    for ($i = 0; $i < $count; $i++) {
+                        $file = $request->id_test[$i];
+                        $comma = $i + 1 != $count ? ',' : '';
+                        $idTest .= $file . $comma;
+                    }
                 }
                 $countStudent = 0;
                 $pointCategories = PointCategories::all();
