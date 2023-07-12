@@ -176,18 +176,21 @@
                                                 @if (Request::get('class') >= 43 && Request::get('class') <= 45)
                                                     <td colspan="2">Total</td>
                                                     <td>{{ round($total_test1/count($testItem)) }}</td>
-                                                    <td colspan="2">{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ Helper::getGrade(round($total_test/count($testItem))) }}</td>
                                                 @elseif(Request::get('class') >= 22 && Request::get('class') <= 37)
                                                     <td colspan="2">Total</td>
                                                     <td>{{ round($total_test1/count($testItem)) }}</td>
                                                     <td>{{ round($total_test2/count($testItem)) }}</td>
-                                                    <td colspan="2">{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ Helper::getGrade(round($total_test/count($testItem))) }}</td>
                                                 @else
                                                     <td colspan="2">Total</td>
                                                     <td>{{ round($total_test1/count($testItem)) }}</td>
                                                     <td>{{ round($total_test2/count($testItem)) }}</td>
                                                     <td>{{ round($total_test3/count($testItem)) }}</td>
-                                                    <td colspan="2">{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ round($total_test/count($testItem)) }}</td>
+                                                    <td>{{ Helper::getGrade(round($total_test/count($testItem))) }}</td>
                                                 @endif
                                             </tr>
                                         </tbody>

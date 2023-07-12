@@ -593,14 +593,23 @@
                                             $tests = DB::table('tests')->get();
                                         @endphp
                                         <label for="">Review and Test</label>
-                                        <select name="id_test" id="" class="form-control">
-                                            <option value="">---Choose Test---</option>
-                                            @foreach ($tests as $t)
-                                                <option value="{{ $t->id }}"
+                                        {{-- <select name="id_test" id="" class="form-control"> --}}
+                                            {{-- <option value="">---Choose Test---</option> --}}
+                                            @foreach ($tests as $keyt => $t)
+                                                @php
+                                                    // if ($data->attendanceId != 0) {
+                                                    //     $checkedTestByOrderReview =  DB::table('order_reviews')->where('test_id',$t->id)->where('id_attendance',$data->attendanceId)->first();
+                                                    // }
+                                                @endphp
+                                                <div class="form-group">
+                                                    <label for="">{{$t->name}}</label>
+                                                    <input type="checkbox" name="id_test[]" class="form-class" value="{{$t->id}}" >
+                                                </div>
+                                                {{-- <option value="{{ $t->id }}"
                                                     {{ $data->type == 'update' && $data->id_test == $t->id ? 'selected' : '' }}>
-                                                    {{ $t->name }}</option>
+                                                    {{ $t->name }}</option> --}}
                                             @endforeach
-                                        </select>
+                                        {{-- </select> --}}
                                     </div>
                                 </div>
                             </div>
@@ -645,7 +654,7 @@
 
                     @endphp
 
-                    @if (Auth::guard('teacher')->check() == true)
+                    {{-- @if (Auth::guard('teacher')->check() == true) --}}
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Last Agenda</h4>
@@ -669,7 +678,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    {{-- @endif --}}
                     </form>
                 </div>
             </div>

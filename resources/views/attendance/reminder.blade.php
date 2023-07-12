@@ -127,7 +127,7 @@
                                                 @endphp
                                                 @foreach ($data as $item)
                                                     <tr>
-                                                        <td>{{ $item[0]->id }}</td>
+                                                        <td>{{ $loop->iteration }}</td>
                                                         <td>{{ ucwords($item[0]->name) }}</td>
                                                         <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
                                                         <td>{{ $item[0]->program }}</td>

@@ -56,9 +56,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($data as $item)
-                                            <tr>
-
+                                        @foreach ($data as $key => $item)
+                                            <tr data-toggle="collapse" data-target="#collapse{{$key}}" aria-expanded="false" aria-controls="collapse{{$key}}">
                                                 <td>{{ $item->name }}</td>
                                                 <td class=" d-flex">
                                                     <form action="{{ route('tests.destroy', $item->id) }}" method="POST"
@@ -74,6 +73,11 @@
                                                             class="btn btn-xs btn-primary"><i
                                                                 class="fas fa-trash"></i></button>
                                                     </form>
+                                                </td>
+                                            </tr>
+                                            <tr id="collapse{{$key}}" class="collapse" aria-labelledby="heading{{$key}}" data-parent="#accordion">
+                                                <td colspan="2">
+                                                    <b>{{$item->name}}</b> Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi beatae aliquid magni recusandae optio, obcaecati sed vitae fuga harum quaerat? Quisquam, facere voluptatum! Odio praesentium vero porro doloremque facilis delectus. <strong>{{ $key}}</strong>
                                                 </td>
                                             </tr>
                                         @endforeach
