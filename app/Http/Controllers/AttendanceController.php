@@ -13,6 +13,7 @@ use App\Models\Price;
 use App\Models\Students;
 use App\Models\StudentScore;
 use App\Models\Teacher;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -832,6 +833,10 @@ class AttendanceController extends Controller
             $mutasi = new Mutasi;
             $mutasi->student_id = $request->student;
             $mutasi->price_id = $student->priceid;
+            $mutasi->user_name = Auth::guard('staff')->user()->name;
+            $mutasi->from = 'Backoffice';
+            $mutasi->created_at = Carbon::now()->addHours(7);
+            $mutasi->updated_at = Carbon::now()->addHours(7);
             if ($score != null) {
                 $mutasi->score_id = $score->id;
             }
@@ -874,6 +879,10 @@ class AttendanceController extends Controller
                     $mutasi = new Mutasi;
                     $mutasi->student_id = $value->id;
                     $mutasi->price_id = $priceId;
+                    $mutasi->user_name = Auth::guard('staff')->user()->name;
+                    $mutasi->from = 'Backoffice';
+                    $mutasi->created_at = Carbon::now()->addHours(7);
+                    $mutasi->updated_at = Carbon::now()->addHours(7);
                     if ($score != null) {
                         $mutasi->score_id = $score->id;
                     }

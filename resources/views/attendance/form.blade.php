@@ -586,8 +586,8 @@
 
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                            {{-- <div class="row"> --}}
+                                {{-- <div class="col-md-6"> --}}
                                     <div class="form-group">
                                         @php
                                             $tests = DB::table('tests')->get();
@@ -595,24 +595,28 @@
                                         <label for="">Review and Test</label>
                                         {{-- <select name="id_test" id="" class="form-control"> --}}
                                             {{-- <option value="">---Choose Test---</option> --}}
-                                            @foreach ($tests as $keyt => $t)
-                                                @php
-                                                    // if ($data->attendanceId != 0) {
-                                                    //     $checkedTestByOrderReview =  DB::table('order_reviews')->where('test_id',$t->id)->where('id_attendance',$data->attendanceId)->first();
-                                                    // }
-                                                @endphp
-                                                <div class="form-group">
-                                                    <label for="">{{$t->name}}</label>
-                                                    <input type="checkbox" name="id_test[]" class="form-class" value="{{$t->id}}" >
-                                                </div>
-                                                {{-- <option value="{{ $t->id }}"
-                                                    {{ $data->type == 'update' && $data->id_test == $t->id ? 'selected' : '' }}>
-                                                    {{ $t->name }}</option> --}}
-                                            @endforeach
+                                            <div class="row">
+                                                @foreach ($tests as $keyt => $t)
+                                                    <div class="col-md-1">
+                                                        @php
+                                                            // if ($data->attendanceId != 0) {
+                                                            //     $checkedTestByOrderReview =  DB::table('order_reviews')->where('test_id',$t->id)->where('id_attendance',$data->attendanceId)->first();
+                                                            // }
+                                                        @endphp
+                                                                <div class="form-group">
+                                                                    <label for="">{{$t->id}}</label>
+                                                                    <input type="checkbox" name="id_test[]" class="form-class" value="{{$t->id}}" >
+                                                                </div>
+                                                        {{-- <option value="{{ $t->id }}"
+                                                            {{ $data->type == 'update' && $data->id_test == $t->id ? 'selected' : '' }}>
+                                                            {{ $t->name }}</option> --}}
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         {{-- </select> --}}
                                     </div>
-                                </div>
-                            </div>
+                                {{-- </div> --}}
+                            {{-- </div> --}}
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
