@@ -92,13 +92,12 @@
 
                                                     @if ($item->is_done == 1)
                                                         <form action="{{ url('review') . '/' . $item->id }}" method="POST"
-                                                            class="form-inline">
+                                                            class="form-inline" id="deleteOrderView{{$item->id}}">
                                                             @method('delete')
                                                             @csrf
-                                                            <button type="submit"
-                                                                onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                                                class="btn btn-xs btn-danger">Delete</button>
                                                         </form>
+                                                        <a href="javascript:void(0)" onclick="deleted({{ $item->id }})"
+                                                            class="btn btn-sm btn-danger">Delete</a>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -159,25 +158,46 @@
             return strVal
         }
 
-        // function confirm(id) {
-        //     swal("Are you sure ?", "Data will be updated", {
-        //         icon: "info",
-        //         buttons: {
-        //             confirm: {
-        //                 className: 'btn btn-success',
-        //                 text: 'Ok'
-        //             },
-        //             dismiss: {
-        //                 className: 'btn btn-secondary',
-        //                 text: 'Cancel'
-        //             },
-        //         },
-        //     }).then((result) => {
-        //         /* Read more about isConfirmed, isDenied below */
-        //         if (result == true) {
-        //             window.location = "{{ url('review-done') . '/' }}" + id
-        //         }
-        //     });
-        // }
+        function confirm(id) {
+            swal("Are you sure ?", "Data will be updated", {
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-success',
+                        text: 'Ok'
+                    },
+                    dismiss: {
+                        className: 'btn btn-secondary',
+                        text: 'Cancel'
+                    },
+                },
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result == true) {
+                    window.location = "{{ url('review-done') . '/' }}" + id
+                }
+            });
+        }
+
+        function deleted(id) {
+            swal("Are you sure ?", "Data will be deleted", {
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-success',
+                        text: 'Ok'
+                    },
+                    dismiss: {
+                        className: 'btn btn-secondary',
+                        text: 'Cancel'
+                    },
+                },
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result == true) {
+                    $('#deleteOrderView'+id).submit();
+                }
+            });
+        }
     </script>
 @endsection
