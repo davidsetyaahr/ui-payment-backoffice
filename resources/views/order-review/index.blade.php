@@ -48,6 +48,21 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <form action="" method="GET">
+                                <div class="row mb-4 justify-content-end">
+                                    <div class="col-md-3">
+                                        <label for="">From Date</label>
+                                        <input type="date" name="from" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">To Date</label>
+                                        <input type="date" name="to" class="form-control">
+                                    </div>
+                                    <div class="col-md-2 mt-4">
+                                        <button class="btn btn-sm btn-primary"><i class="fas fa-filter"></i> Filter</button>
+                                    </div>
+                                </div>
+                            </form>
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
@@ -92,7 +107,7 @@
 
                                                     @if ($item->is_done == 1)
                                                         <form action="{{ url('review') . '/' . $item->id }}" method="POST"
-                                                            class="form-inline" id="deleteOrderView{{$item->id}}">
+                                                            class="form-inline" id="deleteOrderView{{ $item->id }}">
                                                             @method('delete')
                                                             @csrf
                                                         </form>
@@ -195,7 +210,7 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result == true) {
-                    $('#deleteOrderView'+id).submit();
+                    $('#deleteOrderView' + id).submit();
                 }
             });
         }

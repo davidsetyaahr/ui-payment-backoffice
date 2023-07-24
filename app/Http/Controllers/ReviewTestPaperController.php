@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class ReviewTestPaperController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = OrderReview::with('teacher')->orderBy('id', 'DESC')->get();
+        $data = OrderReview::with('teacher');
+        if ($request->from && $request->to) {
+            $data = $data->whereBetween('due_date', [$request->from, $request->to]);
+        }
+        $data = $data->orderBy('id', 'DESC')->get();
         return view('order-review.index', compact('data'));
     }
 
