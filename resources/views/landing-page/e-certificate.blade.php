@@ -111,6 +111,71 @@
 
     .a4:last-child {}
 
+    /* Pre */
+
+    .nama-pre {
+        position: absolute;
+        top: 216px;
+        left: 250px;
+        font-size: 28px;
+    }
+
+    .level-pre {
+        position: absolute;
+        top: 128px;
+        left: 337px;
+        font-size: 28px;
+    }
+
+    .principal-pre {
+        position: absolute;
+        top: 652px;
+        left: 278px;
+        font-size: 14px;
+    }
+
+    .teacher-pre {
+        position: absolute;
+        top: 652px;
+        left: 455px;
+        font-size: 14px;
+    }
+
+    .date-pre {
+        position: absolute;
+        top: 652px;
+        left: 168px;
+        font-size: 14px;
+    }
+
+    .writing-pre {
+        position: absolute;
+        top: 334px;
+        left: 288px;
+        font-size: 20px;
+    }
+
+    .speaking-pre {
+        position: absolute;
+        top: 376px;
+        left: 288px;
+        font-size: 20px;
+    }
+
+    .reading-pre {
+        position: absolute;
+        top: 477px;
+        left: 288px;
+        font-size: 20px;
+    }
+
+    .listening-pre {
+        position: absolute;
+        top: 516px;
+        left: 288px;
+        font-size: 20px;
+    }
+
     @media print {
 
         html,
@@ -122,64 +187,148 @@
 
 <body>
     {{-- <div class="a4"> --}}
-    <div class="image">
-        <img src="{{ url('/') }}/assets/img/sertif-depan.jpg" alt="" width="1001px">
-        <div class="nama">
-            {{ ucwords($student->name) }}
-        </div>
-        <div class="level">
-            {{ ucwords($class->level) }}
-        </div>
-        <div class="principal">
-            {{ ucwords('Lie Citro Dewi Ruslie') }}
-        </div>
-        <div class="teacher">
-            {{ ucwords($student->teacher->name) }}
-        </div>
-    </div>
-    <div class="image">
-        <img src="{{ url('/') }}/assets/img/sertif-belakang.jpg" alt="" width="1001px">
-        <div class="priceid">
-            {{ date('Y-m-d') }}
-        </div>
+    @if ($student->priceid >= 1 && $student->priceid <= 2)
         @php
             $writing = (($score1 ? $writing1->score : $writing1) + ($score2 ? $writing2->score : $writing2) + ($score3 ? $writing3->score : $writing3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
             $speaking = (($score1 ? $speaking1->score : $speaking1) + ($score2 ? $speaking2->score : $speaking2) + ($score3 ? $speaking3->score : $speaking3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
             $reading = (($score1 ? $reading1->score : $reading1) + ($score2 ? $reading2->score : $reading2) + ($score3 ? $reading3->score : $reading3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
             $listening = (($score1 ? $listening1->score : $listening1) + ($score2 ? $listening2->score : $listening2) + ($score3 ? $listening3->score : $listening3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
-            $grammar = (($score1 ? $grammar1->score : $grammar1) + ($score2 ? $grammar2->score : $grammar2) + ($score3 ? $grammar3->score : $grammar3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
-            $vocabulary = (($score1 ? $vocabulary1->score : $vocabulary1) + ($score2 ? $vocabulary2->score : $vocabulary2) + ($score3 ? $vocabulary3->score : $vocabulary3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
             $average = ($average_score1 + $average_score2 + $average_score3) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
         @endphp
-        <div class="writing">
-            {{ round($writing) . ' (' . Helper::getGrade($writing) . ')' }}
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-depan-pre-toodle.jpg" alt="" width="711px">
+            <div class="nama-pre">
+                {{ ucwords($student->name) }}
+            </div>
+            <div class="level-pre">
+                {{ ucwords($class->level) }}
+            </div>
+            <div class="principal-pre">
+                {{ ucwords('Lie Citro Dewi Ruslie') }}
+            </div>
+            <div class="teacher-pre">
+                {{ ucwords($student->teacher->name) }}
+            </div>
+            <div class="date-pre">
+                {{ ucwords($student->date_certificate) }}
+            </div>
+            <div class="writing-pre">
+                {{ round($writing) . ' (' . Helper::getGrade($writing) . ')' }}
+            </div>
+            <div class="speaking-pre">
+                {{ round($speaking) . ' (' . Helper::getGrade($speaking) . ')' }}
+            </div>
+            <div class="reading-pre">
+                {{ round($reading) . ' (' . Helper::getGrade($reading) . ')' }}
+            </div>
+            <div class="listening-pre">
+                {{ round($listening) . ' (' . Helper::getGrade($listening) . ')' }}
+            </div>
         </div>
-        <div class="speaking">
-            {{ round($speaking) . ' (' . Helper::getGrade($speaking) . ')' }}
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-belakang-pre-toodle.jpg" alt="" width="711px">
         </div>
-        <div class="reading">
-            {{ round($reading) . ' (' . Helper::getGrade($reading) . ')' }}
+    @elseif ($student->priceid >= 3 && $student->priceid <= 6)
+        @php
+            $writing = (($score1 ? $writing1->score : $writing1) + ($score2 ? $writing2->score : $writing2) + ($score3 ? $writing3->score : $writing3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+            $speaking = (($score1 ? $speaking1->score : $speaking1) + ($score2 ? $speaking2->score : $speaking2) + ($score3 ? $speaking3->score : $speaking3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+            $reading = (($score1 ? $reading1->score : $reading1) + ($score2 ? $reading2->score : $reading2) + ($score3 ? $reading3->score : $reading3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+            $listening = (($score1 ? $listening1->score : $listening1) + ($score2 ? $listening2->score : $listening2) + ($score3 ? $listening3->score : $listening3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+            $average = ($average_score1 + $average_score2 + $average_score3) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+        @endphp
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-depan-toodle.jpg" alt="" width="711px">
+            <div class="nama-pre">
+                {{ ucwords($student->name) }}
+            </div>
+            <div class="level-pre">
+                {{ ucwords($class->level) }}
+            </div>
+            <div class="principal-pre">
+                {{ ucwords('Lie Citro Dewi Ruslie') }}
+            </div>
+            <div class="teacher-pre">
+                {{ ucwords($student->teacher->name) }}
+            </div>
+            <div class="date-pre">
+                {{ ucwords($student->date_certificate) }}
+            </div>
+            <div class="writing-pre">
+                {{ round($writing) . ' (' . Helper::getGrade($writing) . ')' }}
+            </div>
+            <div class="speaking-pre">
+                {{ round($speaking) . ' (' . Helper::getGrade($speaking) . ')' }}
+            </div>
+            <div class="reading-pre">
+                {{ round($reading) . ' (' . Helper::getGrade($reading) . ')' }}
+            </div>
+            <div class="listening-pre">
+                {{ round($listening) . ' (' . Helper::getGrade($listening) . ')' }}
+            </div>
         </div>
-        <div class="listening">
-            {{ round($listening) . ' (' . Helper::getGrade($listening) . ')' }}
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-belakang-pre-toodle.jpg" alt="" width="711px">
         </div>
-        <div class="grammar">
-            {{ round($grammar) . ' (' . Helper::getGrade($grammar) . ')' }}
+    @else
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-depan.jpg" alt="" width="1001px">
+            <div class="nama">
+                {{ ucwords($student->name) }}
+            </div>
+            <div class="level">
+                {{ ucwords($class->level) }}
+            </div>
+            <div class="principal">
+                {{ ucwords('Lie Citro Dewi Ruslie') }}
+            </div>
+            <div class="teacher">
+                {{ ucwords($student->teacher->name) }}
+            </div>
         </div>
-        <div class="vocabulary">
-            {{ round($vocabulary) . ' (' . Helper::getGrade($vocabulary) . ')' }}
+        <div class="image">
+            <img src="{{ url('/') }}/assets/img/sertif-belakang.jpg" alt="" width="1001px">
+            <div class="priceid">
+                {{ $student->date_certificate }}
+            </div>
+            @php
+                $writing = (($score1 ? $writing1->score : $writing1) + ($score2 ? $writing2->score : $writing2) + ($score3 ? $writing3->score : $writing3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $speaking = (($score1 ? $speaking1->score : $speaking1) + ($score2 ? $speaking2->score : $speaking2) + ($score3 ? $speaking3->score : $speaking3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $reading = (($score1 ? $reading1->score : $reading1) + ($score2 ? $reading2->score : $reading2) + ($score3 ? $reading3->score : $reading3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $listening = (($score1 ? $listening1->score : $listening1) + ($score2 ? $listening2->score : $listening2) + ($score3 ? $listening3->score : $listening3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $grammar = (($score1 ? $grammar1->score : $grammar1) + ($score2 ? $grammar2->score : $grammar2) + ($score3 ? $grammar3->score : $grammar3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $vocabulary = (($score1 ? $vocabulary1->score : $vocabulary1) + ($score2 ? $vocabulary2->score : $vocabulary2) + ($score3 ? $vocabulary3->score : $vocabulary3)) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+                $average = ($average_score1 + $average_score2 + $average_score3) / (($score1 ? 1 : 0) + ($score2 ? 1 : 0) + ($score3 ? 1 : 0));
+            @endphp
+            <div class="writing">
+                {{ round($writing) . ' (' . Helper::getGrade($writing) . ')' }}
+            </div>
+            <div class="speaking">
+                {{ round($speaking) . ' (' . Helper::getGrade($speaking) . ')' }}
+            </div>
+            <div class="reading">
+                {{ round($reading) . ' (' . Helper::getGrade($reading) . ')' }}
+            </div>
+            <div class="listening">
+                {{ round($listening) . ' (' . Helper::getGrade($listening) . ')' }}
+            </div>
+            <div class="grammar">
+                {{ round($grammar) . ' (' . Helper::getGrade($grammar) . ')' }}
+            </div>
+            <div class="vocabulary">
+                {{ round($vocabulary) . ' (' . Helper::getGrade($vocabulary) . ')' }}
+            </div>
+            <div class="average">
+                {{ round($average) . ' (' . Helper::getGrade($average) . ')' }}
+            </div>
         </div>
-        <div class="average">
-            {{ round($average) . ' (' . Helper::getGrade($average) . ')' }}
-        </div>
-    </div>
+    @endif
     {{-- </div> --}}
     <script>
-        window.print();
-        window.onafterprint = (event) => {
+        // window.print();
+        // window.onafterprint = (event) => {
 
-            window.close();
-        };
+        //     window.close();
+        // };
     </script>
 </body>
 
