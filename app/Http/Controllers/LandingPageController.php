@@ -63,7 +63,7 @@ class LandingPageController extends Controller
     public function eCertificate($id)
     {
         try {
-            $student = Students::find($id);
+            $student = Students::with('teacher')->find($id);
             $class = Price::find($student->priceid);
             $score1 = StudentScore::where('student_id', $id)->where('price_id', $class->id)->where('test_id', 1)->first();
             if ($score1) {

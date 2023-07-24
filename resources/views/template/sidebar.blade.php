@@ -162,14 +162,18 @@
                                 <i class="fas fa-barcode"></i>
                                 <p>Student’s Barcode</p>
                             </a>
-
                         </li>
-                    @endif
-                    @if (Auth::guard('teacher')->user() == null)
                         <li class="nav-item {{ Request::segment(1) == 'review' ? 'active' : '' }}">
                             <a href="{{ url('/review') }}" class="collapsed">
                                 <i class="fas fa-book"></i>
                                 <p>Order Review & Test Paper</p>
+                            </a>
+
+                        </li>
+                        <li class="nav-item {{ Request::segment(1) == 'e-certificate' ? 'active' : '' }}">
+                            <a href="{{ url('/e-certificate') }}" class="collapsed">
+                                <i class="fas fa-certificate"></i>
+                                <p>Certificate Authorization</p>
                             </a>
 
                         </li>

@@ -20,4 +20,8 @@ class Students extends Model
     {
         return $this->hasMany(StudentScore::class, 'student_id');
     }
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'id_teacher');
+    }
 }
