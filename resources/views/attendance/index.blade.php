@@ -98,7 +98,11 @@
                                                     <div class="d-flex justify-content-between">
                                                         <div>
                                                             <i class="fa fas fa-angle-right"></i>
-                                                            <b> {{ $item->program }}</b>
+                                                            <b>
+                                                                {{ $item->program }}</b>
+                                                            @if ($item->is_class_new == true)
+                                                                <span style="color: red">(New!)</span>
+                                                            @endif
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
                                                             <div>
@@ -158,7 +162,7 @@
 
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <div class="fw-bold">{{ $item->teacher_name }}</div>
-                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time) . '&teacher=' . $item->id_teacher }}"
+                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time) . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new }}"
                                                         class="btn btn-xs btn-primary">View</a>
                                                 </div>
                                             </div>
@@ -252,7 +256,7 @@
 
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <div class="fw-bold">{{ $item->teacher_name }}</div>
-                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time . '&teacher=' . $item->id_teacher) }}"
+                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new) }}"
                                                         class="btn btn-xs btn-primary">View</a>
                                                 </div>
                                             </div>
