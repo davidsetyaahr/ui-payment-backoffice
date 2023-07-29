@@ -156,19 +156,19 @@
                         </a>
 
                     </li>
+                    <li class="nav-item {{ Request::segment(1) == 'review' ? 'active' : '' }}">
+                        <a href="{{ url('/review') }}" class="collapsed">
+                            <i class="fas fa-book"></i>
+                            <p>Order Review & Test Paper</p>
+                        </a>
+
+                    </li>
                     @if (Auth::guard('teacher')->user() == null)
                         <li class="nav-item {{ Request::segment(1) == 'barcode-student' ? 'active' : '' }}">
                             <a href="{{ url('/barcode-student') }}" class="collapsed">
                                 <i class="fas fa-barcode"></i>
                                 <p>Student’s Barcode</p>
                             </a>
-                        </li>
-                        <li class="nav-item {{ Request::segment(1) == 'review' ? 'active' : '' }}">
-                            <a href="{{ url('/review') }}" class="collapsed">
-                                <i class="fas fa-book"></i>
-                                <p>Order Review & Test Paper</p>
-                            </a>
-
                         </li>
                         <li class="nav-item {{ Request::segment(1) == 'e-certificate' ? 'active' : '' }}">
                             <a href="{{ url('/e-certificate') }}" class="collapsed">

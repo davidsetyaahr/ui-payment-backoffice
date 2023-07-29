@@ -48,34 +48,41 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="" method="GET">
-                                <div class="row mb-4 justify-content-end">
-                                    <div class="col-md-3">
-                                        <label for="">From Date</label>
-                                        <input type="date" name="from" class="form-control">
+                            @if (Auth::guard('teacher')->user() == null)
+                                <form action="" method="GET">
+                                    <div class="row mb-4 justify-content-end">
+                                        <div class="col-md-3">
+                                            <label for="">From Date</label>
+                                            <input type="date" name="from" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="">To Date</label>
+                                            <input type="date" name="to" class="form-control">
+                                        </div>
+                                        <div class="col-md-2 mt-4">
+                                            <button class="btn btn-sm btn-primary"><i class="fas fa-filter"></i>
+                                                Filter</button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="">To Date</label>
-                                        <input type="date" name="to" class="form-control">
-                                    </div>
-                                    <div class="col-md-2 mt-4">
-                                        <button class="btn btn-sm btn-primary"><i class="fas fa-filter"></i> Filter</button>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            @endif
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Teacher</th>
+                                            @if (Auth::guard('teacher')->user() == null)
+                                                <th>Teacher</th>
+                                            @endif
                                             <th>Class</th>
                                             <th>Review / Test</th>
                                             <th>Due Date</th>
                                             <th>Time</th>
                                             <th>QTY</th>
                                             <th>Comment</th>
-                                            <th>Confirm</th>
+                                            @if (Auth::guard('teacher')->user() == null)
+                                                <th>Confirm</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -85,7 +92,9 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $item->teacher->name }}</td>
+                                                @if (Auth::guard('teacher')->user() == null)
+                                                    <td>{{ $item->teacher->name }}</td>
+                                                @endif
                                                 <td>{{ !empty($class[5]) ? $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] : $class[0] . ' ' . $class[1] . ' ' . $class[2] }}
                                                 </td>
                                                 <td>{{ $item->review_test }}</td>
@@ -93,28 +102,34 @@
                                                 <td>{{ !empty($class[5]) ? $class[5] : $class[4] }}</td>
                                                 <td>{{ $item->qty }}</td>
                                                 <td>{{ $item->comment }}</td>
-                                                <td>
-                                                    @if ($item->is_done == 0)
-                                                        <a href="javascript:void(0)" onclick="confirm({{ $item->id }})"
-                                                            class="btn btn-sm btn-success">Done</a>
-                                                        <br>
-                                                    @endif
-                                                    <a href="javascript:void(0)" data-toggle="modal"
-                                                        data-target="#exampleModal" data-id="{{ $item->id }}"
-                                                        data-class="{{ $item->class }}"
-                                                        data-teacher="{{ $item->teacher->name }}"
-                                                        class="btn btn-sm btn-primary modalAction">Add Comment</a>
 
-                                                    @if ($item->is_done == 1)
-                                                        <form action="{{ url('review') . '/' . $item->id }}" method="POST"
-                                                            class="form-inline" id="deleteOrderView{{ $item->id }}">
-                                                            @method('delete')
-                                                            @csrf
-                                                        </form>
-                                                        <a href="javascript:void(0)" onclick="deleted({{ $item->id }})"
-                                                            class="btn btn-sm btn-danger">Delete</a>
-                                                    @endif
-                                                </td>
+                                                @if (Auth::guard('teacher')->user() == null)
+                                                    <td>
+                                                        @if ($item->is_done == 0)
+                                                            <a href="javascript:void(0)"
+                                                                onclick="confirm({{ $item->id }})"
+                                                                class="btn btn-sm btn-success">Done</a>
+                                                            <br>
+                                                        @endif
+                                                        <a href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#exampleModal" data-id="{{ $item->id }}"
+                                                            data-class="{{ $item->class }}"
+                                                            data-teacher="{{ $item->teacher->name }}"
+                                                            class="btn btn-sm btn-primary modalAction">Add Comment</a>
+
+                                                        @if ($item->is_done == 1)
+                                                            <form action="{{ url('review') . '/' . $item->id }}"
+                                                                method="POST" class="form-inline"
+                                                                id="deleteOrderView{{ $item->id }}">
+                                                                @method('delete')
+                                                                @csrf
+                                                            </form>
+                                                            <a href="javascript:void(0)"
+                                                                onclick="deleted({{ $item->id }})"
+                                                                class="btn btn-sm btn-danger">Delete</a>
+                                                        @endif
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     </tbody>

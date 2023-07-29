@@ -4,17 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderReview;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReviewTestPaperController extends Controller
 {
     public function index(Request $request)
     {
-        $data = OrderReview::with('teacher');
-        if ($request->from && $request->to) {
-            $data = $data->whereBetween('due_date', [$request->from, $request->to]);
+        if (Auth::guard('teacher')->check() == true) {
+            $data = OrderReview::with('teacher')->where('id_teacher', Auth::guard('teacher')->user()->id)->orderBy('id', 'DESC')->get();
+        } else {
+            $data = OrderReview::with('teacher');
+            if ($request->from && $request->to) {
+                $data = $data->whereBetween('due_date', [$request->from, $request->to]);
+            }
+            $data = $data->orderBy('id', 'DESC')->get();
         }
-        $data = $data->orderBy('id', 'DESC')->get();
+
         return view('order-review.index', compact('data'));
     }
 
