@@ -321,7 +321,7 @@
                                             <tbody>
                                                 @php
                                                     $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-                                                    
+
                                                     $no = 1;
                                                 @endphp
                                                 @foreach ($student as $keyIt => $it)
@@ -359,11 +359,11 @@
                                                                     ->where('student_id', $it->id)
                                                                     ->where('attendance_id', $data->attendanceId)
                                                                     ->get();
-                                                                
+
                                                                 foreach ($getStudentPointCategory as $k => $v) {
                                                                     array_push($studentPointCategory, $v->point_category_id);
                                                                 }
-                                                                
+
                                                                 $isChecked = false;
                                                                 if ($data->type == 'create') {
                                                                     $isChecked = false;
@@ -470,7 +470,7 @@
                                                                         } else {
                                                                             $pointDay = 10;
                                                                         }
-                                                                        
+
                                                                         if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
                                                                             $totalPoint = $it->course_hour . '0';
                                                                         } else {
@@ -524,7 +524,7 @@
                                                                     $cekTotalPoint = \DB::table('attendance_details')
                                                                         ->where('attendance_id', $data->attendanceId)
                                                                         ->where('student_id', $it->id);
-                                                                
+
                                                                     if ($cekTotalPoint->count() == 1) {
                                                                         $getTotalPoint = $cekTotalPoint->first();
                                                                         $totalPoint = $getTotalPoint->total_point;
@@ -599,18 +599,16 @@
                                     @foreach ($tests as $keyt => $t)
                                         <div class="col-md-1">
                                             @php
-                                                // if ($data->attendanceId != 0) {
-                                                //     $checkedTestByOrderReview =  DB::table('order_reviews')->where('test_id',$t->id)->where('id_attendance',$data->attendanceId)->first();
-                                                // }
+                                                $cekOrder = DB::table('order_reviews')
+                                                    ->where('id_attendance', $data->attendanceId)
+                                                    ->where('test_id', $t->id)
+                                                    ->first();
                                             @endphp
                                             <div class="form-group">
                                                 <label for="">{{ $t->id }}</label>
                                                 <input type="checkbox" name="id_test[]" class="form-class"
-                                                    value="{{ $t->id }}">
+                                                    value="{{ $t->id }}"{{ $data->type == 'update' ? ($cekOrder ? 'checked' : '') : '' }}>
                                             </div>
-                                            {{-- <option value="{{ $t->id }}"
-                                                            {{ $data->type == 'update' && $data->id_test == $t->id ? 'selected' : '' }}>
-                                                            {{ $t->name }}</option> --}}
                                         </div>
                                     @endforeach
                                 </div>
@@ -656,7 +654,7 @@
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();
-                        
+
                     @endphp
 
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
