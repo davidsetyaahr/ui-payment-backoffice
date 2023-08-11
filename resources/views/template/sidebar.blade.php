@@ -159,7 +159,7 @@
                     <li class="nav-item {{ Request::segment(1) == 'review' ? 'active' : '' }}">
                         <a href="{{ url('/review') }}" class="collapsed">
                             <i class="fas fa-book"></i>
-                            <p>Order Review & Test Paper</p>
+                            <p>Review &Test Order</p>
                         </a>
 
                     </li>

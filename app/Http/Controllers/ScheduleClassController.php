@@ -66,7 +66,7 @@ class ScheduleClassController extends Controller
                     }
                 }
             });
-            return redirect()->back()->with('message', 'Schedule student update');
+            return redirect()->back()->with('message', "Student's Schedule Updated!");
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
         } catch (\Illuminate\Database\QueryException $e) {

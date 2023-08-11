@@ -373,7 +373,7 @@ class AttendanceController extends Controller
                     ));
                 }
             }
-            return redirect('/attendance/class')->with('message', 'Schedule student update');
+            return redirect('/attendance/class')->with('message', "Student's Schedule Updated!");
             // } else {
 
             //     return redirect()->back()->with('status', 'Schedule failed to update');
@@ -665,7 +665,7 @@ class AttendanceController extends Controller
                 AttendanceDetail::where('attendance_id', $request->attendanceId)->delete();
             }
             DB::commit();
-            return redirect('/attendance/class')->with('message', 'Schedule student update');
+            return redirect('/attendance/class')->with('message', "Student's Schedule Updated!");
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;

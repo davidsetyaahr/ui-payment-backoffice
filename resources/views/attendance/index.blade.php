@@ -18,7 +18,7 @@
         <div class="page-inner mt--5">
             @if (session('message'))
                 <script>
-                    swal("Success", "{{ session('message') }}!", {
+                    swal("Successful", "{{ session('message') }}!", {
                         icon: "success",
                         buttons: {
                             confirm: {
@@ -29,7 +29,7 @@
                 </script>
             @elseif(session('error'))
                 <script>
-                    swal("Success", "{{ session('error') }}!", {
+                    swal("Successful", "{{ session('error') }}!", {
                         icon: "error",
                         buttons: {
                             confirm: {
