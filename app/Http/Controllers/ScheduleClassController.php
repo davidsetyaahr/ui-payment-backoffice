@@ -59,7 +59,7 @@ class ScheduleClassController extends Controller
                         // DB::table('student')
                         //     ->where('id', $value)
                         //     ->update(['day1' => null]);
-                        $update = ['day1' => $request->day1, 'day2' => $day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff, 'course_hour' => $request->course_time];
+                        $update = ['day1' => $request->day1, 'day2' => $day2, 'id_teacher' => $request->teacher, 'course_time' => $request->time, 'id_staff' => $request->staff, 'course_hour' => $request->course_time, 'is_class_new' => false];
                         DB::table('student')
                             ->where('id', $value)
                             ->update($update);
@@ -83,6 +83,7 @@ class ScheduleClassController extends Controller
                     'day2' => null,
                     'course_time' => null,
                     'id_teacher' => null,
+                    'is_class_new' => false,
                 ];
                 Students::where('priceid', $request->priceid)->where('day1', $request->day1)->where('day2', $request->day2)->where('course_time', $request->course_time)->where('id_teacher', $request->id_teacher)->update($update);
             });
