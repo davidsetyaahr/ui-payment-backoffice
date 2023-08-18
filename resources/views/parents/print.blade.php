@@ -32,8 +32,6 @@
         <div class="body-print">
             <p style="margin: 2px !important;text-align: center;font-size: 20px;font-weight: 800;">{{ $student->name }}
             </p>
-            <p style="margin:2px !important;text-align:center;font-size: 18px;font-weight: 600;">{{ $student->program }}
-            </p>
             <img src="{{ url('storage/barcode/' . $id . '.jpg') }}" width="225px">
             <p style="margin:2px !important;text-align:center;font-size: 16px;font-weight: 600;">{{ $id }}</p>
         </div>
