@@ -95,11 +95,12 @@
                                                 @if (Auth::guard('teacher')->user() == null)
                                                     <td>{{ $item->teacher->name }}</td>
                                                 @endif
-                                                <td>{{ !empty($class[5]) ? $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] : $class[0] . ' ' . $class[1] . ' ' . $class[2] }}
+                                                <td>{{ !empty($class[5]) ? (!empty($class[6]) ? $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3] . ' ' . $class[4] : $class[0] . ' ' . $class[1] . ' ' . $class[2] . ' ' . $class[3]) : $class[0] . ' ' . $class[1] . ' ' . $class[2] }}
                                                 </td>
                                                 <td>{{ $item->review_test }}</td>
                                                 <td>{{ $item->due_date }}</td>
-                                                <td>{{ !empty($class[5]) ? $class[5] : $class[4] }}</td>
+                                                <td>{{ !empty($class[5]) ? (!empty($class[6]) ? $class[6] : $class[5]) : $class[4] }}
+                                                </td>
                                                 <td>{{ $item->qty }}</td>
                                                 <td>{{ $item->comment }}</td>
 
