@@ -379,7 +379,6 @@ class AttendanceController extends Controller
                     $class = Price::find($request->priceId);
                     $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
                     $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
-                    return $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time;
                     if ($request->date_review) {
                         foreach ($request->id_test as $keyReview => $valueReview) {
                             OrderReview::create(array(
@@ -543,7 +542,6 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, $attendance)
     {
-        // return $request;
         DB::beginTransaction();
         try {
             if ($request->cekAllAbsen == true) {
