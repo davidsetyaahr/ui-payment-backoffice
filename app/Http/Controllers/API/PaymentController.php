@@ -10,6 +10,7 @@ use App\Models\PaymentFromApp;
 use App\Models\Students;
 use App\Models\PaymentFromAppDetail;
 use App\Models\Price;
+use Carbon\Carbon;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -220,6 +221,9 @@ class PaymentController extends Controller
             $getPayDetailMonth = (int)$exPayDetailMonth[1]/*  . '-' . $exPayDetailMonth[0] */;
             $student = Students::find($studentId);
             $price = Price::find($student->priceid);
+            $detailPaidPenalty = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->where('payment', '!=', 'COURSE ' . Carbon::now()->format('m') . '-' . Carbon::now()->year)->where('status', '!=', 'paid')->orderBy('id', 'DESC')->update([
+                'is_penalty' => 'true'
+            ]);
             if ($detailPaid != null) {
                 $exMonth = explode(' ', $detailPaid->payment);
                 $month = explode('-', $exMonth[1]);
