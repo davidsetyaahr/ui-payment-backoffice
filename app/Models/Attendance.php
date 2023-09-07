@@ -11,4 +11,14 @@ class Attendance extends Model
     use HasFactory;
     protected $table = 'attendances';
     protected $fillable = ['price_id', 'day1', 'day2', 'course_time', 'date', 'teacher_id', 'activity', 'text_book', 'excercise_book', 'is_presence', 'id_test', 'date_review', 'date_test'];
+
+    /**
+     * Get all of the detail for the Attendance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function detail()
+    {
+        return $this->hasMany(AttendanceDetail::class, 'attendance_id');
+    }
 }
