@@ -256,7 +256,7 @@
 
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <div class="fw-bold">{{ $item->teacher_name }}</div>
-                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new) }}"
+                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new . '&student=' . $item->id) }}"
                                                         class="btn btn-xs btn-primary">View</a>
                                                 </div>
                                             </div>

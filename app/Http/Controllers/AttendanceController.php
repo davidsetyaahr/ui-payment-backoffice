@@ -158,6 +158,9 @@ class AttendanceController extends Controller
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime)
             ->where('is_class_new', $request->new);
+        if ($request->student) {
+            $student = $student->where('id', $request->student);
+        }
         if (Auth::guard('teacher')->check() == true) {
             $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
         } else {
