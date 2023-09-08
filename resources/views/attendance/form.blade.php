@@ -298,6 +298,7 @@
                         <input type="hidden" name="day2" value="{{ request()->get('day2') }}">
                         <input type="hidden" name="time" value="{{ request()->get('time') }}">
                         <input type="hidden" name="teacher" value="{{ request()->get('teacher') }}">
+                        <input type="hidden" name="is_new" value="{{ request()->get('new') }}">
                         <div class="card-body">
                             <input type="hidden" readonly name="priceId" value="{{ $data->id }}">
                             <input type="hidden" readonly name="attendanceId" value="{{ $data->attendanceId }}">
@@ -328,14 +329,18 @@
                                                     $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
                                                     
                                                     $no = 1;
+                                                    $whereRaw = '';
                                                 @endphp
                                                 @foreach ($student as $keyIt => $it)
                                                     @php
-                                                        if ($keyIt == 0) {
-                                                            $agenda = $agenda->where('student_id', $it->id);
-                                                        } else {
-                                                            $agenda = $agenda->orWhere('student_id', $it->id);
-                                                        }
+                                                        $or = $keyIt + 1 != $loop->count ? ' or ' : '';
+                                                        $whereRaw .= 'student_id = ' . $it->id . $or;
+                                                        // if ($keyIt == 0) {
+                                                        //     $agenda = $agenda->where('student_id', $it->id);
+                                                        // } else {
+                                                        // $agenda = $agenda->orWhereRaw('(' . $whereRaw . ')');
+                                                        // $agenda = $agenda->orWhere('student_id', $it->id);
+                                                        // }
                                                         $birthDayPoint = 0;
                                                         if ($it->birthday == date('M d')) {
                                                             $birthDayPoint = 30;
@@ -657,12 +662,13 @@
                             ->where('day2', $reqDay2)
                             ->where('teacher_id', $reqTeacher)
                             ->where('course_time', $reqTime)
+                            ->where('is_class_new', Request::get('new'))
+                            ->whereRaw('(' . $whereRaw . ')')
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();
                         
                     @endphp
-
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
                     <div class="card">
                         <div class="card-header">

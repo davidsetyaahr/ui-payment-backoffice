@@ -78,6 +78,7 @@ class AttendanceController extends Controller
         $reqDay2 = $request->day2;
         $reqTime = $request->time;
         $reqTeacher = $request->teacher;
+        $reqNew = $request->new;
         // $reqAmpm = $request->ampm;
         $student = "";
         $day = DB::table('day')->get();
@@ -87,6 +88,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
+            ->where('is_class_new', $reqNew)
             ->orderBy('id', 'DESC')
             ->first();
         // $agenda = [];
@@ -187,7 +189,7 @@ class AttendanceController extends Controller
 
         // return $attendance;
         if (count($student) != 0) {
-            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
+            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime', 'reqNew'));
         } else {
             $inStudent = Students::where('status', 'INACTIVE')->where('priceid', $class->id)
                 ->where("day1", $reqDay1)
@@ -244,6 +246,7 @@ class AttendanceController extends Controller
                     'id_test' => $idTest,
                     'date_review' => $request->date_review,
                     'date_test' => $request->date_test,
+                    'is_class_new' => $request->is_new,
                 ];
                 $attendance = Attendance::create($createAttendance);
                 for ($i = 0; $i < count($request->totalPoint); $i++) {
@@ -556,161 +559,160 @@ class AttendanceController extends Controller
     {
         DB::beginTransaction();
         try {
-            if ($request->cekAllAbsen == true) {
-                $countStudent = 0;
-                $pointCategories = PointCategories::all();
-                Attendance::where('id', $request->attendanceId)->update([
-                    'price_id' => $request->priceId,
-                    'date' => date('Y-m-d'),
-                    'teacher_id' => $request->teacher,
-                    'activity' => $request->comment,
-                    'text_book' => $request->textBook,
-                    'excercise_book' => $request->excerciseBook,
-                    'id_test' => $request->id_test,
-                    'date_review' => $request->date_review,
-                    'date_test' => $request->date_test,
-                ]);
-                for ($i = 0; $i < count($request->totalPoint); $i++) {
-                    $dataDetail = AttendanceDetail::where('attendance_id', $request->attendanceId)
-                        ->where('student_id', $request->studentId[$i]);
-                    if ($dataDetail->count() == 0) {
-                        //insert
-                        if (count($request->isAbsent[$i + 1]) > 1) {
-                            $countStudent += 1;
-                        }
-                        $insert = AttendanceDetail::create([
-                            'attendance_id' => $request->attendanceId,
-                            'student_id' => $request->studentId[$i],
+            // if ($request->cekAllAbsen == true) {
+            $countStudent = 0;
+            $pointCategories = PointCategories::all();
+            Attendance::where('id', $request->attendanceId)->update([
+                'price_id' => $request->priceId,
+                'teacher_id' => $request->teacher,
+                'activity' => $request->comment,
+                'text_book' => $request->textBook,
+                'excercise_book' => $request->excerciseBook,
+                'id_test' => $request->id_test,
+                'date_review' => $request->date_review,
+                'date_test' => $request->date_test,
+            ]);
+            for ($i = 0; $i < count($request->totalPoint); $i++) {
+                $dataDetail = AttendanceDetail::where('attendance_id', $request->attendanceId)
+                    ->where('student_id', $request->studentId[$i]);
+                if ($dataDetail->count() == 0) {
+                    //insert
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $countStudent += 1;
+                    }
+                    $insert = AttendanceDetail::create([
+                        'attendance_id' => $request->attendanceId,
+                        'student_id' => $request->studentId[$i],
+                        'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
+                        'total_point' => $request->totalPoint[$i],
+                        'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                        'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
+                    ]);
+
+                    $detailTotalPoint = 0;
+                    $attendanceDetailId = $insert->id;
+                } else {
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $countStudent += 1;
+                    }
+                    $dataDetail = $dataDetail->first();
+                    $attendanceDetailId = $dataDetail->id;
+                    $detailTotalPoint = $dataDetail->total_point;
+                    AttendanceDetail::where('attendance_id', $request->attendanceId)
+                        ->where('student_id', $request->studentId[$i])
+                        ->update([
                             'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
                             'total_point' => $request->totalPoint[$i],
                             'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
                             'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
                         ]);
-
-                        $detailTotalPoint = 0;
-                        $attendanceDetailId = $insert->id;
-                    } else {
-                        if (count($request->isAbsent[$i + 1]) > 1) {
-                            $countStudent += 1;
-                        }
-                        $dataDetail = $dataDetail->first();
-                        $attendanceDetailId = $dataDetail->id;
-                        $detailTotalPoint = $dataDetail->total_point;
-                        AttendanceDetail::where('attendance_id', $request->attendanceId)
-                            ->where('student_id', $request->studentId[$i])
-                            ->update([
-                                'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
-                                'total_point' => $request->totalPoint[$i],
-                                'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
-                                'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
-                            ]);
-                    }
-                    $student = Students::where('id', $request->studentId[$i])->first();
-                    $tmpPoint = $student->total_point - $detailTotalPoint;
-                    Students::where('id', $request->studentId[$i])->update([
-                        'total_point' => $tmpPoint +  $request->totalPoint[$i],
+                }
+                $student = Students::where('id', $request->studentId[$i])->first();
+                $tmpPoint = $student->total_point - $detailTotalPoint;
+                Students::where('id', $request->studentId[$i])->update([
+                    'total_point' => $tmpPoint +  $request->totalPoint[$i],
+                ]);
+                if (count($request->isAbsent[$i + 1]) > 1) {
+                    PointHistory::create([
+                        'student_id' => $request->studentId[$i],
+                        'date' => date('Y-m-d'),
+                        'total_point' =>  10,
+                        'type' => 'in',
+                        'keterangan' => 'Present',
                     ]);
-                    if (count($request->isAbsent[$i + 1]) > 1) {
-                        PointHistory::create([
-                            'student_id' => $request->studentId[$i],
-                            'date' => date('Y-m-d'),
-                            'total_point' =>  10,
-                            'type' => 'in',
-                            'keterangan' => 'Present',
-                        ]);
-                    }
+                }
 
-                    // Multiple
-                    if ($request->categories) {
-                        if (array_key_exists($i + 1, $request->categories)) {
-                            for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
-                                $pos = 0;
-                                foreach ($pointCategories as $key => $value) {
-                                    if ($request->categories[$i + 1][$x] == $value['id']) {
-                                        $pos = $key;
-                                    }
+                // Multiple
+                if ($request->categories) {
+                    if (array_key_exists($i + 1, $request->categories)) {
+                        for ($x = 0; $x < count($request->categories[$i + 1]); $x++) {
+                            $pos = 0;
+                            foreach ($pointCategories as $key => $value) {
+                                if ($request->categories[$i + 1][$x] == $value['id']) {
+                                    $pos = $key;
                                 }
-                                $avl =  AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
-                                    ->get();
-                                $tmpDetail = [];
+                            }
+                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
+                                ->get();
+                            $tmpDetail = [];
 
-                                foreach ($avl as $key => $value) {
-                                    if (in_array($value->point_category_id, $request->categories[$i + 1]) == 0) {
-                                        AttendanceDetailPoint::where('id', $value->id)->delete();
-                                    }
-                                    array_push($tmpDetail, $value->point_category_id);
+                            foreach ($avl as $key => $value) {
+                                if (in_array($value->point_category_id, $request->categories[$i + 1]) == 0) {
+                                    AttendanceDetailPoint::where('id', $value->id)->delete();
                                 }
-                                if (in_array($request->categories[$i + 1][$x], $tmpDetail) == false) {
-                                    AttendanceDetailPoint::create([
-                                        'attendance_detail_id' => $attendanceDetailId,
-                                        'point_category_id' => $request->categories[$i + 1][$x],
-                                        'point' => $pointCategories[$pos]->point,
-                                    ]);
-                                }
+                                array_push($tmpDetail, $value->point_category_id);
+                            }
+                            if (in_array($request->categories[$i + 1][$x], $tmpDetail) == false) {
+                                AttendanceDetailPoint::create([
+                                    'attendance_detail_id' => $attendanceDetailId,
+                                    'point_category_id' => $request->categories[$i + 1][$x],
+                                    'point' => $pointCategories[$pos]->point,
+                                ]);
                             }
                         }
                     }
-
-                    // Manual
-                    // if ($request->category) {
-                    //     if (array_key_exists($i + 1, $request->category)) {
-                    //         for ($x = 0; $x < count($request->category[$i + 1]); $x++) {
-                    //             if ($request->category[$i + 1][$x] != null && $request->point_category[$i + 1][$x] != null) {
-                    //                 $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
-                    //                     ->get();
-                    //                 foreach ($avl as $key => $value) {
-                    //                     AttendanceDetailPoint::where('id', $value->id)->delete();
-                    //                 }
-                    //                 $attendanceDetailPoint = new AttendanceDetailPoint;
-                    //                 $attendanceDetailPoint->attendance_detail_id = $dataDetail->id;
-                    //                 $attendanceDetailPoint->point_category = $request->category[$i + 1][$x];
-                    //                 $attendanceDetailPoint->point = $request->point_category[$i + 1][$x];
-                    //                 $attendanceDetailPoint->save();
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
 
-                $class = Price::find($request->priceId);
-                $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
-                $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
-                if ($request->date_review) {
-                    OrderReview::where('id_attendance', $request->attendanceId)->delete();
-                    foreach ($request->id_test as $keyReview => $valueReview) {
-                        OrderReview::create(array(
-                            'id_attendance' => $request->attendanceId,
-                            'test_id' => $valueReview,
-                            'id_teacher' => $request->teacher,
-                            'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
-                            'review_test' => 'Review ' . $valueReview,
-                            'due_date' => $request->date_review,
-                            // 'qty' => $countStudent,
-                            'qty' => count($request->studentId),
-                            'type' => 'review',
-                        ));
-                    }
-                }
-                if ($request->date_test) {
-                    OrderReview::where('id_attendance', $request->attendanceId)->delete();
-                    foreach ($request->id_test as $keyTest => $valueTest) {
-                        OrderReview::create(array(
-                            'id_attendance' => $request->attendanceId,
-                            'test_id' => $valueTest,
-                            'id_teacher' => $request->teacher,
-                            'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
-                            'review_test' => 'Test ' . $valueTest,
-                            'due_date' => $request->date_test,
-                            'qty' => count($request->studentId),
-                            // 'qty' => $countStudent,
-                            'type' => 'test',
-                        ));
-                    }
-                }
-            } else {
-                Attendance::where('id', $request->attendanceId)->delete();
-                AttendanceDetail::where('attendance_id', $request->attendanceId)->delete();
+                // Manual
+                // if ($request->category) {
+                //     if (array_key_exists($i + 1, $request->category)) {
+                //         for ($x = 0; $x < count($request->category[$i + 1]); $x++) {
+                //             if ($request->category[$i + 1][$x] != null && $request->point_category[$i + 1][$x] != null) {
+                //                 $avl =  AttendanceDetailPoint::where('attendance_detail_id', $dataDetail->id)
+                //                     ->get();
+                //                 foreach ($avl as $key => $value) {
+                //                     AttendanceDetailPoint::where('id', $value->id)->delete();
+                //                 }
+                //                 $attendanceDetailPoint = new AttendanceDetailPoint;
+                //                 $attendanceDetailPoint->attendance_detail_id = $dataDetail->id;
+                //                 $attendanceDetailPoint->point_category = $request->category[$i + 1][$x];
+                //                 $attendanceDetailPoint->point = $request->point_category[$i + 1][$x];
+                //                 $attendanceDetailPoint->save();
+                //             }
+                //         }
+                //     }
+                // }
             }
+
+            $class = Price::find($request->priceId);
+            $day1 = DB::table('day')->where('id', (int)$request->day1)->first();
+            $day2 = DB::table('day')->where('id', (int)$request->day2)->first();
+            if ($request->date_review) {
+                OrderReview::where('id_attendance', $request->attendanceId)->delete();
+                foreach ($request->id_test as $keyReview => $valueReview) {
+                    OrderReview::create(array(
+                        'id_attendance' => $request->attendanceId,
+                        'test_id' => $valueReview,
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Review ' . $valueReview,
+                        'due_date' => $request->date_review,
+                        // 'qty' => $countStudent,
+                        'qty' => count($request->studentId),
+                        'type' => 'review',
+                    ));
+                }
+            }
+            if ($request->date_test) {
+                OrderReview::where('id_attendance', $request->attendanceId)->delete();
+                foreach ($request->id_test as $keyTest => $valueTest) {
+                    OrderReview::create(array(
+                        'id_attendance' => $request->attendanceId,
+                        'test_id' => $valueTest,
+                        'id_teacher' => $request->teacher,
+                        'class' => $class->program . ' ' . substr($day1->day, 0, 3) . ' ' . substr($day2->day, 0, 3) . ' On ' . $request->time,
+                        'review_test' => 'Test ' . $valueTest,
+                        'due_date' => $request->date_test,
+                        'qty' => count($request->studentId),
+                        // 'qty' => $countStudent,
+                        'type' => 'test',
+                    ));
+                }
+            }
+            // } else {
+            //     Attendance::where('id', $request->attendanceId)->delete();
+            //     AttendanceDetail::where('attendance_id', $request->attendanceId)->delete();
+            // }
             DB::commit();
             return redirect('/attendance/class')->with('message', "Student`s Schedule Updated!");
         } catch (\Throwable $th) {
