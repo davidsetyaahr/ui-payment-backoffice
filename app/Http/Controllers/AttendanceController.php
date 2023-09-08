@@ -176,6 +176,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
+            ->where('is_class_new', $request->new)
             ->orderBy('id', 'asc');
         if ($request->student) {
             $attendance = $attendance->whereHas('detail', function ($q) use ($request) {
@@ -450,6 +451,7 @@ class AttendanceController extends Controller
         $reqDay1 = $request->day1;
         $reqDay2 = $request->day2;
         $reqTime = $request->time;
+        $reqNew = $request->new;
         $reqTeacher = $request->teacher;
         $priceId = $request->class;
         $student = "";
@@ -523,7 +525,8 @@ class AttendanceController extends Controller
         $student = Students::where('status', 'ACTIVE')->where('priceid', $class->id)
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
-            ->where('course_time', $reqTime);
+            ->where('course_time', $reqTime)
+            ->where('is_class_new', $reqNew);
         if (Auth::guard('teacher')->check() == true) {
             $student = $student->where('id_teacher', Auth::guard('teacher')->user()->id);
         } else {
@@ -535,6 +538,7 @@ class AttendanceController extends Controller
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         $attendance = Attendance::where('id', $id)
+            ->where('is_class_new', $request->new)
             ->orderBy('id', 'DESC')
             ->get();
 

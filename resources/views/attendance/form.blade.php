@@ -171,6 +171,11 @@
             left: 0;
             z-index: 3;
         }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
     <div class="content">
         <div class="page-inner py-5 panel-header bg-primary-gradient" style="background:#01c293 !important">
@@ -231,7 +236,7 @@
                                                 @if ($count == $key || $count + 1 == $key)
                                                     @if (Request::segment(2) != 'edit')
                                                         <br>
-                                                        <a href="{{ url('attendance/edit/') . '/' . $item->id . '?day1=' . Request::get('day1') . '&day2=' . Request::get('day2') . '&time=' . Request::get('time') . '&teacher=' . Request::get('teacher') . '&class=' . $data->id }}"
+                                                        <a href="{{ url('attendance/edit/') . '/' . $item->id . '?day1=' . Request::get('day1') . '&day2=' . Request::get('day2') . '&time=' . Request::get('time') . '&teacher=' . Request::get('teacher') . '&class=' . $data->id . '&new=' . Request::get('new') }}"
                                                             class="btn btn-sm btn-success">Edit
                                                         </a>
                                                         <br>
@@ -321,7 +326,7 @@
                                             <tbody>
                                                 @php
                                                     $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-
+                                                    
                                                     $no = 1;
                                                 @endphp
                                                 @foreach ($student as $keyIt => $it)
@@ -359,11 +364,11 @@
                                                                     ->where('student_id', $it->id)
                                                                     ->where('attendance_id', $data->attendanceId)
                                                                     ->get();
-
+                                                                
                                                                 foreach ($getStudentPointCategory as $k => $v) {
                                                                     array_push($studentPointCategory, $v->point_category_id);
                                                                 }
-
+                                                                
                                                                 $isChecked = false;
                                                                 if ($data->type == 'create') {
                                                                     $isChecked = false;
@@ -470,7 +475,7 @@
                                                                         } else {
                                                                             $pointDay = 10;
                                                                         }
-
+                                                                        
                                                                         if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
                                                                             $totalPoint = $it->course_hour . '0';
                                                                         } else {
@@ -524,7 +529,7 @@
                                                                     $cekTotalPoint = \DB::table('attendance_details')
                                                                         ->where('attendance_id', $data->attendanceId)
                                                                         ->where('student_id', $it->id);
-
+                                                                
                                                                     if ($cekTotalPoint->count() == 1) {
                                                                         $getTotalPoint = $cekTotalPoint->first();
                                                                         $totalPoint = $getTotalPoint->total_point;
@@ -639,7 +644,8 @@
                                 id="cekAllAbsen" class="checkAllAbsen">
                         </div>
                         <div class="card-action mt-3">
-                            <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success">Submit</a>
+                            <a href="javascript:void(0)" onclick="confirm()" class="btn btn-success"
+                                id="btn-success">Submit</a>
                             <button type="button" data-toggle="modal" data-target="#mdlCancel"
                                 class="btn btn-danger">Cancel</button>
                         </div>
@@ -654,7 +660,7 @@
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();
-
+                        
                     @endphp
 
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
@@ -838,6 +844,9 @@
                 if (result == true) {
                     $('#form-submit').submit();
                 }
+            });
+            $('#form-submit').submit(function() {
+                $('#btn-success').addClass('disabled');
             });
         }
     </script>
