@@ -268,21 +268,22 @@ class AttendanceController extends Controller
                     $detail->student_id = $request->studentId[$i];
                     if (count($request->isAbsent[$i + 1]) > 1) {
                         $detail->is_absent = '1';
-                        $detail->is_alpha = false;
+                        $detail->is_permission = false;
                     } else {
                         $detail->is_absent = '0';
-                        $detail->is_alpha = true;
+                        $detail->is_permission = true;
                     }
                     $detail->total_point = $attendance->id;
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $detail->is_permission = true;
                         $detail->is_alpha = false;
-                    } else {
-                        $detail->is_permission = false;
-                        $detail->is_alpha = true;
                     }
                     if (count($request->isAlpha[$i + 1]) > 1) {
                         $detail->is_alpha = true;
+                        $detail->is_permission = false;
+                    } else {
+                        $detail->is_alpha = false;
+                        $detail->is_permission = true;
                     }
                     $detail->save();
 
@@ -654,20 +655,20 @@ class AttendanceController extends Controller
                     ];
                     if (count($request->isAbsent[$i + 1]) > 1) {
                         $arrUpdate['is_absent'] = '1';
-                        $arrUpdate['is_alpha'] = false;
+                        $arrUpdate['is_permission'] = false;
                     } else {
                         $arrUpdate['is_absent'] = '0';
-                        $arrUpdate['is_alpha'] = true;
+                        $arrUpdate['is_permission'] = true;
                     }
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $arrUpdate['is_permission'] = true;
-                        $arrUpdate['is_alpha'] = false;
-                    } else {
-                        $arrUpdate['is_permission'] = false;
-                        $arrUpdate['is_alpha'] = true;
                     }
                     if (count($request->isAlpha[$i + 1]) > 1) {
                         $arrUpdate['is_alpha'] = true;
+                        $arrUpdate['is_permission'] = false;
+                    } else {
+                        $arrUpdate['is_alpha'] = false;
+                        $arrUpdate['is_permission'] = true;
                     }
                     AttendanceDetail::where('attendance_id', $request->attendanceId)
                         ->where('student_id', $request->studentId[$i])
