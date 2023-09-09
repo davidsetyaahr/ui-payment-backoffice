@@ -219,6 +219,8 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
+
+        DB::beginTransaction();
         try {
             if ($request->cekAllAbsen == true) {
                 $idTest = "";
@@ -253,14 +255,37 @@ class AttendanceController extends Controller
                     if (count($request->isAbsent[$i + 1]) > 1) {
                         $countStudent += 1;
                     }
-                    $detail = AttendanceDetail::create([
-                        'attendance_id' => $attendance->id,
-                        'student_id' => $request->studentId[$i],
-                        'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
-                        'total_point' => $request->totalPoint[$i],
-                        'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
-                        'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
-                    ]);
+                    // $detail = AttendanceDetail::create([
+                    //     'attendance_id' => $attendance->id,
+                    //     'student_id' => $request->studentId[$i],
+                    //     'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
+                    //     'total_point' => $request->totalPoint[$i],
+                    //     'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                    //     'is_alpha' => $alphaTrue,
+                    // ]);
+                    $detail = new AttendanceDetail();
+                    $detail->attendance_id = $attendance->id;
+                    $detail->student_id = $request->studentId[$i];
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $detail->is_absent = '1';
+                        $detail->is_alpha = false;
+                    } else {
+                        $detail->is_absent = '0';
+                        $detail->is_alpha = true;
+                    }
+                    $detail->total_point = $attendance->id;
+                    if (count($request->isPermission[$i + 1]) > 1) {
+                        $detail->is_permission = true;
+                        $detail->is_alpha = false;
+                    } else {
+                        $detail->is_permission = false;
+                        $detail->is_alpha = true;
+                    }
+                    if (count($request->isAlpha[$i + 1]) > 1) {
+                        $detail->is_alpha = true;
+                    }
+                    $detail->save();
+
                     $student = Students::where('id', $request->studentId[$i])->first();
                     Students::where('id', $request->studentId[$i])->update([
                         'total_point' => $student->total_point +  $request->totalPoint[$i],
@@ -385,6 +410,7 @@ class AttendanceController extends Controller
                         ));
                     }
                 }
+                DB::commit();
                 return redirect('/attendance/class')->with('message', "Student`s Schedule Updated!");
             } else {
                 if ($request->date_review || $request->date_test) {
@@ -421,13 +447,16 @@ class AttendanceController extends Controller
                             ));
                         }
                     }
+                    DB::commit();
                     return redirect('/attendance/class')->with('message', "Student`s Schedule Updated!");
                 } else {
+                    DB::rollback();
                     return redirect()->back()->with('status', 'Schedule failed to update');
                 }
             }
         } catch (\Throwable $th) {
             // ddd($th);
+            DB::rollback();
             return $th;
         }
     }
@@ -580,14 +609,36 @@ class AttendanceController extends Controller
                     if (count($request->isAbsent[$i + 1]) > 1) {
                         $countStudent += 1;
                     }
-                    $insert = AttendanceDetail::create([
-                        'attendance_id' => $request->attendanceId,
-                        'student_id' => $request->studentId[$i],
-                        'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
-                        'total_point' => $request->totalPoint[$i],
-                        'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
-                        'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
-                    ]);
+                    // $insert = AttendanceDetail::create([
+                    //     'attendance_id' => $request->attendanceId,
+                    //     'student_id' => $request->studentId[$i],
+                    //     'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
+                    //     'total_point' => $request->totalPoint[$i],
+                    //     'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
+                    //     'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
+                    // ]);
+                    $insert = new AttendanceDetail();
+                    $insert->attendance_id = $request->attendanceId;
+                    $insert->student_id = $request->studentId[$i];
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $insert->is_absent = '1';
+                        $insert->is_alpha = false;
+                    } else {
+                        $insert->is_absent = '0';
+                        $insert->is_alpha = true;
+                    }
+                    $insert->total_point = $attendance->id;
+                    if (count($request->isPermission[$i + 1]) > 1) {
+                        $insert->is_permission = true;
+                        $insert->is_alpha = false;
+                    } else {
+                        $insert->is_permission = false;
+                        $insert->is_alpha = true;
+                    }
+                    if (count($request->isAlpha[$i + 1]) > 1) {
+                        $insert->is_alpha = true;
+                    }
+                    $insert->save();
 
                     $detailTotalPoint = 0;
                     $attendanceDetailId = $insert->id;
@@ -598,14 +649,29 @@ class AttendanceController extends Controller
                     $dataDetail = $dataDetail->first();
                     $attendanceDetailId = $dataDetail->id;
                     $detailTotalPoint = $dataDetail->total_point;
+                    $arrUpdate = [
+                        'total_point' => $request->totalPoint[$i],
+                    ];
+                    if (count($request->isAbsent[$i + 1]) > 1) {
+                        $arrUpdate['is_absent'] = '1';
+                        $arrUpdate['is_alpha'] = false;
+                    } else {
+                        $arrUpdate['is_absent'] = '0';
+                        $arrUpdate['is_alpha'] = true;
+                    }
+                    if (count($request->isPermission[$i + 1]) > 1) {
+                        $arrUpdate['is_permission'] = true;
+                        $arrUpdate['is_alpha'] = false;
+                    } else {
+                        $arrUpdate['is_permission'] = false;
+                        $arrUpdate['is_alpha'] = true;
+                    }
+                    if (count($request->isAlpha[$i + 1]) > 1) {
+                        $arrUpdate['is_alpha'] = true;
+                    }
                     AttendanceDetail::where('attendance_id', $request->attendanceId)
                         ->where('student_id', $request->studentId[$i])
-                        ->update([
-                            'is_absent' => count($request->isAbsent[$i + 1]) > 1 ? '1' : '0',
-                            'total_point' => $request->totalPoint[$i],
-                            'is_permission' => count($request->isPermission[$i + 1]) > 1 ? true : false,
-                            'is_alpha' => count($request->isAlpha[$i + 1]) > 1 ? true : false,
-                        ]);
+                        ->update($arrUpdate);
                 }
                 $student = Students::where('id', $request->studentId[$i])->first();
                 $tmpPoint = $student->total_point - $detailTotalPoint;

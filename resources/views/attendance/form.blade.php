@@ -250,28 +250,51 @@
                                     @foreach ($student as $item)
                                         <tr>
                                             <th width="10%" scope="row">{{ $item->name }}</th>
-                                            @foreach ($attendance as $i)
-                                                @php
-                                                    $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
-                                                    $count = $cek->count();
-                                                    if ($count == 1 && $cek->first()->is_absent == '1') {
-                                                        $absen = true;
-                                                    } else {
-                                                        $absen = false;
-                                                    }
-                                                @endphp
-                                                @if ($count == 1 && $cek->first()->is_absent == '1')
-                                                    <td width="5%">
-                                                        <span class="fa fa-check"></span>
-                                                    </td>
-                                                @elseif ($count == 1 && $cek->first()->is_permission == true)
-                                                    <td width="5%" bgcolor='green'></td>
-                                                @elseif ($count == 1 && $cek->first()->is_alpha == true)
-                                                    <td width="5%" bgcolor='red'></td>
-                                                @else
-                                                    <td width="5%" bgcolor='yellow'></td>
-                                                @endif
-                                            @endforeach
+                                            @if (Request::segment(2) == 'edit')
+                                                @foreach ($attendance as $i)
+                                                    @php
+                                                        $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
+                                                        $count = $cek->count();
+                                                        if ($count == 1 && $cek->first()->is_absent == '1') {
+                                                            $absen = true;
+                                                        } else {
+                                                            $absen = false;
+                                                        }
+                                                    @endphp
+                                                    @if ($count == 1 && $cek->first()->is_absent == '1')
+                                                        <td width="5%">
+                                                            <span class="fa fa-check"></span>
+                                                        </td>
+                                                    @elseif ($count == 1 && $cek->first()->is_permission == true)
+                                                        <td width="5%" bgcolor='green'></td>
+                                                    @else
+                                                        <td width="5%" bgcolor='red'></td>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @foreach ($attendance as $i)
+                                                    @php
+                                                        $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
+                                                        $count = $cek->count();
+                                                        if ($count == 1 && $cek->first()->is_absent == '1') {
+                                                            $absen = true;
+                                                        } else {
+                                                            $absen = false;
+                                                        }
+                                                    @endphp
+                                                    @if ($count == 1 && $cek->first()->is_absent == '1')
+                                                        <td width="5%">
+                                                            <span class="fa fa-check"></span>
+                                                        </td>
+                                                    @elseif ($count == 1 && $cek->first()->is_permission == true)
+                                                        <td width="5%" bgcolor='green'></td>
+                                                    @elseif ($count == 1 && $cek->first()->is_alpha == true)
+                                                        <td width="5%" bgcolor='red'></td>
+                                                    @else
+                                                        <td width="5%" bgcolor='yellow'></td>
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -415,7 +438,11 @@
                                                                     $isCekPermission = false;
                                                                 } else {
                                                                     if ($cekAlpha == 1) {
-                                                                        $isCekAlpha = true;
+                                                                        if ($cekAbsen == 0) {
+                                                                            $isCekAlpha = true;
+                                                                        } else {
+                                                                            $isCekAlpha = false;
+                                                                        }
                                                                     } else {
                                                                         $isCekAlpha = false;
                                                                     }
