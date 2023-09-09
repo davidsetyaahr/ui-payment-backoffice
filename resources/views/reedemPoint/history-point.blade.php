@@ -45,7 +45,15 @@
                             <br>
                             <form action="" method="get">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" name="from"
+                                            value="{{ Request::get('from') }}" required>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="date" class="form-control" name="to"
+                                            value="{{ Request::get('to') }}" required>
+                                    </div>
+                                    <div class="col-3">
                                         <select name="student" id="" class="form-control select2">
                                             <option value="">---Choose Student---</option>
                                             @foreach ($student as $item)
