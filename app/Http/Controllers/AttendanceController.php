@@ -81,6 +81,7 @@ class AttendanceController extends Controller
         $reqNew = $request->new;
         // $reqAmpm = $request->ampm;
         $student = "";
+        $whereRaw = "";
         $day = DB::table('day')->get();
         $cek = Attendance::where('price_id', $priceId)
             ->where('date', date('Y-m-d'))
