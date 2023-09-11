@@ -223,7 +223,7 @@ class PaymentController extends Controller
             $getPayDetailMonth = (int)$exPayDetailMonth[1]/*  . '-' . $exPayDetailMonth[0] */;
             $student = Students::find($studentId);
             $price = Price::find($student->priceid);
-            $detailPaidPenalty = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->where('payment', '!=', 'COURSE ' . Carbon::now()->format('m') . '-' . Carbon::now()->year)->where('status', '!=', 'paid')->orderBy('id', 'DESC')->update([
+            $detailPaidPenalty = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->where('payment', '!=', 'COURSE ' . Carbon::now()->format('m') . '-' . Carbon::now()->year)->where('status', '!=', 'paid')->where('is_penalty_payment', 'true')->orderBy('id', 'DESC')->update([
                 'is_penalty' => 'true'
             ]);
             $getParent = ParentStudents::where('student_id', $studentId)->first();
