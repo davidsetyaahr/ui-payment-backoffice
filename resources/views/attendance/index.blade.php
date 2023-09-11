@@ -150,6 +150,8 @@
                                                         value="{{ $item->day2 }}">
                                                     <input type="hidden" id="regteacherModal{{ $key }}"
                                                         value="{{ $item->teacher_name }}">
+                                                    <input type="hidden" id="regteacherOldModal{{ $key }}"
+                                                        value="{{ $item->id_teacher }}">
                                                     <input type="hidden" id="regclassModal{{ $key }}"
                                                         value="{{ $item->priceid }}">
                                                     <input type="hidden" id="regdayOneModal{{ $key }}"
@@ -291,6 +293,7 @@
                             <input type="hidden" id="update_day2" name="update_day2">
                             <input type="hidden" id="update_class" name="update_class">
                             <input type="hidden" id="update_time" name="update_time">
+                            <input type="hidden" id="old_teacher" name="old_teacher">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <div class="form-group">
@@ -358,6 +361,7 @@
             var dayTwo = $('#regdayTwoModal' + id).val();
             var courseTime = $('#regcourseTimeModal' + id).val();
             var teacher = $('#regteacherModal' + id).val();
+            var teacherOld = $('#regteacherOldModal' + id).val();
             var day1 = $('#regday1Modal' + id).val();
             var day2 = $('#regday2Modal' + id).val();
             var course = $('#regclassModal' + id).val();
@@ -371,6 +375,7 @@
             $('#update_day2').val(day2);
             $('#update_class').val(course);
             $('#update_time').val(courseTime);
+            $('#old_teacher').val(teacherOld);
             $('input[name="update_course_time"]').val(courseTime);
             $("#update_day_one").select2("val", day1);
             $('select[name="update_day_two"]').select2("val", day2);
@@ -405,6 +410,7 @@
             var day2 = $('#prvday2Modal' + id).val();
             var course = $('#prvclassModal' + id).val();
             var idTeacher = $('#prvidteacherModal' + id).val();
+            var teacherOld = $('#regteacherOldModal' + id).val();
             var day = day1 != day2 ? dayOne + ' & ' + dayTwo : dayOne
             $('#editJadwalModalLabel').html('Update Class ' + program + ' (' + day + ' ' + courseTime +
                 ') ' +
@@ -414,6 +420,7 @@
             $('#update_day2').val(day2);
             $('#update_class').val(course);
             $('#update_time').val(courseTime);
+            $('#old_teacher').val(teacherOld);
             $('input[name="update_course_time"]').val(courseTime);
             $("#update_day_one").select2("val", day1);
             $('select[name="update_day_two"]').select2("val", day2);

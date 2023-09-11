@@ -267,8 +267,10 @@
                                                         </td>
                                                     @elseif ($count == 1 && $cek->first()->is_permission == true)
                                                         <td width="5%" bgcolor='green'></td>
-                                                    @else
+                                                    @elseif ($count == 1 && $cek->first()->is_alpha == true)
                                                         <td width="5%" bgcolor='red'></td>
+                                                    @else
+                                                        <td width="5%"></td>
                                                     @endif
                                                 @endforeach
                                             @else
@@ -291,7 +293,7 @@
                                                     @elseif ($count == 1 && $cek->first()->is_alpha == true)
                                                         <td width="5%" bgcolor='red'></td>
                                                     @else
-                                                        <td width="5%" bgcolor='yellow'></td>
+                                                        <td width="5%"></td>
                                                     @endif
                                                 @endforeach
                                             @endif
@@ -353,11 +355,13 @@
                                                     
                                                     $no = 1;
                                                     $whereRaw = '';
+                                                    $countAgenda = 0;
                                                 @endphp
                                                 @foreach ($student as $keyIt => $it)
                                                     @php
                                                         $or = $keyIt + 1 != $loop->count ? ' or ' : '';
                                                         $whereRaw .= 'student_id = ' . $it->id . $or;
+                                                        $countAgenda++;
                                                         // if ($keyIt == 0) {
                                                         //     $agenda = $agenda->where('student_id', $it->id);
                                                         // } else {
@@ -370,7 +374,7 @@
                                                         }
                                                     @endphp
                                                     <tr style="height: 40px!important">
-                                                        <td class="text-center" style="">{{ $no }}
+                                                        <td class="text-center" style="">{{ $it->id }}
                                                         </td>
                                                         <td style="">{{ ucwords($it->name) }}
                                                         </td>
@@ -689,8 +693,11 @@
                             ->where('day2', $reqDay2)
                             ->where('teacher_id', $reqTeacher)
                             ->where('course_time', $reqTime)
-                            ->where('is_class_new', Request::get('new'))
-                            ->whereRaw('(' . $whereRaw . ')')
+                            ->where('is_class_new', Request::get('new'));
+                        if ($countAgenda != 0) {
+                            $agenda = $agenda->whereRaw('(' . $whereRaw . ')');
+                        }
+                        $agenda = $agenda
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();

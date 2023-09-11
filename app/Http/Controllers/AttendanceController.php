@@ -139,6 +139,7 @@ class AttendanceController extends Controller
             // return $data;
         } else {
             // $agenda = [];
+            $whereStudent = '';
             $data = (object)[
                 'type' => 'create',
                 'id' => $class->id,
@@ -172,6 +173,11 @@ class AttendanceController extends Controller
         $student =   $student->get();
 
 
+        foreach ($student as $keyS => $valueS) {
+            $or = $keyS + 1 != count($student) ? ' or ' : '';
+            $whereStudent .= 'student_id = ' . $valueS->id . $or;
+        }
+        $whereRaw = '(' . $whereStudent . ')';
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         $attendance = Attendance::with('detail')->where('price_id', $priceId)
             ->where('day1', $reqDay1)
@@ -184,10 +190,12 @@ class AttendanceController extends Controller
             $attendance = $attendance->whereHas('detail', function ($q) use ($request) {
                 $q->where('student_id', $request->student);
             });
+        } else {
+            $attendance = $attendance->whereHas('detail', function ($q) use ($whereRaw) {
+                $q->whereRaw($whereRaw);
+            });
         }
         $attendance = $attendance->get();
-
-        // return $attendance;
         if (count($student) != 0) {
             return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime', 'reqNew'));
         } else {
@@ -983,9 +991,10 @@ class AttendanceController extends Controller
             $reqDay2 = $request->update_day2;
             $reqTime = $request->update_time;
             $priceId = $request->update_class;
+            $teacherOld = $request->old_teacher;
             $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('is_class_new', false)->get();
+                ->where('course_time', $reqTime)->where('is_class_new', false)->where('id_teacher', $teacherOld)->get();
             foreach ($student as $key => $value) {
                 if ($value->priceid != $request->update_level) {
                     $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
@@ -999,13 +1008,13 @@ class AttendanceController extends Controller
                     if ($score != null) {
                         $mutasi->score_id = $score->id;
                     }
-                    // $mutasi->save();
+                    $mutasi->save();
                 }
             }
             // New Class
             DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->update([
+                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->update([
                     "day1" => $request->update_day_one,
                     "day2" => $request->update_day_two,
                     "course_time" => $request->update_course_time,
@@ -1017,7 +1026,7 @@ class AttendanceController extends Controller
             // Old Class
             DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('is_class_new', true)->update([
+                ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
                     "is_class_new" => false,
                 ]);
             return redirect()->back()->with('message', 'Berhasil diupdate');
