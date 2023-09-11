@@ -374,7 +374,7 @@
                                                         }
                                                     @endphp
                                                     <tr style="height: 40px!important">
-                                                        <td class="text-center" style="">{{ $it->id }}
+                                                        <td class="text-center" style="">{{ $no }}
                                                         </td>
                                                         <td style="">{{ ucwords($it->name) }}
                                                         </td>
@@ -441,19 +441,19 @@
                                                                     $isCekAlpha = false;
                                                                     $isCekPermission = false;
                                                                 } else {
-                                                                    if ($cekAlpha == 1) {
+                                                                    if ($cekPermission == 1) {
                                                                         if ($cekAbsen == 0) {
-                                                                            $isCekAlpha = true;
+                                                                            $isCekPermission = true;
                                                                         } else {
-                                                                            $isCekAlpha = false;
+                                                                            $isCekPermission = false;
                                                                         }
                                                                     } else {
-                                                                        $isCekAlpha = false;
-                                                                    }
-                                                                    if ($cekPermission == 1) {
-                                                                        $isCekPermission = true;
-                                                                    } else {
                                                                         $isCekPermission = false;
+                                                                    }
+                                                                    if ($cekAlpha == 1) {
+                                                                        $isCekAlpha = true;
+                                                                    } else {
+                                                                        $isCekAlpha = false;
                                                                     }
                                                                 }
                                                             @endphp

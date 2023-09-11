@@ -228,7 +228,6 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-
         DB::beginTransaction();
         try {
             if ($request->cekAllAbsen == true) {
@@ -285,7 +284,6 @@ class AttendanceController extends Controller
                     $detail->total_point = $attendance->id;
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $detail->is_permission = true;
-                        $detail->is_alpha = false;
                     }
                     if (count($request->isAlpha[$i + 1]) > 1) {
                         $detail->is_alpha = true;
@@ -497,6 +495,8 @@ class AttendanceController extends Controller
         $reqTeacher = $request->teacher;
         $priceId = $request->class;
         $student = "";
+        $whereRaw = "";
+        $whereStudent = '';
         $day = DB::table('day')->get();
         $cek = Attendance::where('id', $id)
             ->orderBy('id', 'DESC')
@@ -576,13 +576,26 @@ class AttendanceController extends Controller
         }
 
         $student =   $student->get();
-
+        foreach ($student as $keyS => $valueS) {
+            $or = $keyS + 1 != count($student) ? ' or ' : '';
+            $whereStudent .= 'student_id = ' . $valueS->id . $or;
+        }
+        $whereRaw = '(' . $whereStudent . ')';
 
         $pointCategories = PointCategories::where('id', '!=', 5)->orderBy('point', 'ASC')->get();
         $attendance = Attendance::where('id', $id)
             ->where('is_class_new', $request->new)
-            ->orderBy('id', 'DESC')
-            ->get();
+            ->orderBy('id', 'DESC');
+        if ($request->student) {
+            $attendance = $attendance->whereHas('detail', function ($q) use ($request) {
+                $q->where('student_id', $request->student);
+            });
+        } else {
+            $attendance = $attendance->whereHas('detail', function ($q) use ($whereRaw) {
+                $q->whereRaw($whereRaw);
+            });
+        }
+        $attendance = $attendance->get();
 
         return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
     }
@@ -632,21 +645,23 @@ class AttendanceController extends Controller
                     $insert->student_id = $request->studentId[$i];
                     if (count($request->isAbsent[$i + 1]) > 1) {
                         $insert->is_absent = '1';
-                        $insert->is_alpha = false;
+                        $insert->is_permission = false;
                     } else {
                         $insert->is_absent = '0';
-                        $insert->is_alpha = true;
+                        $insert->is_permission = true;
                     }
                     $insert->total_point = $attendance->id;
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $insert->is_permission = true;
-                        $insert->is_alpha = false;
                     } else {
                         $insert->is_permission = false;
-                        $insert->is_alpha = true;
                     }
                     if (count($request->isAlpha[$i + 1]) > 1) {
                         $insert->is_alpha = true;
+                        $insert->is_permission = false;
+                    } else {
+                        $insert->is_alpha = false;
+                        $insert->is_permission = true;
                     }
                     $insert->save();
 
