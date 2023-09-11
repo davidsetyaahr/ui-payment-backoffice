@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\HistoryBilling;
+use App\Models\Parents;
+use App\Models\ParentStudents;
 use App\Models\PaymentBill;
 use App\Models\PaymentBillDetail;
 use App\Models\PaymentFromApp;
@@ -224,6 +226,8 @@ class PaymentController extends Controller
             $detailPaidPenalty = PaymentBillDetail::where('student_id', $studentId)->where('category', 'COURSE')->where('payment', '!=', 'COURSE ' . Carbon::now()->format('m') . '-' . Carbon::now()->year)->where('status', '!=', 'paid')->orderBy('id', 'DESC')->update([
                 'is_penalty' => 'true'
             ]);
+            $getParent = ParentStudents::where('student_id', $studentId)->first();
+            $parent = Parents::find($getParent->parent_id);
             if ($detailPaid != null) {
                 $exMonth = explode(' ', $detailPaid->payment);
                 $month = explode('-', $exMonth[1]);
@@ -235,8 +239,8 @@ class PaymentController extends Controller
                         $model = new PaymentBill();
                         $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
                         $model->total_price = $price->course;
-                        $model->created_by = Auth::guard('parent')->user()->name;
-                        $model->updated_by = Auth::guard('parent')->user()->name;
+                        $model->created_by = $parent->name;
+                        $model->updated_by = $parent->name;
                         $model->save();
 
                         $modelDetail = new PaymentBillDetail();
@@ -268,8 +272,8 @@ class PaymentController extends Controller
                 $model = new PaymentBill();
                 $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
                 $model->total_price = $price->course;
-                $model->created_by = Auth::guard('parent')->user()->name;
-                $model->updated_by = Auth::guard('parent')->user()->name;
+                $model->created_by = $parent->name;
+                $model->updated_by = $parent->name;
                 $model->save();
 
                 $modelDetail = new PaymentBillDetail();

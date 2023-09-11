@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('signin', [UsersController::class, 'sendOtp']);
 Route::post('authenticate', [UsersController::class, 'authenticate']);
 Route::post('submit-otp', [UsersController::class, 'submitOtp']);
+Route::get('payment/get-bill-month/{studentId}', [PaymentController::class, 'getBillMonth']);
 
 
 Route::group(['middleware' => ['jwt.auth']], function () {
@@ -47,7 +48,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/history/{studentId}', [PaymentController::class, 'getHistory']);
         Route::get('/detail/{idPayment}', [PaymentController::class, 'getDetailHistory']);
         Route::get('/billing/{studentId}', [PaymentController::class, 'listBill']);
-        Route::get('/get-bill-month/{studentId}', [PaymentController::class, 'getBillMonth']);
         Route::post('/checkout', [PaymentController::class, 'checkout']);
         Route::get('/verify/{transId}', [PaymentController::class, 'verifyPayment']);
         Route::get('/printInvoice/{paymentId}', [PaymentController::class, 'printInvoice']);
