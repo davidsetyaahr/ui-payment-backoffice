@@ -239,8 +239,10 @@ class PaymentController extends Controller
                         $model = new PaymentBill();
                         $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
                         $model->total_price = $price->course;
-                        $model->created_by = $parent->name;
-                        $model->updated_by = $parent->name;
+                        // $model->created_by = $parent->name;
+                        // $model->updated_by = $parent->name;
+                        $model->created_by = Auth::guard('parent')->user()->name;
+                        $model->updated_by = Auth::guard('parent')->user()->name;
                         $model->save();
 
                         $modelDetail = new PaymentBillDetail();
@@ -272,8 +274,10 @@ class PaymentController extends Controller
                 $model = new PaymentBill();
                 $model->class_type = $price->program != 'Private' || $price->program != 'Semi Private' ? 'Reguler' : 'Private';
                 $model->total_price = $price->course;
-                $model->created_by = $parent->name;
-                $model->updated_by = $parent->name;
+                // $model->created_by = $parent->name;
+                // $model->updated_by = $parent->name;
+                $model->created_by = Auth::guard('parent')->user()->name;
+                $model->updated_by = Auth::guard('parent')->user()->name;
                 $model->save();
 
                 $modelDetail = new PaymentBillDetail();
