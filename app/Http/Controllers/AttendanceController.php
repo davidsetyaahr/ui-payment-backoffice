@@ -82,6 +82,7 @@ class AttendanceController extends Controller
         // $reqAmpm = $request->ampm;
         $student = "";
         $whereRaw = "";
+        $whereStudent = '';
         $day = DB::table('day')->get();
         $cek = Attendance::where('price_id', $priceId)
             ->where('date', date('Y-m-d'))
@@ -140,7 +141,6 @@ class AttendanceController extends Controller
             // return $data;
         } else {
             // $agenda = [];
-            $whereStudent = '';
             $data = (object)[
                 'type' => 'create',
                 'id' => $class->id,
