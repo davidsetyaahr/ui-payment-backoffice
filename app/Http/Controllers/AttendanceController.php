@@ -909,7 +909,6 @@ class AttendanceController extends Controller
             $student = $request->student;
             AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
                 "is_done" => true,
-                "is_absent" => '1'
             ]);
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
