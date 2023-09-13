@@ -11,6 +11,7 @@ use App\Models\PointHistory;
 use App\Models\PointHistoryCategory;
 use App\Models\Students;
 use App\Models\StudentScore;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -104,7 +105,7 @@ class StudentController extends Controller
                 ->orderBy('id', 'DESC')
                 ->first();
 
-            $billing = PaymentBillDetail::where('student_id', $studentId)->where('status', 'Waiting')->sum('price');
+            $billing = PaymentBillDetail::where('category', 'COURSE')->where('student_id', $studentId)->where('status', 'Waiting')->where('payment', 'COURSE ' . Carbon::now()->format('m-Y'))->sum('price');
             $agenda = AttendanceDetail::join('attendances', 'attendances.id', 'attendance_details.attendance_id')
                 ->select('attendances.activity', 'attendances.date', 'attendances.text_book', 'attendances.id')
                 ->where('attendance_details.student_id', $studentId)

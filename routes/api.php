@@ -27,10 +27,6 @@ Route::post('submit-otp', [UsersController::class, 'submitOtp']);
 Route::group(['middleware' => ['jwt.auth']], function () {
     // Route::get('logout', [ApiController::class, 'logout']);
     Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
-    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
-
-    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
-    Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
     Route::get('announcement', [InfoController::class, 'getAnnouncement']);
     Route::get('advertise', [InfoController::class, 'getAdvertise']);
     Route::get('agenda/{studentId}', [InfoController::class, 'getAgenda']);

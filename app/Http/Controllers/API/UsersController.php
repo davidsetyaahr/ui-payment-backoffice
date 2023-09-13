@@ -7,6 +7,7 @@ use App\Models\Parents;
 use App\Models\ParentStudents;
 use App\Models\PaymentBillDetail;
 use App\Models\StudentScore;
+use Carbon\Carbon;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -257,7 +258,7 @@ class UsersController extends Controller
                     ->select('average_score')
                     ->orderBy('id', 'DESC')
                     ->first();
-                $billing = PaymentBillDetail::where('student_id', $val->id)->sum('price');
+                $billing = PaymentBillDetail::where('category', 'COURSE')->where('status', 'Waiting')->where('payment', 'COURSE ' . Carbon::now()->format('m-Y'))->where('student_id', $val->id)->sum('price');
 
                 if ($score && $billing) {
                     $student = array_merge($val->toArray(), ([

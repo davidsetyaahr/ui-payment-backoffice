@@ -86,7 +86,7 @@ class PaymentController extends Controller
             $tmp = PaymentBillDetail::join('student', 'student.id', 'payment_bill_detail.student_id')
                 ->select('student.name', 'payment_bill_detail.*')
                 ->where('payment_bill_detail.student_id', $studentId)
-                ->where('payment_bill_detail.status', 'Waiting')
+                ->where('payment_bill_detail.category', 'COURSE')->where('payment_bill_detail.status',  'Waiting')->where('payment_bill_detail.payment', 'COURSE ' . Carbon::now()->format('m-Y'))
                 ->get();
             $data = [];
             foreach ($tmp as $value) {
