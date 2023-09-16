@@ -178,6 +178,99 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
+                            <h4 class="card-title">Semi Private</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach ($semiPrivate as $keySemiPrivate => $itemSemiPrivate)
+                                    <div class="col-sm-6 col-md-4 ">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <span style="font-size: 16px">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <i class="fa fas fa-angle-right"></i>
+                                                            <b>
+                                                                {{ $itemSemiPrivate->program }}</b>
+                                                            @if ($itemSemiPrivate->is_class_new == true)
+                                                                <span style="color: red">(New!)</span>
+                                                            @endif
+                                                        </div>
+                                                        @if (Auth::guard('staff')->check() == true)
+                                                            <div>
+                                                                <form action="{{ url('schedule-class/delete') }}"
+                                                                    method="POST" class="form-inline">
+                                                                    @method('delete')
+                                                                    @csrf
+                                                                    <input type="hidden" name="priceid"
+                                                                        value="{{ $itemSemiPrivate->priceid }}">
+                                                                    <input type="hidden" name="day1"
+                                                                        value="{{ $itemSemiPrivate->day1 }}">
+                                                                    <input type="hidden" name="day2"
+                                                                        value="{{ $itemSemiPrivate->day2 }}">
+                                                                    <input type="hidden" name="course_time"
+                                                                        value="{{ $itemSemiPrivate->course_time }}">
+                                                                    <input type="hidden" name="id_teacher"
+                                                                        value="{{ $itemSemiPrivate->id_teacher }}">
+                                                                    <button type="submit"
+                                                                        onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                                        class="btn btn-xs btn-danger"
+                                                                        style="margin-right: 10px !important;"><i
+                                                                            class="fas fa-trash"></i></button>
+                                                                    <a href="javascript:void(0)"
+                                                                        class="btn btn-xs btn-success" data-toggle="modal"
+                                                                        data-target="#editJadwalModal"
+                                                                        onclick="updateModalReg({{ $keySemiPrivate }})"><i
+                                                                            class="fas fa-pencil-alt"></i></a>
+                                                                </form>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <br>
+                                                    <b>{{ $itemSemiPrivate->day_one }}
+                                                        {{ $itemSemiPrivate->day1 != $itemSemiPrivate->day2 ? '&' : '' }}
+                                                        {{ $itemSemiPrivate->day1 != $itemSemiPrivate->day2 ? $itemSemiPrivate->day_two : '' }}</b>
+                                                    <br>
+                                                    <b>{{ $itemSemiPrivate->course_time }}</b>
+
+                                                    <input type="hidden" id="regprogramModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->program }}">
+                                                    <input type="hidden" id="regcourseTimeModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->course_time }}">
+                                                    <input type="hidden" id="regday1Modal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->day1 }}">
+                                                    <input type="hidden" id="regday2Modal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->day2 }}">
+                                                    <input type="hidden" id="regteacherModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->teacher_name }}">
+                                                    <input type="hidden" id="regteacherOldModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->id_teacher }}">
+                                                    <input type="hidden" id="regclassModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->priceid }}">
+                                                    <input type="hidden" id="regdayOneModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->day_one }}">
+                                                    <input type="hidden" id="regdayTwoModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->day_two }}">
+                                                    <input type="hidden" id="regidteacherModal{{ $keySemiPrivate }}"
+                                                        value="{{ $itemSemiPrivate->id_teacher }}">
+                                                </span>
+
+                                                <div class="d-flex justify-content-between mt-4">
+                                                    <div class="fw-bold">{{ $itemSemiPrivate->teacher_name }}</div>
+                                                    <a href="{{ url('attendance/form/' . $itemSemiPrivate->priceid . '?day1=' . $itemSemiPrivate->day1 . '&day2=' . $itemSemiPrivate->day2 . '&time=' . $itemSemiPrivate->course_time) . '&teacher=' . $itemSemiPrivate->id_teacher . '&new=' . $itemSemiPrivate->is_class_new }}"
+                                                        class="btn btn-xs btn-primary">View</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
                             <h4 class="card-title">Private</h4>
                         </div>
                         <div class="card-body">
