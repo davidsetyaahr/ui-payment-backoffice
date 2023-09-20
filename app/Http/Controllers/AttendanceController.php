@@ -286,7 +286,7 @@ class AttendanceController extends Controller
                         $detail->is_absent = '0';
                         $detail->is_permission = true;
                     }
-                    $detail->total_point = $attendance->id;
+                    $detail->total_point = $request->totalPoint[$i];
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $detail->is_permission = true;
                     }
@@ -655,7 +655,7 @@ class AttendanceController extends Controller
                         $insert->is_absent = '0';
                         $insert->is_permission = true;
                     }
-                    $insert->total_point = $attendance->id;
+                    $insert->total_point = $request->totalPoint[$i];
                     if (count($request->isPermission[$i + 1]) > 1) {
                         $insert->is_permission = true;
                     } else {
