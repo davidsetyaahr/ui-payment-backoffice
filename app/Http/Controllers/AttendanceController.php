@@ -857,7 +857,9 @@ class AttendanceController extends Controller
             if ($countA != 0) {
                 foreach ($attendance as $keya => $valuea) {
                     if ($valuea->is_absent == '0') {
-                        $ttlApha++;
+                        if ($valuea->is_done == false) {
+                            $ttlApha++;
+                        }
                     }
                 }
             }
