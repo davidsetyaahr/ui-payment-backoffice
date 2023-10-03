@@ -57,7 +57,20 @@ class EcertificateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            foreach ($request->student as $key => $value) {
+                $student = Students::find($value);
+                $student->is_certificate = true;
+                $student->date_certificate = Carbon::now()->format('Y-m-d');
+                $student->save();
+                DB::commit();
+            }
+            return redirect('/e-certificate')->with('message', 'Berhasil mengupdate');
+        } catch (\Throwable $th) {
+            throw $th;
+            DB::rollBack();
+        }
     }
 
     /**

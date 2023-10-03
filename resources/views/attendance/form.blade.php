@@ -513,7 +513,8 @@
                                                                         }
                                                                         
                                                                         if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
-                                                                            $totalPoint = $it->course_hour . '0';
+                                                                            // $totalPoint = $it->course_hour . '0';
+                                                                            $totalPoint = $pointDay;
                                                                         } else {
                                                                             $totalPoint = $pointDay;
                                                                         }
@@ -768,8 +769,9 @@
                 $('#cbAbsent' + i).click('change', function() {
                     var dataHour = $(this).data('hour');
                     var dataClass = $(this).data('class');
-                    var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
-                        parseInt(10) : pointDay
+                    var conditionPoint = pointDay
+                    // var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
+                    //     parseInt(10) : pointDay
                     if ($(this).is(':checked')) {
                         $("#inPointAbsent" + i).text(parseInt(conditionPoint));
                         $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
