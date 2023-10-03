@@ -152,7 +152,8 @@
                                                     $bagi1 = $score1 ? 1 : 0;
                                                     $bagi2 = $score2 ? 1 : 0;
                                                     $bagi3 = $score3 ? 1 : 0;
-                                                    $score_test = round(($score_test1 + $score_test2 + $score_test3) / ($bagi1 + $bagi2 + $bagi3));
+                                                    $bagiSemua = $bagi1 + $bagi2 + $bagi3;
+                                                    $score_test = round(($score_test1 + $score_test2 + $score_test3) / ($bagiSemua != 0 ? $bagiSemua : 1));
                                                     $total_test1 += $score_test1;
                                                     $total_test2 += $score_test2;
                                                     $total_test3 += $score_test3;
