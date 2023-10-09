@@ -118,7 +118,7 @@
                                                             data-teacher="{{ $item->teacher->name }}"
                                                             class="btn btn-sm btn-primary modalAction">Add Comment</a>
 
-                                                        @if ($item->is_done == 1)
+                                                        {{-- @if ($item->is_done == 1)
                                                             <form action="{{ url('review') . '/' . $item->id }}"
                                                                 method="POST" class="form-inline"
                                                                 id="deleteOrderView{{ $item->id }}">
@@ -128,7 +128,7 @@
                                                             <a href="javascript:void(0)"
                                                                 onclick="deleted({{ $item->id }})"
                                                                 class="btn btn-sm btn-danger">Delete</a>
-                                                        @endif
+                                                        @endif --}}
                                                     </td>
                                                 @endif
                                             </tr>

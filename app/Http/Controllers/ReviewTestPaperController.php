@@ -12,7 +12,7 @@ class ReviewTestPaperController extends Controller
     public function index(Request $request)
     {
         if (Auth::guard('teacher')->check() == true) {
-            $data = OrderReview::with('teacher')->where('id_teacher', Auth::guard('teacher')->user()->id)->orderBy('id', 'DESC')->get();
+            $data = OrderReview::with('teacher')->where('id_teacher', Auth::guard('teacher')->user()->id)->where('is_done', '0')->orderBy('id', 'DESC')->get();
         } else {
             $data = OrderReview::with('teacher');
             if ($request->from && $request->to) {
