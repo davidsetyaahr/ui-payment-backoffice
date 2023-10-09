@@ -14,13 +14,12 @@ class ReviewTestPaperController extends Controller
         if (Auth::guard('teacher')->check() == true) {
             $data = OrderReview::with('teacher')->where('id_teacher', Auth::guard('teacher')->user()->id)->where('is_done', '0')->orderBy('id', 'DESC')->get();
         } else {
-            $data = OrderReview::with('teacher');
+            $data = OrderReview::with('teacher')->where('is_done', '0');
             if ($request->from && $request->to) {
                 $data = $data->whereBetween('due_date', [$request->from, $request->to]);
             }
             $data = $data->orderBy('id', 'DESC')->get();
         }
-
         return view('order-review.index', compact('data'));
     }
 
