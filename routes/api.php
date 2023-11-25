@@ -34,6 +34,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('attendace/{studentId}', [StudentController::class, 'getAttendance']);
     Route::get('classItem/{studentId}', [StudentController::class, 'getClass']);
     Route::get('summaryStudent/{studentId}', [StudentController::class, 'getSummary']);
+    Route::get('historyTest/{studentId}', [StudentController::class, 'getHistoryTest']);
     Route::prefix('score')->group(function () {
         Route::get('/getTestItem', [ScoreController::class, 'getTest']);
         Route::get('/getResult/{studentId}', [ScoreController::class, 'getResult']);

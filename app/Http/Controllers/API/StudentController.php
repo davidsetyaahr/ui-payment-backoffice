@@ -13,6 +13,7 @@ use App\Models\Students;
 use App\Models\StudentScore;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -132,6 +133,32 @@ class StudentController extends Controller
             $data['agenda'] = $agenda;
             $data['review'] = $review;
             $data['test'] = $test;
+            return response()->json([
+                'code' => '00',
+                'payload' => $data,
+            ], 200);
+        } catch (\Throwable $th) {
+            return $th;
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error', 'message' => $th,
+            ], 403);
+        }
+    }
+
+    public function getHistoryTest($studentId, Request $request)
+    {
+        try {
+            $data['history'] = DB::table('student_scores')
+                ->select('student_scores.*', 'student.name', 'tests.name as test_name', 'price.program as class', 'teacher.name as teacher_name')
+                ->join('student', 'student.id', 'student_scores.student_id')
+                ->join('tests', 'tests.id', 'student_scores.test_id')
+                ->join('price', 'price.id', 'student_scores.price_id')
+                ->join('teacher', 'teacher.id', 'student.id_teacher')
+                // ->where('date', Request::get('date'))
+                ->where('student_id', $studentId)
+                ->orderBy('test_id', 'ASC')->paginate($request->perpage ?? 10);
+            $data['id'] = $studentId;
             return response()->json([
                 'code' => '00',
                 'payload' => $data,

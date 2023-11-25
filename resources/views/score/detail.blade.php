@@ -132,7 +132,7 @@
                 <form action="{{ url('parentStudent') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi</h5>
+                        <h5 class="modal-title">Confirmation</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

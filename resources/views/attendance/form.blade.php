@@ -352,7 +352,7 @@
                                             <tbody>
                                                 @php
                                                     $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
-                                                    
+
                                                     $no = 1;
                                                     $whereRaw = '';
                                                     $countAgenda = 0;
@@ -396,11 +396,11 @@
                                                                     ->where('student_id', $it->id)
                                                                     ->where('attendance_id', $data->attendanceId)
                                                                     ->get();
-                                                                
+
                                                                 foreach ($getStudentPointCategory as $k => $v) {
                                                                     array_push($studentPointCategory, $v->point_category_id);
                                                                 }
-                                                                
+
                                                                 $isChecked = false;
                                                                 if ($data->type == 'create') {
                                                                     $isChecked = false;
@@ -511,7 +511,7 @@
                                                                         } else {
                                                                             $pointDay = 10;
                                                                         }
-                                                                        
+
                                                                         if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
                                                                             // $totalPoint = $it->course_hour . '0';
                                                                             $totalPoint = $pointDay;
@@ -566,7 +566,7 @@
                                                                     $cekTotalPoint = \DB::table('attendance_details')
                                                                         ->where('attendance_id', $data->attendanceId)
                                                                         ->where('student_id', $it->id);
-                                                                
+
                                                                     if ($cekTotalPoint->count() == 1) {
                                                                         $getTotalPoint = $cekTotalPoint->first();
                                                                         $totalPoint = $getTotalPoint->total_point;
@@ -702,7 +702,7 @@
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();
-                        
+
                     @endphp
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
                     <div class="card">
@@ -738,17 +738,18 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi</h5>
+                        <h5 class="modal-title">Confirmation</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Apakah anda yakin ingin membatalkan proses?</p>
+                        <p>Are you sure you want to cancel the process?</p>
                     </div>
                     <div class="modal-footer">
-                        <a href="{{ url('/advertise') }}"><button type="button" class="btn btn-success">Ya</button></a>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+                        <a href="{{ url('/advertise') }}"><button type="button"
+                                class="btn btn-success">Yes</button></a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
