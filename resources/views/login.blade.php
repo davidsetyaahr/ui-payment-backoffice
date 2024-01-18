@@ -37,7 +37,7 @@
 <body class="login">
     <div class="wrapper wrapper-login">
         <div class="container container-login animated fadeIn">
-            <h3 class="text-center">Sign In To Demo</h3>
+            <h3 class="text-center">Sign In To Demo U&I</h3>
             @if (session('message'))
                 <script>
                     swal("{{ session('message') }}", {
