@@ -85,7 +85,6 @@
                                                         @endif
                                                         <th>Average</th>
                                                         <th>Grade</th>
-                                                        <th>Follow Up</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -147,11 +146,6 @@
                                                             <td>{{ $score_test }}</td>
                                                             <td>{{ Helper::getGrade($score_test) }}</td>
                                                             @if ($loop->iteration == 1)
-                                                                <td rowspan="{{ count($testItem) + 1 }}"><input
-                                                                        type="checkbox" id="studentId{{ $student->id }}"
-                                                                        value="{{ $student->id }}"
-                                                                        onclick="onClickFollowUp({{ $student->id }})">
-                                                                </td>
                                                                 <td rowspan="{{ count($testItem) + 1 }}">
                                                                     {{-- <form
                                                                     action="{{ url('e-certificate') . '/' . $student->id . '?type=done' }}"
@@ -272,8 +266,6 @@
                     </div>
                 @endforeach
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-info btn-sm" id="buttonSubmitFollowUp" type="button" onclick="submitFollowUp()"
-                        disabled>Submit Follow Up</button>
                     <button class="btn btn-success btn-sm" type="button" onclick="confirm()">Done</button>
                 </div>
             </form>
@@ -318,60 +310,6 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result == true) {
                     $('#formSubmit').submit();
-                }
-            });
-        }
-
-        const dataStudent = {
-            id: [],
-            old_day1: "{{ Request::get('day1') }}",
-            old_day2: "{{ Request::get('day2') }}",
-            old_teacher: "{{ Request::get('teacher') }}",
-            old_time: "{{ Request::get('time') }}",
-            old_class: "{{ $class->id }}",
-        };
-
-        function onClickFollowUp(id) {
-            const checkbox = document.getElementById('studentId' + id);
-            if (checkbox.checked) {
-                if (dataStudent.id.indexOf(id) === -1) {
-                    dataStudent.id.push(id);
-                    if (dataStudent.id.length != 0) {
-                        $('#buttonSubmitFollowUp').prop('disabled', false);
-                    } else {
-                        $('#buttonSubmitFollowUp').prop('disabled', true);
-                    }
-                }
-            } else {
-                const index = dataStudent.id.indexOf(id);
-                if (index !== -1) {
-                    dataStudent.id.splice(index, 1);
-                    if (dataStudent.id.length != 0) {
-                        $('#buttonSubmitFollowUp').prop('disabled', false);
-                    } else {
-                        $('#buttonSubmitFollowUp').prop('disabled', true);
-                    }
-                }
-            }
-        }
-
-        function submitFollowUp() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: "{{ route('follow-up.store') }}",
-                data: dataStudent,
-                success: function(response) {
-                    swal({
-                        title: 'Success!',
-                        text: response,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
                 }
             });
         }

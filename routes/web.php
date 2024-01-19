@@ -6,7 +6,6 @@ use App\Http\Controllers\AnnouncesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EcertificateController;
-use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ParentsController;
 use App\Http\Controllers\ParentStudentsController;
@@ -110,5 +109,4 @@ Route::middleware(['web'])->group(function () {
     Route::post('/review-comment/{id}', [ReviewTestPaperController::class, 'comment']);
     Route::delete('/review/{id}', [ReviewTestPaperController::class, 'destroy']);
     Route::resource('/e-certificate', EcertificateController::class);
-    Route::resource('/follow-up', FollowUpController::class);
 });
