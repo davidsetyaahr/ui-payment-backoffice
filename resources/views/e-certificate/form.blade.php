@@ -122,10 +122,48 @@
                                                                 ->where('test_id', 3)
                                                                 ->where('student_score_details.test_item_id', $item->id)
                                                                 ->first();
-                                                            $score_test1 = $score1 ? $score1->score_test : 0;
-                                                            $score_test2 = $score2 ? $score2->score_test : 0;
-                                                            $score_test3 = $score3 ? $score3->score_test : 0;
-                                                            $score_test = round(($score_test1 + $score_test2 + $score_test3) / 3);
+                                                            //$score_test1 = $score1 ? $score1->score_test : 0;
+                                                            //$score_test2 = $score2 ? $score2->score_test : 0;
+                                                            //$score_test3 = $score3 ? $score3->score_test : 0;
+                                                            
+                                                            
+                                                            //$score_test1
+                                                            //$score_test2
+                                                            //$score_test3
+                                                            
+                                                            $divider = 0;
+                                                            
+                                                            $score_test1 = 0;
+                                                            $score_test2 = 0;
+                                                            $score_test3 = 0;
+                                                            
+                                                            if($score1){
+                                                                if($score1->score_test!=0){
+                                                                    $score_test1 = $score1->score_test;
+                                                                    $divider += 1;
+                                                                }
+                                                            }
+                                                            if($score2){
+                                                                if($score2->score_test!=0){
+                                                                    $score_test2 = $score2->score_test;
+                                                                    $divider += 1;
+                                                                }
+                                                            }
+                                                            if($score3){
+                                                                if($score3->score_test!=0){
+                                                                    $score_test3 = $score3->score_test;
+                                                                    $divider += 1;
+                                                                }
+                                                            }
+                                                            
+                                                            if($divider==0){
+                                                                $divider=1;
+                                                            }
+                                                            
+                                                            //$score_test = round(($score_test1 + $score_test2 + $score_test3) / 3);
+                                                            
+                                                            $score_test = round(($score_test1 + $score_test2 + $score_test3) / $divider);
+                                                            
                                                             $total_test1 += $score_test1;
                                                             $total_test2 += $score_test2;
                                                             $total_test3 += $score_test3;

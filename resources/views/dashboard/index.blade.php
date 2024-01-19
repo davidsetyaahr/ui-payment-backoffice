@@ -110,11 +110,17 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <img style="width: 100%; height: 300px;"
-                                                src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">
+                                            @if($data->announces)
+                                                <!--<img style="width: 100%"
+                                                    src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                <img style="width: 100%"
+                                                    src="{{ url($data->announces->banner) }}" alt="">
+                                            @endif
                                         </div>
                                         <div class="col-md-12">
-                                            <p>{{ $data->announces->description }}</p>
+                                            @if($data->announces)
+                                                <p>{{ $data->announces->description }}</p>
+                                            @endif
                                         </div>
                                     </div>
 

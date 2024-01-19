@@ -52,6 +52,7 @@
                                     <thead>
                                         <tr>
                                             <th>Title</th>
+                                            <th>Announce For</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -60,6 +61,7 @@
                                             <tr>
 
                                                 <td>{{ $item->description }}</td>
+                                                <td>{{ $item->announce_for }}</td>
                                                 <td class=" d-flex">
                                                     <form action="{{ route('announces.destroy', $item->id) }}" method="POST"
                                                         class="form-inline">

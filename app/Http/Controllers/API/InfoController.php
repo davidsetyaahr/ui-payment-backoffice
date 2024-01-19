@@ -30,7 +30,8 @@ class InfoController extends Controller
     public function getAnnouncement()
     {
         try {
-            $result = Announces::orderBy('id', 'desc')
+            $result = Announces::where('announce_for', 'staff')
+                ->orderBy('id', 'desc')
                 ->take(5)->get();
             return response()->json([
                 'code' => '00',

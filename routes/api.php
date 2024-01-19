@@ -23,7 +23,6 @@ Route::post('signin', [UsersController::class, 'sendOtp']);
 Route::post('authenticate', [UsersController::class, 'authenticate']);
 Route::post('submit-otp', [UsersController::class, 'submitOtp']);
 
-
 Route::group(['middleware' => ['jwt.auth']], function () {
     // Route::get('logout', [ApiController::class, 'logout']);
     Route::get('listStudents/{parentId}', [UsersController::class, 'students']);
@@ -39,6 +38,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/getTestItem', [ScoreController::class, 'getTest']);
         Route::get('/getResult/{studentId}', [ScoreController::class, 'getResult']);
         Route::get('/getScore/{studentId}/{testId}', [ScoreController::class, 'getScoreByTest']);
+        
+        //Route::get('/getCertificate/{studentId}', [ScoreController::class, 'getCertificate']);
     });
     Route::prefix('payment')->group(function () {
         Route::get('get-bill-month/{studentId}', [PaymentController::class, 'getBillMonth']);

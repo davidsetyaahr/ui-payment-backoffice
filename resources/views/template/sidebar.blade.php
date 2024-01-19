@@ -116,6 +116,7 @@
                             </a>
 
                         </li>
+                        @if(Auth::guard('teacher')->user()==null)
                         <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
                             <a href="{{ url('/history-test') }}" class="collapsed">
                                 <i class="fas fa-book"></i>
@@ -123,6 +124,7 @@
                             </a>
 
                         </li>
+                        @endif
                     @endif
 
                     <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
