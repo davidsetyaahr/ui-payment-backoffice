@@ -72,16 +72,30 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
+                                            <label for="email2">Announce For</label>
+                                            
+                                            <select class="form-control @error('announce_for') is-invalid @enderror" name="announce_for" placeholder="Announce For">
+                                                <option value="Staff"{{ old('announce_for')=='Staff' ? ' selected' : '' }}>Staff</option>
+                                                <option value="Teacher"{{ old('announce_for')=='Teacher' ? ' selected' : '' }}>Teacher</option>
+                                            </select>
+                                            @error('announce_for')
+                                                <label class="mt-1" style="color: red!important">{{ $message }}</label>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
                                             <label for="email2">Banner</label>
                                             <input type="file" name="banner" id="input-file-now-custom-1"
                                                 class="dropify @error('banner') is-invalid @enderror"
-                                                data-default-file="{{ $data->type != 'create' ? url('/storage/' . $data->banner) : '' }}" />
+                                                data-default-file="{{ $data->type != 'create' ? url($data->banner) /*url('/storage/' . $data->banner)*/ : '' }}" />
                                             @error('banner')
                                                 <label class="mt-1" style="color: red!important">{{ $message }}</label>
                                             @enderror
                                         </div>
 
                                     </div>
+                                    
 
                                 </div>
 

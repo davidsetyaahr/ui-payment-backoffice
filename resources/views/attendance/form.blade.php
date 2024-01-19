@@ -48,29 +48,36 @@
         }
 
         /* On mouse-over, add a grey background color */
-        .permission:hover input[type=checkbox]~.permissionCheckBox {
+        .permission::hover input[type=checkbox]~.permissionCheckBox {
             background-color: green;
         }
 
         /* When the checkbox is checked, add a blue background */
-        .permission input[type=checkbox]:checked~.permissionCheckBox {
+        .permission input[type=checkbox]::checked~.permissionCheckBox {
             background-color: green;
         }
 
         /* Create the permissionCheckBox/indicator (hidden when not checked) */
-        .permissionCheckBox:after {
+        /*.permissionCheckBox:after {
             content: "";
             position: absolute;
             display: none;
-        }
+        }*/
 
-        /* Show the permissionCheckBox when checked */
-        .permission input[type=checkbox]:checked~.permissionCheckBox:after {
-            display: block;
+
+
+        span.permissionCheckBox.checked::after{
+            content: "";
+            position: absolute;
+            display:block;
         }
+        /* Show the permissionCheckBox when checked */
+        /*.permission input[type=checkbox]:checked~.permissionCheckBox:after {
+            display: block;
+        }*.
 
         /* Style the permissionCheckBox/indicator */
-        .permission .permissionCheckBox:after {
+        .permission .permissionCheckBox::after {
             left: 9px;
             top: 5px;
             width: 5px;
@@ -102,29 +109,37 @@
         }
 
         /* On mouse-over, add a grey background color */
-        .alpha:hover input[type=checkbox]~.alphaCheckBox {
+        .alpha::hover input[type=checkbox]~.alphaCheckBox {
             background-color: red;
         }
 
         /* When the checkbox is checked, add a blue background */
-        .alpha input[type=checkbox]:checked~.alphaCheckBox {
+        .alpha input[type=checkbox]::checked~.alphaCheckBox {
             background-color: red;
         }
 
         /* Create the alphaCheckBox/indicator (hidden when not checked) */
-        .alphaCheckBox:after {
+        /*.alphaCheckBox:after {
             content: "";
             position: absolute;
             display: none;
+        }*/
+        
+        span.alphaCheckBox.checked::after{
+            content: "";
+            position: absolute;
+            display:block;
         }
 
         /* Show the alphaCheckBox when checked */
-        .alpha input[type=checkbox]:checked~.alphaCheckBox:after {
+        /*.alpha input[type=checkbox]:checked~.alphaCheckBox:after {
             display: block;
-        }
+        }*/
+        
+        
 
         /* Style the alphaCheckBox/indicator */
-        .alpha .alphaCheckBox:after {
+        .alpha .alphaCheckBox::after {
             left: 9px;
             top: 5px;
             width: 5px;
@@ -422,6 +437,7 @@
                                                                 name="isAbsent[{{ $no }}][]"
                                                                 data-hour="{{ $it->course_hour }}"
                                                                 data-class="{{ $it->priceid }}">
+                                                            
                                                         </td>
                                                         <td class=" text-center" scope="col"">
                                                             @php
@@ -501,6 +517,13 @@
                                                                     }
                                                                 }
                                                             @endphp
+                                                            
+                                                            @php
+                                                                $totalPoint=0;
+                                                            @endphp
+                                                            
+                                                            
+                                                            
                                                             <h5 id="inPointAbsent{{ $no }}">
                                                                 @if ($isAbsent)
                                                                     @php
@@ -519,10 +542,16 @@
                                                                             $totalPoint = $pointDay;
                                                                         }
                                                                     @endphp
+                                                                    
                                                                     {{ $totalPoint }}
+                                                                    
+                                                                    
                                                                 @else
                                                                     0
                                                                 @endif
+                                                            </h5>   
+                                                            
+                                                            <input type="hidden" value="{{ $totalPoint }}" name="isAbsentPoint[{{ $no }}]" id="isAbsentPoint{{ $no }}">
                                                                 {{-- {{ $isAbsent ? '10' : '0' }}</h5> --}}
                                                         </td>
                                                         <td style="">
@@ -648,7 +677,7 @@
                                             @endphp
                                             <div class="form-group">
                                                 <label for="">{{ $t->id }}</label>
-                                                <input type="checkbox" name="id_test[]" class="form-class"
+                                                <input type="radio" name="id_test[]" class="form-class"
                                                     value="{{ $t->id }}"{{ $data->type == 'update' ? ($cekOrder ? 'checked' : '') : '' }}>
                                             </div>
                                         </div>
@@ -702,6 +731,8 @@
                             ->orderBy('attendances.id', 'DESC')
                             ->groupBy('attendances.id')
                             ->get();
+                            
+                       
                         
                     @endphp
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
@@ -766,22 +797,76 @@
                     {{ Request::get('day1') }} == {{ Request::get('day2') }} ? 20 : 10;
                 var birthDayPoint = 0;
                 var totalPoint = parseInt($("#totalPoint" + i).text());
-                $('#cbAbsent' + i).click('change', function() {
+                $('#cbAbsent' + i).on('change', function() {
                     var dataHour = $(this).data('hour');
                     var dataClass = $(this).data('class');
                     var conditionPoint = pointDay
+                    
                     // var conditionPoint = $(this).data('hour') != '' || dataClass == 39 || dataClass == 42 ?
                     //     parseInt(10) : pointDay
                     if ($(this).is(':checked')) {
                         $("#inPointAbsent" + i).text(parseInt(conditionPoint));
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
-                        $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) + conditionPoint);
+                        $("#isAbsentPoint" + i).val(parseInt(conditionPoint));
+                        //$("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) + conditionPoint);
+                        //$("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
+                        //    "#inpTotalPoint" + i).val() : 0) + conditionPoint);
+                        
+                        var tmpTotalPoint = 0;
+                        var getVal = $('#categories' + i).val();
+                        dataCtgr.forEach(element => {
+                            getVal.forEach(x => {
+                                if (element.id.toString() == x.toString()) {
+                                    tmpTotalPoint += element.point;
+                                }
+                            })
+                        });
+    
+                        $("#totalPoint" + i).text(tmpTotalPoint +
+                            birthDayPoint + parseInt($("#inPointAbsent" + i).text()));
+                        $("#inpTotalPoint" + i).val(tmpTotalPoint +
+                            birthDayPoint + parseInt($("#inPointAbsent" + i).text()));
+                        
+                            
+                        //alpha dan permission diset menjadi checked kemudian panggil eventnya
+                        $('#permissionCheckBox' + (i-1)).next('span').removeClass('checked');
+                        $('#permissionCheckBox' + (i-1)).val(0);
+                        $('#permissionCheckBox' + (i-1)).removeAttr('checked', 'checked');
+                        
+                        $('#alphaCheckBox' + (i-1)).next('span').removeClass('checked');
+                        $('#alphaCheckBox' + (i-1)).val(0);
+                        $('#alphaCheckBox' + (i-1)).removeAttr('checked', 'checked');
+                        
+                            
                     } else {
-                        $("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - conditionPoint);
-                        $("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
-                            "#inpTotalPoint" + i).val() : 0) - conditionPoint);
+                        
+                        //console.log(parseInt($("#totalPoint" + i).text()));
+                        //console.log(parseInt($("#totalPoint" + i).text()) - conditionPoint);
+                        
+                        
+                        
+                        //$("#totalPoint" + i).text(parseInt($("#totalPoint" + i).text()) - conditionPoint);
+                        //$("#inpTotalPoint" + i).val(parseInt($("#inpTotalPoint" + i).val() != '' ? $(
+                        //    "#inpTotalPoint" + i).val() : 0) - conditionPoint);
                         $("#inPointAbsent" + i).text(0);
+                        $("#isAbsentPoint" + i).val(0);
+                        
+                        
+                        var tmpTotalPoint = 0;
+                        var getVal = $('#categories' + i).val();
+                        dataCtgr.forEach(element => {
+                            getVal.forEach(x => {
+                                if (element.id.toString() == x.toString()) {
+                                    tmpTotalPoint += element.point;
+                                }
+                            })
+                        });
+    
+                        $("#totalPoint" + i).text(tmpTotalPoint +
+                            birthDayPoint + parseInt($("#inPointAbsent" + i).text()));
+                        $("#inpTotalPoint" + i).val(tmpTotalPoint +
+                            birthDayPoint + parseInt($("#inPointAbsent" + i).text()));
+                        
+                        
                     }
                     if ($('.cekBox:checked').length != 0) {
                         $('#cekAllAbsen').val(1);
@@ -841,9 +926,22 @@
             if ($('#permissionCheckBox' + key).val() == 0) {
                 $('#permissionCheckBox' + key).val(1);
                 $('#permissionCheckBox' + key).attr('checked', 'checked');
+                
+                $('#permissionCheckBox' + key).next('span').addClass('checked');
+                
+                
+                $('#alphaCheckBox' + key).val(0);
+                $('#alphaCheckBox' + key).removeAttr('checked');
+                $('#alphaCheckBox' + key).next('span').removeClass('checked');
+                
+                $('#cbAbsent' + (parseInt(key)+1)).prop('checked', false);
+                $('#cbAbsent' + (parseInt(key)+1)).trigger('change');
+                
             } else {
                 $('#permissionCheckBox' + key).val(0);
                 $('#permissionCheckBox' + key).removeAttr('checked');
+                
+                $('#permissionCheckBox' + key).next('span').removeClass('checked');
             }
             if ($('.cekBoxPermission:checked').length != 0) {
                 $('#cekAllAbsen').val(1);
@@ -856,9 +954,21 @@
             if ($('#alphaCheckBox' + key).val() == 0) {
                 $('#alphaCheckBox' + key).val(1);
                 $('#alphaCheckBox' + key).attr('checked', 'checked');
+                
+                $('#alphaCheckBox' + key).next('span').addClass('checked');
+                
+                $('#permissionCheckBox' + key).val(0);
+                $('#permissionCheckBox' + key).removeAttr('checked');
+                $('#permissionCheckBox' + key).next('span').removeClass('checked');
+                
+                $('#cbAbsent' + (parseInt(key)+1)).prop('checked', false);
+                $('#cbAbsent' + (parseInt(key)+1)).trigger('change');
+                
             } else {
                 $('#alphaCheckBox' + key).val(0);
                 $('#alphaCheckBox' + key).removeAttr('checked');
+                
+                $('#alphaCheckBox' + key).next('span').removeClass('checked');
             }
 
             if ($('.cekBoxAlpha:checked').length != 0) {

@@ -45,6 +45,11 @@ Route::prefix('landing-page')->group(
     }
 );
 
+Route::get('generate', function (){
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    echo 'ok';
+});
+
 Route::middleware(['web'])->group(function () {
     Route::get('/user', [UsersController::class, 'profile']);
     Route::post('/user/{user}', [UsersController::class, 'update']);

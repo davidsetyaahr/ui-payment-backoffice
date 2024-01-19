@@ -25,7 +25,13 @@ class UsersController extends Controller
         $student = Students::where('status', 'ACTIVE')->count();
         $parent = Parents::count();
         $teacher = Teacher::count();
-        $announces = Announces::orderBy('id', 'DESC')->first();
+        
+        if (Auth::guard('teacher')->check()) 
+            $announces = Announces::where('announce_for', 'Teacher')->orderBy('id', 'DESC')->first();
+        else    
+            $announces = Announces::where('announce_for', 'Staff')->orderBy('id', 'DESC')->first();
+        
+        
         $data = (object)([
             'student' => $student,
             'parent' => $parent,

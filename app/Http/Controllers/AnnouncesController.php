@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\File;
+
 class AnnouncesController extends Controller
 {
     /**
@@ -32,6 +34,7 @@ class AnnouncesController extends Controller
             'id' => 0,
             'banner' => '',
             'description' => '',
+            'announce_for' => 'Staff',
             'type' => 'create',
         ];
         return view('announcement.form', compact('data', 'title'));
@@ -45,15 +48,23 @@ class AnnouncesController extends Controller
      */
     public function store(Request $request)
     {
+       
+        
         $request->validate([
             'description' => 'required',
             'banner' => 'required',
+            'announce_for'=> 'required'
         ]);
         $fileType = $request->file('banner')->extension();
         $name = Str::random(8) . '.' . $fileType;
 
         $input['description'] = $request['description'];
-        $input['banner'] = Storage::putFileAs('announce', $request->file('banner'), $name);;
+        $input['announce_for'] = $request['announce_for'];
+        
+        //$input['banner'] = Storage::putFileAs('announce', $request->file('banner'), $name);;
+
+        $input['banner'] = $request->file('banner')->storeAs('announce', $name); 
+
 
         try {
             Announces::create($input);
@@ -90,6 +101,7 @@ class AnnouncesController extends Controller
             'title' => $item->title,
             'banner' => $item->banner,
             'description' => $item->description,
+            'announce_for' => $item->announce_for,
             'type' => 'update',
         ];
         return view('announcement.form', compact('data', 'title'));
@@ -108,10 +120,13 @@ class AnnouncesController extends Controller
             'description' => 'required',
         ]);
         $input['description'] = $request['description'];
+        $input['announce_for'] = $request['announce_for'];
         if ($request->banner) {
             $fileType = $request->file('banner')->extension();
             $name = Str::random(8) . '.' . $fileType;
-            $input['banner'] = Storage::putFileAs('announce', $request->file('banner'), $name);
+            //$input['banner'] = Storage::putFileAs('announce', $request->file('banner'), $name);
+            
+            $input['banner'] = $request->file('banner')->storeAs('announce', $name); 
         }
 
         try {
