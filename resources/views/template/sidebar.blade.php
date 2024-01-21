@@ -116,14 +116,14 @@
                             </a>
 
                         </li>
-                        @if(Auth::guard('teacher')->user()==null)
-                        <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
-                            <a href="{{ url('/history-test') }}" class="collapsed">
-                                <i class="fas fa-book"></i>
-                                <p>Test History</p>
-                            </a>
+                        @if (Auth::guard('teacher')->user() == null)
+                            <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
+                                <a href="{{ url('/history-test') }}" class="collapsed">
+                                    <i class="fas fa-book"></i>
+                                    <p>Test History</p>
+                                </a>
 
-                        </li>
+                            </li>
                         @endif
                     @endif
 
@@ -176,6 +176,13 @@
                             <a href="{{ url('/e-certificate') }}" class="collapsed">
                                 <i class="fas fa-certificate"></i>
                                 <p>Certificate Authorization</p>
+                            </a>
+
+                        </li>
+                        <li class="nav-item {{ Request::segment(1) == 'follow-up' ? 'active' : '' }}">
+                            <a href="{{ url('/follow-up') }}" class="collapsed">
+                                <i class="fas fa-database"></i>
+                                <p>Follow Up</p>
                             </a>
 
                         </li>
