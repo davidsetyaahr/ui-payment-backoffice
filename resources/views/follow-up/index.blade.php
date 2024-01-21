@@ -61,11 +61,35 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($students as $item)
+                                            @php
+                                                $score1 = DB::table('student_scores')
+                                                    ->join('student_score_details', 'student_score_details.student_score_id', 'student_scores.id')
+                                                    ->select('student_scores.*', 'student_score_details.score as score_test', 'student_score_details.test_item_id')
+                                                    ->where('student_id', $item->student_id)
+                                                    ->where('price_id', $item->old_price_id)
+                                                    ->where('test_id', 1)
+                                                    ->first();
+                                                $score2 = DB::table('student_scores')
+                                                    ->join('student_score_details', 'student_score_details.student_score_id', 'student_scores.id')
+                                                    ->select('student_scores.*', 'student_score_details.score as score_test', 'student_score_details.test_item_id')
+                                                    ->where('student_id', $item->student_id)
+                                                    ->where('price_id', $item->old_price_id)
+                                                    ->where('test_id', 2)
+                                                    ->first();
+                                                $score3 = DB::table('student_scores')
+                                                    ->join('student_score_details', 'student_score_details.student_score_id', 'student_scores.id')
+                                                    ->select('student_scores.*', 'student_score_details.score as score_test', 'student_score_details.test_item_id')
+                                                    ->where('student_id', $item->student_id)
+                                                    ->where('price_id', $item->old_price_id)
+                                                    ->where('test_id', 3)
+                                                    ->first();
+                                            @endphp
                                             <tr>
                                                 <td>{{ $item->student_id }}</td>
                                                 <td>{{ ucwords($item->student->name) }}</td>
                                                 <td>{{ $item->class->program }}</td>
-                                                <td>{{ $item->day1 . '-' . $item->day2 . '/' . $item->course_time }}</td>
+                                                <td>{{ $item->day1 . '-' . $item->day2 . '/' . $item->course_time }}
+                                                </td>
                                                 <td>{{ $item->teacher->name }}</td>
                                                 <td><input type="checkbox" name="student_id[]"
                                                         id="studentId{{ $item->id }}"
@@ -79,7 +103,71 @@
                                                         <button type="button" onclick="confirm()"
                                                             class="btn btn-xs btn-danger"><i
                                                                 class="fas fa-trash"></i></button>
-
+                                                        <a class="btn btn-xs btn-warning dropdown-toggle" type="button"
+                                                            id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            Edit
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            @if ($item->old_class_id >= 43 && $item->old_class_id <= 45)
+                                                                @if ($score1)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&id_test=' . $score1->id . '&date=' . $score1->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 1</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        1</a>
+                                                                @endif
+                                                            @elseif($item->old_class_id >= 22 && $item->old_class_id <= 37)
+                                                                @if ($score1)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&id_test=' . $score1->id . '&date=' . $score1->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 1</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        1</a>
+                                                                @endif
+                                                                @if ($score2)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=2&id_test=' . $score2->id . '&date=' . $score2->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 2</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=2&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        2</a>
+                                                                @endif
+                                                            @else
+                                                                @if ($score1)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&id_test=' . $score1->id . '&date=' . $score1->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 1</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=1&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        1</a>
+                                                                @endif
+                                                                @if ($score2)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=2&id_test=' . $score2->id . '&date=' . $score2->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 2</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=2&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        2</a>
+                                                                @endif
+                                                                @if ($score3)
+                                                                    <a href="{{ url('score/create?type=edit&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=3&id_test=' . $score3->id . '&date=' . $score3->date . '&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="dropdown-item">Test 3</a>
+                                                                @else
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('score/create?type=create&class=') . $item->old_price_id . '&student=' . $item->student_id . '&test=3&day1=' . $item->old_day_1 . '&day2=' . $item->old_day_2 . '&teacher=' . $item->old_teacher_id . '&time=' . $item->course_time }}"
+                                                                        class="btn btn-sm btn-primary">Test
+                                                                        3</a>
+                                                                @endif
+                                                            @endif
+                                                        </div>
                                                     </form>
                                                 </td>
                                             </tr>

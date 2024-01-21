@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\FollowUp;
+use App\Models\Price;
+use App\Models\Students;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FollowUpController extends Controller
@@ -13,7 +16,7 @@ class FollowUpController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $students = FollowUp::with('class', 'teacher', 'student')->select('follow_up.*', 'd1.day as day1', 'd2.day as day2')
             ->join('day as d1', 'd1.id', 'follow_up.old_day_1')
@@ -54,6 +57,11 @@ class FollowUpController extends Controller
                     $followUp->old_teacher_id = $request->old_teacher;
                     $followUp->course_time = $request->old_time;
                     $followUp->save();
+
+                    // change status student
+                    Students::where('id', $value)->update([
+                        'is_follow_up' => '1',
+                    ]);
                 }
             }
 
@@ -113,6 +121,10 @@ class FollowUpController extends Controller
         DB::beginTransaction();
         try {
             FollowUp::where('id', $id)->delete();
+            // change status student
+            Students::where('id', $id)->update([
+                'is_follow_up' => '0',
+            ]);
             DB::commit();
             return redirect('/follow-up')->with('status', 'Success update data');
         } catch (\Exception $e) {
@@ -130,6 +142,10 @@ class FollowUpController extends Controller
         try {
             foreach ($request->student_id as $key => $value) {
                 FollowUp::where('id', $value)->delete();
+                // change status student
+                Students::where('id', $value)->update([
+                    'is_follow_up' => '0',
+                ]);
             }
             DB::commit();
             return redirect('/follow-up')->with('status', 'Success bulk update');

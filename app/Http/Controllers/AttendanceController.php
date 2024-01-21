@@ -166,7 +166,8 @@ class AttendanceController extends Controller
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime)
-            ->where('is_class_new', $request->new);
+            ->where('is_class_new', $request->new)
+            ->where('is_follow_up', '!=', '1');
         if ($request->student) {
             $student = $student->where('id', $request->student);
         }
@@ -832,12 +833,12 @@ class AttendanceController extends Controller
     {
         $arrAbsent = [];
         $arrAbsentFilter = [];
-        
+
         $students = Students::where('status', 'ACTIVE')->get();
         // $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
-        
+
         /*$attendance = DB::table('student s')
             ->join('price p', 's.priceid=p.id')
             ->join('teacher t', 's.id_teacher=t.id', 'left')
@@ -846,118 +847,114 @@ class AttendanceController extends Controller
             ->where('ad.is_absent', 1)
             ->where('ad.is_done', 0)
             ->where('s.status', 'ACTIVE');
-        
+
         if($request->level!='')
             $attendance = $attendance->where('s.priceid', $request->level);
-        
-        
+
+
         if($request->teacher!='')
             $attendance = $attendance->where('s.id_teacher', $request->teacher)
-        
+
         $attendance = $attendance
             ->groupBy('s.id')
             ->havingRaw('absent >= 2');*/
-            
-        $data = [];    
-        
+
+        $data = [];
+
         //echo count($students);
-        
-        
-            
-        foreach($students as $s){
+
+
+
+        foreach ($students as $s) {
             $attendance = DB::table('student as s')
-            ->join('price as p', 's.priceid', 'p.id')
-            ->join('teacher as t', 's.id_teacher', 't.id')
-            ->join('attendance_details as ad', 's.id', 'ad.student_id')
-            ->join('attendances as a', 'ad.attendance_id', 'a.id')
-            ->selectRaw('s.id AS student_id, s.name, t.name AS teacher, p.program, ad.comment_teacher, ad.comment_staff, ad.is_absent, ad.is_permission, ad.is_done, ad.is_deleted, ad.id, a.date')
-            ->where('s.id', $s->id);
-            
-            if (Auth::guard('teacher')->user() != null) 
+                ->join('price as p', 's.priceid', 'p.id')
+                ->join('teacher as t', 's.id_teacher', 't.id')
+                ->join('attendance_details as ad', 's.id', 'ad.student_id')
+                ->join('attendances as a', 'ad.attendance_id', 'a.id')
+                ->selectRaw('s.id AS student_id, s.name, t.name AS teacher, p.program, ad.comment_teacher, ad.comment_staff, ad.is_absent, ad.is_permission, ad.is_done, ad.is_deleted, ad.id, a.date')
+                ->where('s.id', $s->id);
+
+            if (Auth::guard('teacher')->user() != null)
                 $attendance = $attendance->where('s.id_teacher', Auth::guard('teacher')->user()->id);
-            
-        
-            if($request->level!='')
+
+
+            if ($request->level != '')
                 $attendance = $attendance->where('s.priceid', $request->level);
-        
-            if($request->teacher!='')
+
+            if ($request->teacher != '')
                 $attendance = $attendance->where('s.id_teacher', $request->teacher);
-            
-            
+
+
             $date = new \DateTime(date('Y-m-d'));
             $date->modify('-14 day');
-            
+
             $attendance = $attendance
                 ->where('a.date', '>=', $date->format('Y-m-d'))
                 ->orderBy('a.date', 'desc')->get();
-                //->limit(7)->get();    
-            
+            //->limit(7)->get();
+
             $temp = null;
-            
-            
+
+
             $process = true;
             $index = 0;
-            while($process && $index < count($attendance)){
+            while ($process && $index < count($attendance)) {
                 //jika hadir atau sudah dihapus maka temp kembali ke null
                 //if($attendance[$index]->is_done=='1' || $attendance[$index]->is_absent=='1'){
-                if($attendance[$index]->is_done=='1' || $attendance[$index]->is_permission=='1' || $attendance[$index]->is_absent=='1' || $attendance[$index]->is_deleted=='1' ){
-                    $temp=null;
-                }
-                else if($attendance[$index]->is_absent=='0' && $attendance[$index]->is_deleted=='0'){
+                if ($attendance[$index]->is_done == '1' || $attendance[$index]->is_permission == '1' || $attendance[$index]->is_absent == '1' || $attendance[$index]->is_deleted == '1') {
+                    $temp = null;
+                } else if ($attendance[$index]->is_absent == '0' && $attendance[$index]->is_deleted == '0') {
                     //jika absen dan belum dihapus
-                    if($temp==null){
+                    if ($temp == null) {
                         $attendance[$index]->absent_date = $attendance[$index]->date;
                         $attendance[$index]->absent_id = $attendance[$index]->id;
-                        
+
                         $temp = $attendance[$index];
-                    }
-                    else{
+                    } else {
                         //jika sebelumnya sudah ada data maka masukkan ke dalam array
-                        
+
                         $temp->absent_date .= ', ' . $attendance[$index]->date;
                         $temp->absent_id .= '-' . $attendance[$index]->id;
                         array_push($data, $temp);
-                        $temp=null;
-                        
+                        $temp = null;
+
                         $process = false;
-                        
                     }
                 }
-                
+
                 $index++;
             }
-            
+
             /*foreach($attendance as $r){
                 //kalau sudah done maka tidak usah diuji lagi
-                
+
                 if($r->is_done){
                     $temp=null;
                 }
                 else if($r->is_absent){
                     if($temp!=null){
                         $temp->
-                        
-                        
+
+
                         array_push($array, $temp)
                     }
                     else{
                         $r->
                     }
                 }
-                
-                
+
+
             }*/
-            
         }
-        
+
         //foreach($data as $r){
         //    echo $r->student_id . '-' . $r->name . ' ' . $r->absent_date . '<br>';
         //}
-        
-        
-            
-        
-        
+
+
+
+
+
         /*foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
@@ -1030,7 +1027,7 @@ class AttendanceController extends Controller
         // if ($offset < 0) $offset = 0;
         // $data = array_slice($data, $offset, $limit);
         // return view('attendance.reminder', compact('data', 'totalPages'));
-        
+
         return view('attendance.reminder', compact('data', 'class', 'teachers'));
     }
 
@@ -1041,9 +1038,9 @@ class AttendanceController extends Controller
             //AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
             //    "is_done" => true,
             //]);
-            
+
             $arr = explode('-', $student);
-            foreach($arr as $r){
+            foreach ($arr as $r) {
                 AttendanceDetail::where('id', $r)->update([
                     'is_done' => '1',
                 ]);
@@ -1061,18 +1058,18 @@ class AttendanceController extends Controller
     {
         try {
             $student = $request->student;
-            
+
             /*AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
                 "is_absent" => '1'
             ]);*/
-            
+
             $arr = explode('-', $student);
-            foreach($arr as $r){
+            foreach ($arr as $r) {
                 AttendanceDetail::where('id', $r)->update([
                     'is_deleted' => '1'
                 ]);
             }
-            
+
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
@@ -1209,10 +1206,10 @@ class AttendanceController extends Controller
                 $model->comment_staff = $request->comment;
             }
             $model->save();*/
-            
+
             $arr = explode('-', $id);
-            
-            foreach($arr as $r){
+
+            foreach ($arr as $r) {
                 $model = AttendanceDetail::find($r);
                 if ($request->type == 'teacher') {
                     $model->comment_teacher = $request->comment;
@@ -1221,11 +1218,11 @@ class AttendanceController extends Controller
                 }
                 $model->save();
             }
-            
-            
-            
-            
-            
+
+
+
+
+
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
