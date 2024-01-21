@@ -46,7 +46,7 @@ Route::prefix('landing-page')->group(
     }
 );
 
-Route::get('generate', function (){
+Route::get('generate', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
     echo 'ok';
 });
@@ -115,5 +115,6 @@ Route::middleware(['web'])->group(function () {
     Route::post('/review-comment/{id}', [ReviewTestPaperController::class, 'comment']);
     Route::delete('/review/{id}', [ReviewTestPaperController::class, 'destroy']);
     Route::resource('/e-certificate', EcertificateController::class);
+    Route::delete('bulk/follow-up', [FollowUpController::class, 'bulkDestroy'])->name('bulk.follow-up');
     Route::resource('/follow-up', FollowUpController::class);
 });

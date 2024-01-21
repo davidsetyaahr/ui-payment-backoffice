@@ -33,7 +33,19 @@
         <div class="page-inner mt--5">
             @if (session('status'))
                 <script>
-                    swal("Gagal!", "{{ session('status') }}!", {
+                    swal("Success!", "{{ session('status') }}!", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+                </script>
+            @endif
+            @if (session('error'))
+                <script>
+                    swal("Failed!", "{{ session('error') }}!", {
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -125,45 +137,44 @@
                                                             //$score_test1 = $score1 ? $score1->score_test : 0;
                                                             //$score_test2 = $score2 ? $score2->score_test : 0;
                                                             //$score_test3 = $score3 ? $score3->score_test : 0;
-                                                            
-                                                            
+
                                                             //$score_test1
                                                             //$score_test2
                                                             //$score_test3
-                                                            
+
                                                             $divider = 0;
-                                                            
+
                                                             $score_test1 = 0;
                                                             $score_test2 = 0;
                                                             $score_test3 = 0;
-                                                            
-                                                            if($score1){
-                                                                if($score1->score_test!=0){
+
+                                                            if ($score1) {
+                                                                if ($score1->score_test != 0) {
                                                                     $score_test1 = $score1->score_test;
                                                                     $divider += 1;
                                                                 }
                                                             }
-                                                            if($score2){
-                                                                if($score2->score_test!=0){
+                                                            if ($score2) {
+                                                                if ($score2->score_test != 0) {
                                                                     $score_test2 = $score2->score_test;
                                                                     $divider += 1;
                                                                 }
                                                             }
-                                                            if($score3){
-                                                                if($score3->score_test!=0){
+                                                            if ($score3) {
+                                                                if ($score3->score_test != 0) {
                                                                     $score_test3 = $score3->score_test;
                                                                     $divider += 1;
                                                                 }
                                                             }
-                                                            
-                                                            if($divider==0){
-                                                                $divider=1;
+
+                                                            if ($divider == 0) {
+                                                                $divider = 1;
                                                             }
-                                                            
+
                                                             //$score_test = round(($score_test1 + $score_test2 + $score_test3) / 3);
-                                                            
+
                                                             $score_test = round(($score_test1 + $score_test2 + $score_test3) / $divider);
-                                                            
+
                                                             $total_test1 += $score_test1;
                                                             $total_test2 += $score_test2;
                                                             $total_test3 += $score_test3;
@@ -310,13 +321,25 @@
                     </div>
                 @endforeach
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-info btn-sm" id="buttonSubmitFollowUp" type="button" onclick="submitFollowUp()"
-                        disabled>Submit Follow Up</button>
+                    {{-- <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button" data-toggle="modal"
+                        data-target="#exampleModal" disabled>Submit Follow Up</button> --}}
+                    <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button"
+                        onclick="submitFollowUp()" disabled>Submit Follow Up</button>
                     <button class="btn btn-success btn-sm" type="button" onclick="confirm()">Done</button>
                 </div>
             </form>
         </div>
     </div>
+    <form action="{{ route('follow-up.store') }}" method="POST" id="submitFollowUp">
+        @csrf
+        <div id="idSiswaFollowUp">
+            <input type="hidden" name="old_day1" value="{{ Request::get('day1') }}">
+            <input type="hidden" name="old_day2" value="{{ Request::get('day2') }}">
+            <input type="hidden" name="old_teacher" value="{{ Request::get('teacher') }}">
+            <input type="hidden" name="old_time" value="{{ Request::get('time') }}">
+            <input type="hidden" name="old_class" value="{{ $class->id }}">
+        </div>
+    </form>
     <script>
         function done(id) {
             swal("Are you sure ?", "Data will be updated", {
@@ -374,6 +397,8 @@
             if (checkbox.checked) {
                 if (dataStudent.id.indexOf(id) === -1) {
                     dataStudent.id.push(id);
+                    var newElement = $(`<input type="hidden" id="idSiswa${id}" name="id[]" value="${id}">`);
+                    $("#idSiswaFollowUp").append(newElement);
                     if (dataStudent.id.length != 0) {
                         $('#buttonSubmitFollowUp').prop('disabled', false);
                     } else {
@@ -382,6 +407,7 @@
                 }
             } else {
                 const index = dataStudent.id.indexOf(id);
+                $("#idSiswa" + id).remove();
                 if (index !== -1) {
                     dataStudent.id.splice(index, 1);
                     if (dataStudent.id.length != 0) {
@@ -394,24 +420,44 @@
         }
 
         function submitFollowUp() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            swal("Are you sure ?", "Data will be bulk updated", {
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-success',
+                        text: 'Ok'
+                    },
+                    dismiss: {
+                        className: 'btn btn-secondary',
+                        text: 'Cancel'
+                    },
+                },
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result == true) {
+                    $('#submitFollowUp').submit();
                 }
             });
-            $.ajax({
-                type: "POST",
-                url: "{{ route('follow-up.store') }}",
-                data: dataStudent,
-                success: function(response) {
-                    swal({
-                        title: 'Success!',
-                        text: response,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
+            // $.ajaxSetup({
+            //     headers: {
+            //         'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            //     }
+            // });
+            // $.ajax({
+            //     type: "POST",
+            //     url: "{{ route('follow-up.store') }}",
+            //     data: dataStudent,
+            //     success: function(response) {
+            //         swal({
+            //             title: 'Success!',
+            //             text: response,
+            //             icon: 'success',
+            //             confirmButtonText: 'OK'
+            //         }).then(function() {
+            //             window.location.href = "{{ route('e-certificate.index') }}";
+            //         });
+            //     }
+            // });
         }
     </script>
 @endsection

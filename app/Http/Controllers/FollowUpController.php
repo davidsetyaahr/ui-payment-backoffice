@@ -15,7 +15,11 @@ class FollowUpController extends Controller
      */
     public function index()
     {
-        return 'asd';
+        $students = FollowUp::with('class', 'teacher', 'student')->select('follow_up.*', 'd1.day as day1', 'd2.day as day2')
+            ->join('day as d1', 'd1.id', 'follow_up.old_day_1')
+            ->join('day as d2', 'd2.id', 'follow_up.old_day_2')
+            ->get();
+        return view('follow-up.index', compact('students'));
     }
 
     /**
@@ -54,13 +58,13 @@ class FollowUpController extends Controller
             }
 
             DB::commit();
-            return 'Success Follow Up Student';
+            return redirect()->back()->with('status', 'Success bulk update');
         } catch (\Exception $e) {
             DB::rollback();
-            return 'Terjadi kesalahan. : ' . $e->getMessage();
+            return redirect()->back()->with('error', 'Failed bulk update ' . $e->getMessage());
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
-            return 'Terjadi kesalahan pada database : ' . $e->getMessage();
+            return redirect()->back()->with('error', 'Failed bulk update ' . $e->getMessage());
         }
     }
 
@@ -106,6 +110,35 @@ class FollowUpController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            FollowUp::where('id', $id)->delete();
+            DB::commit();
+            return redirect('/follow-up')->with('status', 'Success update data');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect('/follow-up')->with('error', 'Failed update data ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            return redirect('/follow-up')->with('error', 'Failed update database ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            foreach ($request->student_id as $key => $value) {
+                FollowUp::where('id', $value)->delete();
+            }
+            DB::commit();
+            return redirect('/follow-up')->with('status', 'Success bulk update');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect('/follow-up')->with('error', 'Failed bulk update ' . $e->getMessage());
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            return redirect('/follow-up')->with('error', 'Failed bulk update ' . $e->getMessage());
+        }
     }
 }

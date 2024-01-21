@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\AttendanceDetail;
+use App\Models\FollowUp;
 use App\Models\OrderReview;
 use App\Models\PaymentBillDetail;
 use App\Models\PointHistory;
@@ -30,9 +31,14 @@ class StudentController extends Controller
 
             $data = $query->orderBy('date', 'DESC')->paginate($request->perpage);
             $point = Students::where('id', $studentId)->select('total_point')->first();
-            $class = Students::join('price', 'price.id', 'student.priceid')
-                ->select('price.program')
-                ->where('student.id', $studentId)->first();
+            $followUp = FollowUp::where('student_id', $studentId)->first();
+            if ($followUp) {
+                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program')->first();
+            } else {
+                $class = Students::join('price', 'price.id', 'student.priceid')
+                    ->select('price.program')
+                    ->where('student.id', $studentId)->first();
+            }
             return response()->json([
                 'code' => '00',
                 'total_point' =>  $point->total_point,
@@ -50,9 +56,14 @@ class StudentController extends Controller
     public function getAttendance(Request $request, $studentId)
     {
         try {
-            $class = Students::join('price', 'price.id', 'student.priceid')
-                ->select('price.program')
-                ->where('student.id', $studentId)->first();
+            $followUp = FollowUp::where('student_id', $studentId)->first();
+            if ($followUp) {
+                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program')->first();
+            } else {
+                $class = Students::join('price', 'price.id', 'student.priceid')
+                    ->select('price.program')
+                    ->where('student.id', $studentId)->first();
+            }
             $query = [];
             $query = AttendanceDetail::join('attendances as atd', 'atd.id', 'attendance_details.attendance_id')
                 ->join('student as st', 'st.id', 'attendance_details.student_id')
