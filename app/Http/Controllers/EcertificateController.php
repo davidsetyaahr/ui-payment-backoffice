@@ -81,7 +81,9 @@ class EcertificateController extends Controller
      */
     public function show($id, Request $request)
     {
-        $students = Students::with('score')->where('priceid', $id)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)->where('is_certificate', '!=', true)->get();
+        $students = Students::with('score')->where('priceid', $id)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)
+        // ->where('is_certificate', '!=', true)
+        ->get();
         $class = Price::find($id);
         $test = Tests::get();
         if ($id == 1 || $id == 2 || $id == 3 || $id == 4 || $id == 5 || $id == 6) {
