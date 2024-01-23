@@ -37,6 +37,7 @@ class EcertificateController extends Controller
     day1,
     day2,
     course_time,
+    student.status as status_student,
     id_teacher,
     price.level,
     price.program,
@@ -65,6 +66,8 @@ WHERE
     AND id_teacher IS NOT NULL
     AND ss.test_id = 3
     AND ss.price_id = price.id
+    AND student.status = 'ACTIVE'
+    AND student.is_certificate = 0
     $where
 GROUP BY
     priceid, day1, day2, course_time, id_teacher, price.level, price.program, day_one, day_two, teacher_name, teacher_id, d1, d2
