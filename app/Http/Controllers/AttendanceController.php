@@ -1180,6 +1180,8 @@ class AttendanceController extends Controller
                     "priceid" => $request->update_level,
                     "id_teacher" => $request->update_teacher,
                     "is_class_new" => true,
+                    "is_certificate" => null,
+                    "date_certificate" => null,
                 ]);
 
             // Old Class
