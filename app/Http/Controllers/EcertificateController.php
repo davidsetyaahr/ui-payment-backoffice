@@ -32,7 +32,47 @@ class EcertificateController extends Controller
             if ($request->level && Auth::guard('teacher')->check() == true) {
                 $where = $where . ' AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
             }
-            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, student.id_teacher as teacher_id, student.day1 as d1, student.day2 as d2  from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where ORDER BY priceid ASC, day1,course_time;");
+            $class = DB::select("SELECT
+    priceid,
+    day1,
+    day2,
+    course_time,
+    id_teacher,
+    price.level,
+    price.program,
+    day_1.day AS day_one,
+    day_2.day AS day_two,
+    teacher.name AS teacher_name,
+    student.id_teacher AS teacher_id,
+    student.day1 AS d1,
+    student.day2 AS d2
+FROM
+    student
+JOIN
+    price ON student.priceid = price.id
+JOIN
+    student_scores AS ss ON ss.student_id = student.id
+JOIN
+    day day_1 ON student.day1 = day_1.id
+JOIN
+    day day_2 ON student.day2 = day_2.id
+JOIN
+    teacher ON student.id_teacher = teacher.id
+WHERE
+    day1 IS NOT NULL
+    AND day2 IS NOT NULL
+    AND course_time IS NOT NULL
+    AND id_teacher IS NOT NULL
+    AND ss.test_id = 3
+    AND ss.price_id = price.id
+    $where
+GROUP BY
+    priceid, day1, day2, course_time, id_teacher, price.level, price.program, day_one, day_two, teacher_name, teacher_id, d1, d2
+HAVING
+    COUNT(DISTINCT CASE WHEN ss.test_id = 3 THEN ss.student_id END) > 0
+ORDER BY
+    priceid ASC, day1, course_time;");
+            // return count($class);
             return view('e-certificate.index', compact('class', 'level'));
         } catch (\Throwable $th) {
             // throw $th;
@@ -82,10 +122,10 @@ class EcertificateController extends Controller
     public function show($id, Request $request)
     {
         $students = Students::with('score')->where('priceid', $id)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)
-            ->where('is_certificate', false)
-            ->where(function ($query) {
-                $query->orWhere('is_follow_up', true);
-            })
+            // ->where('is_certificate', false)
+            // ->where(function ($query) {
+            //     $query->orWhere('is_follow_up', true);
+            // })
             ->get();
         $class = Price::find($id);
         $test = Tests::get();
