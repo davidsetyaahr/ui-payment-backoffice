@@ -58,6 +58,7 @@
             <form action="{{ route('e-certificate.store') }}" method="POST" id="formSubmit">
                 @csrf
                 @foreach ($students as $student)
+                    @if($student->is_certificate != true)
                     <div class="row">
                         <div class="col-md-12">
                             <div class="col-md-12">
@@ -319,6 +320,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 @endforeach
                 <div class="d-flex justify-content-end">
                     {{-- <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button" data-toggle="modal"
