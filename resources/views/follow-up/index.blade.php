@@ -55,7 +55,7 @@
                                             <th>Old Class</th>
                                             <th>Old Time Course</th>
                                             <th>Old Teacher</th>
-                                            <th>Bulk</th>
+                                            <th>Done</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

@@ -464,7 +464,7 @@
         }
 
         function submitFollowUp() {
-            swal("Are you sure ?", "Data will be bulk updated", {
+            swal("Are you sure ?", "Data will be updated", {
                 icon: "info",
                 buttons: {
                     confirm: {
