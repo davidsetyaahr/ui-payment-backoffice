@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FollowUp;
 use App\Models\Price;
 use App\Models\Students;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,11 +19,14 @@ class FollowUpController extends Controller
      */
     public function index(Request $request)
     {
+        $class = Price::get();
+        $teacher = Teacher::get();
+        $day = DB::table('day')->get();
         $students = FollowUp::with('class', 'teacher', 'student')->select('follow_up.*', 'd1.day as day1', 'd2.day as day2')
             ->join('day as d1', 'd1.id', 'follow_up.old_day_1')
             ->join('day as d2', 'd2.id', 'follow_up.old_day_2')
             ->get();
-        return view('follow-up.index', compact('students'));
+        return view('follow-up.index', compact('students', 'class', 'teacher', 'day'));
     }
 
     /**
@@ -116,16 +120,39 @@ class FollowUpController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            FollowUp::where('id', $id)->delete();
-            // change status student
-            Students::where('id', $id)->update([
-                'is_follow_up' => '0',
-            ]);
-            DB::commit();
+            if ($request->promoted != 'true') {
+                $followUp = FollowUp::where('id', $id)->first();
+                // change status student
+                Students::where('id', $followUp->student_id)->update([
+                    'is_follow_up' => '0',
+                    'priceid' => $followUp->old_price_id,
+                    'day1' => $followUp->old_day_1,
+                    'day2' => $followUp->old_day_2,
+                    'id_teacher' => $followUp->old_teacher_id,
+                    'course_time' => $followUp->course_time,
+                ]);
+                // Delete Follow Up
+                $followUp->delete();
+            } else {
+                $followUp = FollowUp::where('id', $id)->first();
+                // change status student
+                Students::where('id', $followUp->student_id)->update([
+                    'is_follow_up' => '0',
+                    'priceid' => $request->new_class,
+                    'day1' => $request->new_day1,
+                    'day2' => $request->new_day2,
+                    'id_teacher' => $request->new_teacher,
+                    'course_time' => $request->new_course_time,
+                ]);
+                // Delete Follow Up
+                $followUp->delete();
+            }
+
+            // DB::commit();
             return redirect('/follow-up')->with('status', 'Success update data');
         } catch (\Exception $e) {
             DB::rollback();

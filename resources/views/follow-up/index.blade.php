@@ -55,7 +55,7 @@
                                             <th>Old Class</th>
                                             <th>Old Time Course</th>
                                             <th>Old Teacher</th>
-                                            <th>Done</th>
+                                            {{-- <th>Done</th> --}}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -91,18 +91,16 @@
                                                 <td>{{ $item->day1 . '-' . $item->day2 . '/' . $item->course_time }}
                                                 </td>
                                                 <td>{{ $item->teacher->name }}</td>
-                                                <td><input type="checkbox" name="student_id[]"
+                                                {{-- <td><input type="checkbox" name="student_id[]"
                                                         id="studentId{{ $item->id }}"
                                                         onclick="onClickFollowUp({{ $item->id }})"
-                                                        value="{{ $item->id }}"></td>
+                                                        value="{{ $item->id }}"></td> --}}
                                                 <td class=" d-flex">
-                                                    <form action="{{ route('follow-up.destroy', $item->id) }}"
-                                                        method="POST" class="form-inline" id="formDelete">
-                                                        @method('delete')
-                                                        @csrf
-                                                        <button type="button" onclick="confirm()"
-                                                            class="btn btn-xs btn-danger"><i
-                                                                class="fas fa-trash"></i></button>
+                                                    <form class="form-inline">
+                                                        <button type="button" onclick="confirm({{ $item->id }})"
+                                                            class="btn btn-xs btn-danger"
+                                                                data-toggle="modal"
+                                                                data-target="#exampleModal"><i class="fas fa-trash"></i></button>
                                                         <a class="btn btn-xs btn-warning dropdown-toggle" type="button"
                                                             id="dropdownMenuButton" data-toggle="dropdown"
                                                             aria-haspopup="true" aria-expanded="false">
@@ -175,7 +173,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="mt-4" style="text-align: end;">
+                            {{-- <div class="mt-4" style="text-align: end;">
                                 <button type="button" onclick="submitBulkDelete()" id="buttonBulkDelete"
                                     class="btn btt-lg btn-danger" disabled><i class="fas fa-trash"></i> Bulk Delete</button>
                                 <form action="{{ route('bulk.follow-up') }}" method="POST" class="form-inline"
@@ -184,15 +182,113 @@
                                     @csrf
                                     <div id="idSiswaFollowUp"></div>
                                 </form>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Promote Class</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <form method="POST" class="form-inline" id="formDelete">
+                            @method('delete')
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input class="form-check-input" type="checkbox" value="true" id="defaultCheck1" name="promoted">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Promoted to next grade
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="form_new">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email2">New Class</label>
+                                            <select name="new_class" id="new_class" class="form-control">
+                                                <option value="">---Choose Class</option>
+                                                @foreach ($class as $classData)
+                                                    <option value="{{$classData->id}}">{{$classData->program}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email2">New Teacher</label>
+                                            <select name="new_teacher" id="new_teacher" class="form-control">
+                                                <option value="">---Choose Teacher</option>
+                                                @foreach ($teacher as $teacherData)
+                                                    <option value="{{$teacherData->id}}">{{$teacherData->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email2">New Course Time</label>
+                                            <input type="time" class="form-control" name="new_course_time">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email2">New Day 1</label>
+                                            <select name="new_day1" id="new_day1" class="form-control">
+                                                <option value="">---Choose day</option>
+                                                @foreach ($day as $dayData)
+                                                    <option value="{{$dayData->id}}">{{$dayData->day}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email2">New Day 2</label>
+                                            <select name="new_day2" id="new_day2" class="form-control">
+                                                <option value="">---Choose day</option>
+                                                @foreach ($day as $dayData)
+                                                    <option value="{{$dayData->id}}">{{$dayData->day}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="submitDelete()">Save changes</button>
+                    </div>
+            </div>
+        </div>
+    </div>
     <script>
-        function confirm() {
+        $("#form_new").hide();
+        $('#defaultCheck1').change(function() {
+            if(this.checked) {
+                $("#form_new").show();
+            }else{
+                $("#form_new").hide();
+            }
+        });
+        function confirm(id) {
+            $('#formDelete').attr('action', "{{url('/')}}/follow-up/" + id);
+        }
+
+        function submitDelete() {
             swal("Are you sure ?", "Data will be updated", {
                 icon: "info",
                 buttons: {
