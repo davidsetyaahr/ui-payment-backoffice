@@ -246,10 +246,10 @@ class ScoreController extends Controller
         try {
             $followUp = FollowUp::where('student_id', $studentId)->first();
             if ($followUp) {
-                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program','student.is_certificate')->first();
+                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program','student.is_certificate','student.date_certificate')->first();
             } else {
                 $class = Students::join('price', 'price.id', 'student.priceid')
-                    ->select('price.program','student.is_certificate')
+                    ->select('price.program','student.is_certificate','student.date_certificate')
                     ->where('student.id', $studentId)->first();
             }
             $sc = StudentScore::where('student_id', $studentId)->where('price_id', $class->priceid)->get();
