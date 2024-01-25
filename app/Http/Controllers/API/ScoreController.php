@@ -312,7 +312,7 @@ class ScoreController extends Controller
 
                     $pdf->SetFont('Arial', 'B', '15');
                     $pdf->SetXY(75, 92);
-                    $pdf->Cell(60, 10, \Carbon\Carbon::parse($score->date)->format('j F Y'), 0, 'L');
+                    $pdf->Cell(60, 10, \Carbon\Carbon::parse($class->date_certificate)->format('j F Y'), 0, 'L');
 
                     $score_total = 0;
 
