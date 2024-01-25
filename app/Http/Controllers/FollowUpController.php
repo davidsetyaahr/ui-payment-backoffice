@@ -152,7 +152,7 @@ class FollowUpController extends Controller
                 $followUp->delete();
             }
 
-            // DB::commit();
+            DB::commit();
             return redirect('/follow-up')->with('status', 'Success update data');
         } catch (\Exception $e) {
             DB::rollback();
