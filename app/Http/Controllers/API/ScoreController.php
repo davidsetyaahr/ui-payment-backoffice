@@ -246,10 +246,10 @@ class ScoreController extends Controller
         try {
             $followUp = FollowUp::where('student_id', $studentId)->first();
             if ($followUp) {
-                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program')->first();
+                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->select('price.program','student.is_certificate')->first();
             } else {
                 $class = Students::join('price', 'price.id', 'student.priceid')
-                    ->select('price.program')
+                    ->select('price.program','student.is_certificate')
                     ->where('student.id', $studentId)->first();
             }
             $sc = StudentScore::where('student_id', $studentId)->where('price_id', $class->priceid)->get();
@@ -454,6 +454,7 @@ class ScoreController extends Controller
                 $data = ([
                     'total_score' => $total,
                     'class' => $class->program,
+                    'is_certificate' => $class->is_certificate,
                     'grade' => Helper::getGrade($total),
                     'total_test' => $test,
                     'total_test_passed' => $totalTest,
@@ -463,6 +464,7 @@ class ScoreController extends Controller
                 $data = ([
                     'total_score' => 0,
                     'class' => $class->program,
+                    'is_certificate' => $class->is_certificate,
                     'grade' => Helper::getGrade(0),
                     'total_test' => 0,
                     'total_test_passed' => 0,
