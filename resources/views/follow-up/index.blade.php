@@ -191,9 +191,11 @@
                                         @endforeach
                                     </tbody>
                                     </table>
+                                    @if (Auth::guard('teacher')->check() == true)
                                     <div class="d-flex justify-content-end mt-4">
                                             <button type="button" class="btn btn-primary" style="text-align: end" onclick="submitPassed()">Save changes</button>
                                     </div>
+                                    @endif
                                 </form>
                             </div>
                             {{-- <div class="mt-4" style="text-align: end;">
