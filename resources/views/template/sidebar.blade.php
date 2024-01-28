@@ -179,6 +179,7 @@
                             </a>
 
                         </li>
+                        @endif
                         <li class="nav-item {{ Request::segment(1) == 'follow-up' ? 'active' : '' }}">
                             <a href="{{ url('/follow-up') }}" class="collapsed">
                                 <i class="fas fa-database"></i>
@@ -186,7 +187,6 @@
                             </a>
 
                         </li>
-                    @endif
                 </ul>
             </div>
         </div>

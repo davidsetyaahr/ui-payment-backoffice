@@ -24,8 +24,14 @@ class FollowUpController extends Controller
         $day = DB::table('day')->get();
         $students = FollowUp::with('class', 'teacher', 'student')->select('follow_up.*', 'd1.day as day1', 'd2.day as day2')
             ->join('day as d1', 'd1.id', 'follow_up.old_day_1')
-            ->join('day as d2', 'd2.id', 'follow_up.old_day_2')
-            ->get();
+            ->join('day as d2', 'd2.id', 'follow_up.old_day_2');
+
+        if (Auth::guard('teacher')->check() == true) {
+            $students = $students->where('old_teacher_id', Auth::guard('teacher')->user()->id)->whereNull('is_level_up');
+        } else {
+            $students = $students->whereNotNull('is_level_up');
+        }
+        $students = $students->get();
         return view('follow-up.index', compact('students', 'class', 'teacher', 'day'));
     }
 
@@ -138,6 +144,9 @@ class FollowUpController extends Controller
                 // Delete Follow Up
                 $followUp->delete();
             } else {
+                // if ($request->new_class == '') {
+                //     # code...
+                // }
                 $followUp = FollowUp::where('id', $id)->first();
                 // change status student
                 Students::where('id', $followUp->student_id)->update([
@@ -168,11 +177,14 @@ class FollowUpController extends Controller
         DB::beginTransaction();
         try {
             foreach ($request->student_id as $key => $value) {
-                FollowUp::where('id', $value)->delete();
-                // change status student
-                Students::where('id', $value)->update([
-                    'is_follow_up' => '0',
-                ]);
+                $followUp = FollowUp::where('student_id', $value)->first();
+                $followUp->is_level_up = $request->is_passed[$value];
+                $followUp->save();
+                // FollowUp::where('id', $value)->delete();
+                // // change status student
+                // Students::where('id', $value)->update([
+                //     'is_follow_up' => '0',
+                // ]);
             }
             DB::commit();
             return redirect('/follow-up')->with('status', 'Success bulk update');
