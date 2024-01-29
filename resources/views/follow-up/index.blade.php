@@ -187,7 +187,7 @@
                                                                 @endif
                                                     </td>
                                                 </tr>
-                                                <input type="hidden" value="{{$item->student_id}}" name="student_id[]" id="studentIdDis{{$item->student_id}}" disabled>
+                                                <input type="text" value="{{$item->student_id}}" name="student_id[]" id="studentIdDis{{$item->student_id}}" disabled style="display:none">
                                         @endforeach
                                     </tbody>
                                     </table>
