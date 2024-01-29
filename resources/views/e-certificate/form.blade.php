@@ -45,7 +45,7 @@
             @endif
             @if ($errors->any())
                 <script>
-                    swal("Failed!", "{{ session('error') }}!", {
+                    swal("Failed!", "Please fill all status student!", {
                         icon: "error",
                         buttons: {
                             confirm: {
