@@ -209,7 +209,6 @@
                                                                                 <option value="">---Choose Status---</option>
                                                                                 <option value="1">Passed</option>
                                                                                 <option value="0">Failed</option>
-                                                                                <option value="2">Follow Up</option>
                                                                             </select>
                                                                     </td>
                                                                     <td rowspan="{{ count($testItem) + 1 }}">
