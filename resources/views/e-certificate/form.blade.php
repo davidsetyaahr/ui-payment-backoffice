@@ -57,14 +57,8 @@
             @endif
             <form action="{{ route('e-certificate.store') }}" method="POST" id="formSubmit">
                 @csrf
-                <!-- @php
-                    $countStudent = 0;
-                @endphp -->
                 @foreach ($students as $student)
                     @if ($student->is_certificate != true)
-                        <!-- @php
-                            $countStudent++;
-                        @endphp -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-12">
@@ -216,9 +210,6 @@
                                                                                 <option value="0" >Failed</option>
                                                                                 <option value="2" >Follow Up</option>
                                                                             </select>
-                                                                            <!-- @error('status.'.$countStudent-1)
-                                                                                <label class="mt-1" style="color: red!important">{{$message}}</label>
-                                                                            @enderror -->
                                                                     </td>
                                                                     <td rowspan="{{ count($testItem) + 1 }}">
                                                                         {{-- <form
