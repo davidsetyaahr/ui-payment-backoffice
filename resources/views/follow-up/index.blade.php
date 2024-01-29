@@ -58,10 +58,10 @@
                                             <th>Old Class</th>
                                             <th>Old Time Course</th>
                                             <th>Old Teacher</th>
-                                            @if (Auth::guard('teacher')->check() == true)
+                                            {{-- @if (Auth::guard('teacher')->check() == true)
                                             <th>Failed</th>
                                             <th>Pass</th>
-                                            @endif
+                                            @endif --}}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -91,20 +91,20 @@
                                                         ->first();
                                                 @endphp
                                                 <tr>
-                                                    <td>{{ $item->student_id }} <span style="color:red">{{Auth::guard('staff')->check() == true ? $item->is_level_up == true ? '(Level Up)' : "(Not Level Up)" : ''}}</span></td>
+                                                    <td>{{ $item->student_id }}</td>
                                                     <td>{{ ucwords($item->student->name) }}</td>
                                                     <td>{{ $item->class->program }}</td>
                                                     <td>{{ $item->day1 . '-' . $item->day2 . '/' . $item->course_time }}
                                                     </td>
                                                     <td>{{ $item->teacher->name }}</td>
-                                                    @if (Auth::guard('teacher')->check() == true)
+                                                    {{-- @if (Auth::guard('teacher')->check() == true)
                                                     <td>
                                                         <input type="radio" name="is_passed[{{$item->student_id}}]" value="false" onchange="failed({{$item->student_id}})">
                                                     </td>
                                                     <td>
                                                         <input type="radio" name="is_passed[{{$item->student_id}}]" value="true" onchange="passed({{$item->student_id}})">
                                                     </td>
-                                                    @endif
+                                                    @endif --}}
                                                     {{-- <td><input type="checkbox" name="student_id[]"
                                                             id="studentId{{ $item->id }}"
                                                             onclick="onClickFollowUp({{ $item->id }})"
@@ -112,10 +112,14 @@
 
                                                     <td class=" d-flex">
                                                             @if (Auth::guard('staff')->check() == true)
-                                                            <button type="button" onclick="confirm({{ $item->id }})"
-                                                                class="btn btn-xs btn-danger"
+                                                            {{-- <button type="button" onclick="confirm({{ $item->id }})"
+                                                                class="btn btn-xs btn-warning"
                                                                     data-toggle="modal"
-                                                                    data-target="#exampleModal"><i class="fas fa-trash"></i></button>
+                                                                    data-target="#exampleModal"><i class="fas fa-edit"></i></button> --}}
+                                                                    <a class="btn btn-xs btn-warning" href="{{ url('/e-certificate/'.$item->student_id.'?day1=1&day2=3&teacher=4&time=15:00&price_id='. $item->old_price_id.'&type=show') }}"
+                                                                        id="dropdownMenuButton">
+                                                                        Edit
+                                                                    </a>
                                                                 @endif
                                                                 @if (Auth::guard('teacher')->check() == true)
 

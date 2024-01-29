@@ -29,4 +29,9 @@ class FollowUp extends Model
     {
         return $this->belongsTo(Students::class, 'student_id');
     }
+
+    public function score()
+    {
+        return $this->hasMany(StudentScore::class, 'student_id');
+    }
 }

@@ -27,9 +27,10 @@ class FollowUpController extends Controller
             ->join('day as d2', 'd2.id', 'follow_up.old_day_2');
 
         if (Auth::guard('teacher')->check() == true) {
-            $students = $students->where('old_teacher_id', Auth::guard('teacher')->user()->id)->whereNull('is_level_up');
+            $students = $students->where('old_teacher_id', Auth::guard('teacher')->user()->id)
+                /* ->whereNull('is_level_up') */;
         } else {
-            $students = $students->whereNotNull('is_level_up');
+            // $students = $students->whereNotNull('is_level_up');
         }
         $students = $students->get();
         return view('follow-up.index', compact('students', 'class', 'teacher', 'day'));
