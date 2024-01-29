@@ -43,7 +43,7 @@
                     });
                 </script>
             @endif
-            @if (session('error'))
+            @if ($errors->any())
                 <script>
                     swal("Failed!", "{{ session('error') }}!", {
                         icon: "error",
@@ -57,14 +57,14 @@
             @endif
             <form action="{{ route('e-certificate.store') }}" method="POST" id="formSubmit">
                 @csrf
-                @php
+                <!-- @php
                     $countStudent = 0;
-                @endphp
+                @endphp -->
                 @foreach ($students as $student)
                     @if ($student->is_certificate != true)
-                        @php
+                        <!-- @php
                             $countStudent++;
-                        @endphp
+                        @endphp -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-12">
@@ -212,13 +212,13 @@
                                                                             <input type="text" name='student_id[]' value="{{$student->id}}" style="display: none">
                                                                             <select name="status[]" id="studentId{{ $student->id }}" class="form-control select2">
                                                                                 <option value="">---Choose Status---</option>
-                                                                                <option value="1" {{old('status.'.$countStudent-1) == '1' ? 'selected' : ''}}>Passed</option>
-                                                                                <option value="0" {{old('status.'.$countStudent-1) == '0' ? 'selected' : ''}}>Failed</option>
-                                                                                <option value="2" {{old('status.'.$countStudent-1) == '2' ? 'selected' : ''}}>Follow Up</option>
+                                                                                <option value="1" >Passed</option>
+                                                                                <option value="0" >Failed</option>
+                                                                                <option value="2" >Follow Up</option>
                                                                             </select>
-                                                                            @error('status.'.$countStudent-1)
+                                                                            <!-- @error('status.'.$countStudent-1)
                                                                                 <label class="mt-1" style="color: red!important">{{$message}}</label>
-                                                                            @enderror
+                                                                            @enderror -->
                                                                     </td>
                                                                     <td rowspan="{{ count($testItem) + 1 }}">
                                                                         {{-- <form
