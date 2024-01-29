@@ -57,8 +57,14 @@
             @endif
             <form action="{{ route('e-certificate.store') }}" method="POST" id="formSubmit">
                 @csrf
+                @php
+                    $countStudent = 0;
+                @endphp
                 @foreach ($students as $student)
                     @if ($student->is_certificate != true)
+                        @php
+                            $countStudent++;
+                        @endphp
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-12">
@@ -98,7 +104,7 @@
                                                             @endif
                                                             <th>Average</th>
                                                             <th>Grade</th>
-                                                            <th>Follow Up</th>
+                                                            <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -197,11 +203,22 @@
                                                                 <td>{{ $score_test }}</td>
                                                                 <td>{{ Helper::getGrade($score_test) }}</td>
                                                                 @if ($loop->iteration == 1)
-                                                                    <td rowspan="{{ count($testItem) + 1 }}"><input
+                                                                    <td rowspan="{{ count($testItem) + 1 }}">
+                                                                        {{-- <input
                                                                             type="checkbox"
                                                                             id="studentId{{ $student->id }}"
                                                                             value="{{ $student->id }}"
-                                                                            onclick="onClickFollowUp({{ $student->id }})">
+                                                                            onclick="onClickFollowUp({{ $student->id }})"> --}}
+                                                                            <input type="text" name='student_id[]' value="{{$student->id}}" style="display: none">
+                                                                            <select name="status[]" id="studentId{{ $student->id }}" class="form-control select2">
+                                                                                <option value="">---Choose Status---</option>
+                                                                                <option value="1" {{old('status.'.$countStudent-1) == '1' ? 'selected' : ''}}>Passed</option>
+                                                                                <option value="0" {{old('status.'.$countStudent-1) == '0' ? 'selected' : ''}}>Failed</option>
+                                                                                <option value="2" {{old('status.'.$countStudent-1) == '2' ? 'selected' : ''}}>Follow Up</option>
+                                                                            </select>
+                                                                            @error('status.'.$countStudent-1)
+                                                                                <label class="mt-1" style="color: red!important">{{$message}}</label>
+                                                                            @enderror
                                                                     </td>
                                                                     <td rowspan="{{ count($testItem) + 1 }}">
                                                                         {{-- <form
@@ -212,11 +229,11 @@
                                                                 </form>
                                                                 <a href="javascript:void(0)" class="btn btn-success btn-sm"
                                                                     onclick="done({{ $student->id }})">Done</a> --}}
-                                                                        @if ($student->is_certificate == false)
+                                                                        {{-- @if ($student->is_certificate == false)
                                                                             <input type="checkbox" name="student[]"
                                                                                 class="studentId"
                                                                                 value="{{ $student->id }}">
-                                                                        @endif
+                                                                        @endif --}}
                                                                         <a class="btn btn-sm btn-warning dropdown-toggle"
                                                                             type="button" id="dropdownMenuButton"
                                                                             data-toggle="dropdown" aria-haspopup="true"
@@ -327,8 +344,8 @@
                 <div class="d-flex justify-content-end">
                     {{-- <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button" data-toggle="modal"
                         data-target="#exampleModal" disabled>Submit Follow Up</button> --}}
-                    <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button"
-                        onclick="submitFollowUp()" disabled>Submit Follow Up</button>
+                    {{-- <button class="btn btn-info btn-sm mr-3" id="buttonSubmitFollowUp" type="button"
+                        onclick="submitFollowUp()" disabled>Submit Follow Up</button> --}}
                     <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#exampleModal"
                         onclick="checkCheked()">Done</button>
                 </div>
@@ -346,13 +363,13 @@
                             </div>
                             <div class="modal-body">
                                 <input type="date" name="date_certificate" class="form-control"
-                                    id="date_certificate">
+                                    id="date_certificate" value="{{old('date_certificate')}}">
                                 <span style="color:red" id="error-date-certificate">Please fill date certificate</span>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary" onclick="confirm()" id="saveChanges"
-                                    disabled>Save changes</button>
+                                    >Save changes</button>
                             </div>
                         </div>
                     </div>

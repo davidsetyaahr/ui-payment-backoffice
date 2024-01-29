@@ -101,6 +101,11 @@ ORDER BY
      */
     public function store(Request $request)
     {
+        if ($request->type != 'show') {
+            $request->validate([
+                'status.*' => 'required',
+            ]);
+        }
         DB::beginTransaction();
         try {
             if ($request->type == 'show') {
@@ -117,7 +122,7 @@ ORDER BY
                     ]);
                     // Delete Follow Up
                     $followUp->delete();
-                } else {
+                } else if ($request->status == true) {
                     $followUp = FollowUp::where('student_id', $request->student_id)->first();
                     // change status student
                     Students::where('id', $followUp->student_id)->update([
@@ -127,13 +132,47 @@ ORDER BY
                     ]);
                     // Delete Follow Up
                     $followUp->delete();
+                } else {
                 }
             } else {
-                foreach ($request->student as $key => $value) {
-                    $student = Students::find($value);
-                    $student->is_certificate = true;
-                    $student->date_certificate = $request->date_certificate;
-                    $student->save();
+                foreach ($request->student_id as $key => $value) {
+                    $students = Students::find($value);
+                    if ($request->status[$key] == '0') {
+                        // $followUp = FollowUp::where('student_id', $value)->first();
+                        // // change status student
+                        // Students::where('id', $followUp->student_id)->update([
+                        //     'is_follow_up' => '0',
+                        //     'priceid' => $followUp->old_price_id,
+                        //     'day1' => $followUp->old_day_1,
+                        //     'day2' => $followUp->old_day_2,
+                        //     'id_teacher' => $followUp->old_teacher_id,
+                        //     'course_time' => $followUp->course_time,
+                        // ]);
+                        // // Delete Follow Up
+                        // $followUp->delete();
+                    } else if ($request->status[$key] == '1') {
+                        // $followUp = FollowUp::where('student_id', $value)->first();
+                        // change status student
+                        Students::where('id', $value)->update([
+                            'is_follow_up' => '0',
+                            'date_certificate' => $request->date_certificate,
+                            'is_certificate' => true,
+                        ]);
+                        // Delete Follow Up
+                        // $followUp->delete();
+                    } else {
+                        $followUp = new FollowUp();
+                        $followUp->student_id = $value;
+                        $followUp->old_price_id = $students->priceid;
+                        $followUp->old_day_1 = $students->day1;
+                        $followUp->old_day_2 = $students->day2;
+                        $followUp->old_teacher_id = $students->id_teacher;
+                        $followUp->course_time = $students->course_time;
+                        $followUp->save();
+
+                        $students->is_follow_up = '1';
+                        $students->save();
+                    }
                 }
             }
 
