@@ -140,7 +140,7 @@ ORDER BY
                     if ($request->status[$key] == '0') {
                         // $followUp = FollowUp::where('student_id', $value)->first();
                         // // change status student
-                        Students::where('id', $followUp->student_id)->update([
+                        Students::where('id', $value)->update([
                             'is_follow_up' => '1',
                             'is_failed_promoted' => '1',
                         ]);
