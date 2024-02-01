@@ -168,8 +168,32 @@ class StudentController extends Controller
                 ->join('teacher', 'teacher.id', 'student.id_teacher')
                 // ->where('date', Request::get('date'))
                 ->where('student_id', $studentId)
+                ->where('price_id', $request->class)
                 ->orderBy('test_id', 'ASC')->paginate($request->perpage ?? 10);
             $data['id'] = $studentId;
+            return response()->json([
+                'code' => '00',
+                'payload' => $data,
+            ], 200);
+        } catch (\Throwable $th) {
+            return $th;
+            return response()->json([
+                'code' => '400',
+                'error' => 'internal server error', 'message' => $th,
+            ], 403);
+        }
+    }
+
+    public function getClassStudent($studentId)
+    {
+        try {
+            $data['class'] = DB::select(
+                'SELECT price.program
+                    FROM mutasi_siswa
+                    JOIN price ON mutasi_siswa.price_id = price.id
+                    WHERE student_id = ' . $studentId . '
+                GROUP BY mutasi_siswa.student_id, mutasi_siswa.price_id;'
+            );
             return response()->json([
                 'code' => '00',
                 'payload' => $data,

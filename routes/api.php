@@ -34,11 +34,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('classItem/{studentId}', [StudentController::class, 'getClass']);
     Route::get('summaryStudent/{studentId}', [StudentController::class, 'getSummary']);
     Route::get('historyTest/{studentId}', [StudentController::class, 'getHistoryTest']);
+    Route::get('class/{studentId}', [StudentController::class, 'getClassStudent']);
     Route::prefix('score')->group(function () {
         Route::get('/getTestItem', [ScoreController::class, 'getTest']);
         Route::get('/getResult/{studentId}', [ScoreController::class, 'getResult']);
         Route::get('/getScore/{studentId}/{testId}', [ScoreController::class, 'getScoreByTest']);
-        
         //Route::get('/getCertificate/{studentId}', [ScoreController::class, 'getCertificate']);
     });
     Route::prefix('payment')->group(function () {
