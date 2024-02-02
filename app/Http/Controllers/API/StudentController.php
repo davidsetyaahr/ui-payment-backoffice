@@ -188,7 +188,7 @@ class StudentController extends Controller
     {
         try {
             $data['class'] = DB::select(
-                'SELECT price.program,price.priceid
+                'SELECT price.program,price.id
                     FROM mutasi_siswa
                     JOIN price ON mutasi_siswa.price_id = price.id
                     WHERE student_id = ' . $studentId . '
