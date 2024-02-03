@@ -189,10 +189,10 @@ class StudentController extends Controller
         try {
             $data['class'] = DB::select(
                 'SELECT price.program,price.id
-                    FROM mutasi_siswa
-                    JOIN price ON mutasi_siswa.price_id = price.id
+                    FROM student_scores
+                    JOIN price ON student_scores.price_id = price.id
                     WHERE student_id = ' . $studentId . '
-                GROUP BY mutasi_siswa.student_id, mutasi_siswa.price_id;'
+                GROUP BY student_scores.student_id, student_scores.price_id;'
             );
             return response()->json([
                 'code' => '00',
