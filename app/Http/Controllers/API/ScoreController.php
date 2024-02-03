@@ -246,10 +246,10 @@ class ScoreController extends Controller
         try {
             $followUp = FollowUp::where('student_id', $studentId)->first();
             if ($followUp) {
-                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->join('student', 'student.id', 'follow_up.student_id')->select('price.program', 'student.is_certificate', 'student.date_certificate')->first();
+                $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->join('student', 'student.id', 'follow_up.student_id')->select('price.program', 'student.is_certificate', 'student.date_certificate', 'follow_up.old_price_id as priceid')->first();
             } else {
                 $class = Students::join('price', 'price.id', 'student.priceid')
-                    ->select('price.program', 'student.is_certificate', 'student.date_certificate')
+                    ->select('price.program', 'student.is_certificate', 'student.date_certificate', 'student.priceid')
                     ->where('student.id', $studentId)->first();
             }
             $sc = StudentScore::where('student_id', $studentId)->where('price_id', $class->priceid)->get();
@@ -503,29 +503,8 @@ class ScoreController extends Controller
                         }
                     }
 
-                    /*$pdf->SetFont('Arial', 'B', '20');
-                    $pdf->SetXY(73, 119);
-                    $pdf->Cell(40, 10, $items[0]['score'] . '/' . $items[0]['grade'], '', 0, 'L');
-
-                    $pdf->SetXY(73, 128);
-                    $pdf->Cell(40, 10, $items[1]['score'] . '/' . $items[1]['grade'], '', 0, 'L');
-
-                    $pdf->SetXY(147, 119);
-                    $pdf->Cell(40, 10, $items[2]['score'] . '/' . $items[2]['grade'], '', 0, 'L');
-
-                    $pdf->SetXY(147, 128);
-                    $pdf->Cell(40, 10, $items[3]['score'] . '/' . $items[3]['grade'], '', 0, 'L');
-
-                    $pdf->SetXY(231, 119);
-                    $pdf->Cell(40, 10, $items[4]['score'] . '/' . $items[4]['grade'], '', 0, 'L');
-
-                    $pdf->SetXY(231, 128);
-                    $pdf->Cell(40, 10, $items[5]['score'] . '/' . $items[5]['grade'], '', 0, 'L');*/
-
                     $pdf->SetFont('Arial', 'B', '45');
                     $pdf->SetXY(87, 155);
-
-                    //$pdf->Cell(120, 20, $score->average_score . '/' . Helper::getGrade($score->average_score), '', 0, 'C');
 
                     $score_average = round($score_total / 6);
                     $pdf->Cell(120, 20, $score_average . '/' . Helper::getGrade($score_average), '', 0, 'C');
@@ -540,7 +519,6 @@ class ScoreController extends Controller
 
                 $pdf->Output(public_path('certificate/' . $nama_file), 'F');
 
-                //$score['file'] = public_path('certificate/' . $nama_file);
                 $file = asset('certificate/' . $nama_file);
             }
 
@@ -564,6 +542,7 @@ class ScoreController extends Controller
                     'total_test' => $test,
                     'total_test_passed' => $totalTest,
                     'file' => $file,
+                    'class_id' => $class->priceid
                 ]);
             } else {
                 $data = ([
@@ -574,6 +553,7 @@ class ScoreController extends Controller
                     'total_test' => 0,
                     'total_test_passed' => 0,
                     'file' => $file,
+                    'class_id' => $class->priceid
                 ]);
             }
             return response()->json([
