@@ -245,6 +245,13 @@ class ScoreController extends Controller
     {
         try {
             $followUp = FollowUp::where('student_id', $studentId)->first();
+            $countClass = DB::select(
+                'SELECT price.program,price.id
+                    FROM student_scores
+                    JOIN price ON student_scores.price_id = price.id
+                    WHERE student_id = ' . $studentId . '
+                GROUP BY student_scores.student_id, student_scores.price_id;'
+            );
             if ($followUp) {
                 $class = FollowUp::where('student_id', $studentId)->join('price', 'price.id', 'follow_up.old_price_id')->join('student', 'student.id', 'follow_up.student_id')->select('price.program', 'student.is_certificate', 'student.date_certificate', 'follow_up.old_price_id as priceid')->first();
             } else {
@@ -542,7 +549,8 @@ class ScoreController extends Controller
                     'total_test' => $test,
                     'total_test_passed' => $totalTest,
                     'file' => $file,
-                    'class_id' => $class->priceid
+                    'class_id' => $class->priceid,
+                    'count_class' => count($countClass)
                 ]);
             } else {
                 $data = ([
@@ -553,7 +561,8 @@ class ScoreController extends Controller
                     'total_test' => 0,
                     'total_test_passed' => 0,
                     'file' => $file,
-                    'class_id' => $class->priceid
+                    'class_id' => $class->priceid,
+                    'count_class' => count($countClass)
                 ]);
             }
             return response()->json([
