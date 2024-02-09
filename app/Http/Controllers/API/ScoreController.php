@@ -241,7 +241,7 @@ class ScoreController extends Controller
         }
     }*/
 
-    public function getResult($studentId)
+    public function getResult($studentId, Request $request)
     {
         try {
             $followUp = FollowUp::where('student_id', $studentId)->first();
@@ -271,7 +271,7 @@ class ScoreController extends Controller
                 ->join('price as p', 'p.id', 'student_scores.price_id')
                 ->select('p.program', 't.name', 'student_scores.average_score', 'student_scores.average_score', 'student_scores.id as scoreId', 'student_scores.comment', 'student_scores.date', 'student_scores.price_id')
                 //->where('student_scores.test_id', $testId)
-                ->where('student_scores.price_id', $getStudent->priceid)
+                ->where('student_scores.price_id', $request->class ?? $getStudent->priceid)
                 ->where('student_scores.student_id', $studentId)
                 ->first();
 
