@@ -291,7 +291,7 @@ class ScoreController extends Controller
                 }
 
 
-                $nama_file = time() . '_' . $getStudent->name . '.pdf';
+                $nama_file = $score->price_id.'-'.time() . '_' . $getStudent->name . '.pdf';
 
                 new \App\Libraries\Pdf();
 
