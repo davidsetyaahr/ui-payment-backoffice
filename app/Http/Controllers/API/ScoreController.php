@@ -528,7 +528,7 @@ class ScoreController extends Controller
                     $pdf->Output(public_path('certificate/' . $nama_file), 'F');
                     $studentCertificate = new CertificateStudent();
                     $studentCertificate->student_id = $studentId;
-                    $studentCertificate->price_id = $class->priceid;
+                    $studentCertificate->price_id = $request->class ?? $getStudent->priceid;
                     $studentCertificate->file = asset('certificate/' . $nama_file);
                     $studentCertificate->save();
 
