@@ -1182,6 +1182,8 @@ class AttendanceController extends Controller
                     "is_class_new" => true,
                     "is_certificate" => null,
                     "date_certificate" => null,
+                    "is_failed_promoted" => '0',
+                    "is_follow_up" => '0',
                 ]);
 
                 // Failed Promoted From ecertificate
@@ -1200,6 +1202,8 @@ class AttendanceController extends Controller
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
                     "is_class_new" => false,
+                    "is_failed_promoted" => '0',
+                    "is_follow_up" => '0',
                 ]);
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
