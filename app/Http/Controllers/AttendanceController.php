@@ -1191,6 +1191,7 @@ class AttendanceController extends Controller
                     "is_certificate" => null,
                     "date_certificate" => null,
                     "is_failed_promoted" => '0',
+                    "is_follow_up" => '0',
                 ]);
 
 
