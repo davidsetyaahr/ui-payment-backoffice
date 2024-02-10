@@ -1173,7 +1173,7 @@ class AttendanceController extends Controller
             // New Class
             DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->update([
+                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '0')->update([
                     "day1" => $request->update_day_one,
                     "day2" => $request->update_day_two,
                     "course_time" => $request->update_course_time,
@@ -1183,6 +1183,16 @@ class AttendanceController extends Controller
                     "is_certificate" => null,
                     "date_certificate" => null,
                 ]);
+
+                // Failed Promoted From ecertificate
+                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+                ->where("day2", $reqDay2)
+                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '1')->update([
+                    "is_certificate" => null,
+                    "date_certificate" => null,
+                    "is_failed_promoted" => '0',
+                ]);
+
 
             // Old Class
             DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
