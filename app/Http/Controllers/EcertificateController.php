@@ -119,6 +119,7 @@ ORDER BY
                         'day2' => $followUp->old_day_2,
                         'id_teacher' => $followUp->old_teacher_id,
                         'course_time' => $followUp->course_time,
+                        "is_failed_promoted" => '1',
                     ]);
                     // Delete Follow Up
                     $followUp->delete();
