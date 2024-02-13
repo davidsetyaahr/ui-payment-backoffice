@@ -139,33 +139,19 @@ ORDER BY
                 foreach ($request->student_id as $key => $value) {
                     $students = Students::find($value);
                     if ($request->status[$key] == '0') {
-                        // $followUp = FollowUp::where('student_id', $value)->first();
-                        // // change status student
+                        // Failed
                         Students::where('id', $value)->update([
-                            'is_follow_up' => '1',
                             'is_failed_promoted' => '1',
                         ]);
-                        $followUp = new FollowUp();
-                        $followUp->student_id = $value;
-                        $followUp->old_price_id = $students->priceid;
-                        $followUp->old_day_1 = $students->day1;
-                        $followUp->old_day_2 = $students->day2;
-                        $followUp->old_teacher_id = $students->id_teacher;
-                        $followUp->course_time = $students->course_time;
-                        $followUp->save();
-                        // // Delete Follow Up
-                        // $followUp->delete();
                     } else if ($request->status[$key] == '1') {
-                        // $followUp = FollowUp::where('student_id', $value)->first();
-                        // change status student
+                        // Passed
                         Students::where('id', $value)->update([
                             'is_follow_up' => '0',
                             'date_certificate' => $request->date_certificate,
                             'is_certificate' => true,
                         ]);
-                        // Delete Follow Up
-                        // $followUp->delete();
                     } else {
+                        // Follow Up
                         $followUp = new FollowUp();
                         $followUp->student_id = $value;
                         $followUp->old_price_id = $students->priceid;
