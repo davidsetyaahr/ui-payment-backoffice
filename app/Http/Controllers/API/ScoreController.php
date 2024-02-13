@@ -315,7 +315,7 @@ class ScoreController extends Controller
 
                         $pdf->SetFont('Arial', 'B', '15');
                         $pdf->SetXY(75, 92);
-                        $pdf->Cell(60, 10, \Carbon\Carbon::parse($class->date_certificate)->format('j F Y'), 0, 'L');
+                        $pdf->Cell(60, 10, $class->date_certificate != null ? \Carbon\Carbon::parse($class->date_certificate)->format('j F Y') : \Carbon\Carbon::now()->format('j F Y'), 0, 'L');
 
                         $pdf->SetFont('Arial', 'B', '45');
                         $pdf->SetXY(87, 155);
@@ -425,7 +425,7 @@ class ScoreController extends Controller
 
                         $pdf->SetFont('Arial', 'B', '15');
                         $pdf->SetXY(75, 92);
-                        $pdf->Cell(60, 10, \Carbon\Carbon::parse($class->date_certificate)->format('j F Y'), 0, 'L');
+                        $pdf->Cell(60, 10, $class->date_certificate != null ? \Carbon\Carbon::parse($class->date_certificate)->format('j F Y') : \Carbon\Carbon::now()->format('j F Y'), 0, 'L');
 
                         $score_total = 0;
 
