@@ -182,10 +182,11 @@ class UsersController extends Controller
                 ->first();
 
             if ($data) {
-                $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
+                $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->join('price', 'student.priceid','price.id')->where('parent_id', $data['id'])->first();
                 $data['default_student_id'] = $students->student_id;
                 $data['default_student_name'] = $students->name;
                 $data['default_student_class'] = $students->priceid;
+                $data['default_student_class_name'] = $students->program;
                 if ($token = JWTAuth::attempt($credentials)) {
                     // return $this->respondWithToken($token, 'parent');
                     return response()->json([
