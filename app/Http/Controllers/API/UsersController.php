@@ -251,8 +251,8 @@ class UsersController extends Controller
     {
         try {
             $students = [];
-            $data = ParentStudents::join('student', 'student.id', 'parent_students.student_id')
-                ->select('student.*')
+            $data = ParentStudents::join('student', 'student.id', 'parent_students.student_id')->join('price','student.priceid','price.id')
+                ->select('price.program','student.*')
                 ->where('parent_students.parent_id', $parentId)
                 ->get();
             foreach ($data as $key => $val) {
