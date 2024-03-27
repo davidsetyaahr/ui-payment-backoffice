@@ -36,7 +36,7 @@ class EcertificateController extends Controller
                 if ($request->level && Auth::guard('teacher')->check() == true) {
                     $where = $where . ' AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
                 }
-                if ($request->level == 24) {
+                 if (strpos($adult->program, "Adult") !== false || strpos($adult->program, "Conversation") !== false) {
                 $having = 'HAVING
         COUNT(DISTINCT CASE WHEN ss.test_id = 2 THEN ss.student_id END) > 0';
         $where .= '
