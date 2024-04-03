@@ -315,6 +315,7 @@
                                                                 <td colspan="2">Total</td>
                                                                 <td>{{ round($total_test1 / count($testItem)) }}</td>
                                                                 <td>{{ round($total_test2 / count($testItem)) }}</td>
+                                                                <td>{{ round($total_test3 / count($testItem)) }}</td>
                                                                 <td>{{ round($total_test / count($testItem)) }}</td>
                                                                 <td>
                                                                     {{ Helper::getGrade(round($total_test / count($testItem))) }}
