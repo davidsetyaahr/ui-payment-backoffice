@@ -297,13 +297,13 @@
                                                             </tr>
                                                         @endforeach
                                                         <tr>
-                                                            @if (Request::get('class') >= 43 && Request::get('class') <= 45)
+                                                            @if ($class->id >= 43 && $class->id <= 45)
                                                                 <td>Total</td>
                                                                 <td>{{ round($total_test1 / count($testItem)) }}</td>
                                                                 <td>{{ round($total_test / count($testItem)) }}</td>
                                                                 <td>{{ Helper::getGrade(round($total_test / count($testItem))) }}
                                                                 </td>
-                                                            @elseif(Request::get('class') >= 22 && Request::get('class') <= 37)
+                                                            @elseif($class->id >= 22 && $class->id <= 37)
                                                                 <td colspan="2">Total</td>
                                                                 <td>{{ round($total_test1 / count($testItem)) }}</td>
                                                                 <td>{{ round($total_test2 / count($testItem)) }}</td>
