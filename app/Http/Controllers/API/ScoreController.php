@@ -400,7 +400,7 @@ class ScoreController extends Controller
 
 
                         $pdf->SetFont('Arial', 'B', '45');
-                        $score_average = round($score_total / 6);
+                        $score_average = round($score_total / 4);
                         $pdf->SetXY(133, 130);
                         $pdf->Cell(40, 70, $score_average . '/' . Helper::getGrade($score_average), '', 0, 'C');
 
