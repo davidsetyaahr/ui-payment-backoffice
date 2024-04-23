@@ -570,8 +570,7 @@ class ScoreController extends Controller
                     'total_test_passed' => $totalTest,
                     'file' => $file,
                     'class_id' => $class->priceid,
-                    'count_class' => count($countClass),
-                    'scio' => $score_average
+                    'count_class' => count($countClass)
                 ]);
             } else {
                 $data = ([
@@ -583,13 +582,12 @@ class ScoreController extends Controller
                     'total_test_passed' => 0,
                     'file' => $file,
                     'class_id' => $class->priceid,
-                    'count_class' => count($countClass),
-                    'scio' => $score_average
+                    'count_class' => count($countClass)
                 ]);
             }
             return response()->json([
                 'code' => '00',
-                'payload' => $data,
+                'payload' => $score_average,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
