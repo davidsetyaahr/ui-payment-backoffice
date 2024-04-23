@@ -400,7 +400,12 @@ class ScoreController extends Controller
 
 
                         $pdf->SetFont('Arial', 'B', '45');
-                        $score_average = round($score_total / 6);
+                        if (($request->class == 1 || $getStudent->priceid == 1) || ($request->class == 2 || $getStudent->priceid == 2) || ($request->class == 3 || $getStudent->priceid == 3) || ($request->class == 4 || $getStudent->priceid == 4) || ($request->class == 5 || $getStudent->priceid == 5)  || ($request->class == 6 || $getStudent->priceid == 6)){
+                            $testItemCount = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->count();
+                        } else {
+                            $testItemCount = TestItems::count();
+                        }
+                        $score_average = round($score_total / $testItemCount);
                         $pdf->SetXY(133, 130);
                         $pdf->Cell(40, 70, $score_average . '/' . Helper::getGrade($score_average), '', 0, 'C');
 
@@ -514,7 +519,12 @@ class ScoreController extends Controller
                         $pdf->SetFont('Arial', 'B', '45');
                         $pdf->SetXY(87, 155);
 
-                        $score_average = round($score_total / 6);
+                        if (($request->class == 1 || $getStudent->priceid == 1) || ($request->class == 2 || $getStudent->priceid == 2) || ($request->class == 3 || $getStudent->priceid == 3) || ($request->class == 4 || $getStudent->priceid == 4) || ($request->class == 5 || $getStudent->priceid == 5)  || ($request->class == 6 || $getStudent->priceid == 6)){
+                            $testItemCount = TestItems::where('id', '!=', 5)->where('id', '!=', 6)->count();
+                        } else {
+                            $testItemCount = TestItems::count();
+                        }
+                        $score_average = round($score_total / $testItemCount);
                         $pdf->Cell(120, 20, $score_average . '/' . Helper::getGrade($score_average), '', 0, 'C');
 
                         $pdf->SetFont('Arial', 'B', '20');
@@ -560,7 +570,8 @@ class ScoreController extends Controller
                     'total_test_passed' => $totalTest,
                     'file' => $file,
                     'class_id' => $class->priceid,
-                    'count_class' => count($countClass)
+                    'count_class' => count($countClass),
+                    'scio' => $score_average
                 ]);
             } else {
                 $data = ([
@@ -572,7 +583,8 @@ class ScoreController extends Controller
                     'total_test_passed' => 0,
                     'file' => $file,
                     'class_id' => $class->priceid,
-                    'count_class' => count($countClass)
+                    'count_class' => count($countClass),
+                    'scio' => $score_average
                 ]);
             }
             return response()->json([
