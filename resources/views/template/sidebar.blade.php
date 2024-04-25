@@ -105,7 +105,7 @@
                         <li class="nav-item {{ Request::segment(1) == 'schedule-class' ? 'active' : '' }}">
                             <a href="{{ url('/schedule-class') }}" class="collapsed">
                                 <i class="fas fa-calendar"></i>
-                                <p>Schedule Class</p>
+                                <p>Class Schedule</p>
                             </a>
 
                         </li>
