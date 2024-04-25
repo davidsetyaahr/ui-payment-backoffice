@@ -41,6 +41,11 @@ class EcertificateController extends Controller
         COUNT(DISTINCT CASE WHEN ss.test_id = 2 THEN ss.student_id END) > 0';
                     $where .= '
         AND ss.test_id = 2';
+                } else if (strpos($adult->program, "Advance") !== false) {
+                    $having = 'HAVING
+        COUNT(DISTINCT CASE WHEN ss.test_id = 1 THEN ss.student_id END) > 0';
+                    $where .= '
+        AND ss.test_id = 1';
                 } else {
                     $having = 'HAVING
         COUNT(DISTINCT CASE WHEN ss.test_id = 3 THEN ss.student_id END) > 0';
