@@ -36,15 +36,15 @@ class EcertificateController extends Controller
                 if ($request->level && Auth::guard('teacher')->check() == true) {
                     $where = $where . ' AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
                 }
-                 if (strpos($adult->program, "Adult") !== false || strpos($adult->program, "Conversation") !== false) {
-                $having = 'HAVING
+                if (strpos($adult->program, "Adult") !== false || strpos($adult->program, "Conversation") !== false) {
+                    $having = 'HAVING
         COUNT(DISTINCT CASE WHEN ss.test_id = 2 THEN ss.student_id END) > 0';
-        $where .= '
+                    $where .= '
         AND ss.test_id = 2';
-                }else{
+                } else {
                     $having = 'HAVING
         COUNT(DISTINCT CASE WHEN ss.test_id = 3 THEN ss.student_id END) > 0';
-        $where .= '
+                    $where .= '
         AND ss.test_id = 3';
                 }
                 $class = DB::select("SELECT
@@ -81,16 +81,16 @@ class EcertificateController extends Controller
         AND id_teacher IS NOT NULL
         AND ss.price_id = price.id
         AND student.status = 'ACTIVE'
-        AND student.is_certificate = 0
+        AND (student.is_certificate = 0 OR student.is_certificate IS NULL)
         $where
     GROUP BY
         priceid, day1, day2, course_time, id_teacher, price.level, price.program, day_one, day_two, teacher_name, teacher_id, d1, d2
     $having
     ORDER BY
         priceid ASC, day1, course_time;");
-                }else{
-                    $class=[];
-                }
+            } else {
+                $class = [];
+            }
             return view('e-certificate.index', compact('class', 'level'));
         } catch (\Throwable $th) {
             throw $th;
