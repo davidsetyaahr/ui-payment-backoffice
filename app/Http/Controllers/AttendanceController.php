@@ -53,7 +53,7 @@ class AttendanceController extends Controller
         if ($request->day && Auth::guard('teacher')->check() == true) {
             $where = $where . ' AND (day1 = ' . $request->day . ' OR day2 = ' . $request->day . ') AND id_teacher =' . Auth::guard('teacher')->user()->id;
         }
-        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where ORDER BY priceid ASC, day1,course_time;");
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null AND student.status = 'ACTIVE' $where ORDER BY priceid ASC, day1,course_time;");
         $private = [];
         $general = [];
         $semiPrivate = [];
@@ -1186,8 +1186,8 @@ class AttendanceController extends Controller
                     "is_follow_up" => '0',
                 ]);
 
-                // Failed Promoted From ecertificate
-                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+            // Failed Promoted From ecertificate
+            DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '1')->update([
                     "is_certificate" => null,
