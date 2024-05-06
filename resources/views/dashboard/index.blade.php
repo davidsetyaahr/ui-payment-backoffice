@@ -50,7 +50,8 @@
                                     <div class="col-7 col-stats">
                                         <div class="numbers">
                                             <p class="card-category">Student</p>
-                                            <h4 class="card-title">{{ $data->student }}</h4>
+                                            <!--<h4 class="card-title">{{ $data->student }}</h4>-->
+                                            <h4 class="card-title">835</h4>
                                         </div>
                                     </div>
                                 </div>
