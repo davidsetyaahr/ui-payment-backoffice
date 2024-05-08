@@ -432,6 +432,14 @@
                                                 <option value="{{ $item3->id }}">{{ $item3->name }}</option>
                                             @endforeach
                                         </select>
+                                    <div class="form-group">
+                                        <label for="">Type</label>
+                                        <select name="type" id=""
+                                            class="form-control select2 select2-hidden-accessible" style="width:100%;" required>
+                                            <option value="">---Choose Type---</option>
+                                            <option value="edit">Edit</option>
+                                            <option value="promoted">Promoted</option>
+                                        </select>
                                     </div>
                                     <div class="rowStudent">
                                     </div>
