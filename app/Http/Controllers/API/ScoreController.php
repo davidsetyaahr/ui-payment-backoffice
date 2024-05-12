@@ -302,8 +302,8 @@ class ScoreController extends Controller
 
                     $pdf->AddPage('L');
 
-                    //tod - pretod
-                    if (in_array($score->price_id, [1, 2, 3, 4, 5, 6])) {
+                    //tod - pretod and starter
+                    if (in_array($score->price_id, [1, 2, 3, 4, 5, 6, 13])) {
                         $pdf->Image(public_path('certificate/template/pretod-tod.jpg'), 0, 0, 297, 210);
                         $pdf->SetFont('Arial', 'B', '35');
                         $pdf->SetXY(87, 65);
