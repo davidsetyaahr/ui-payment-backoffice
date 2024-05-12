@@ -51,7 +51,7 @@
                                         <div class="numbers">
                                             <p class="card-category">Student</p>
                                             <!--<h4 class="card-title">{{ $data->student }}</h4>-->
-                                            <h4 class="card-title">835</h4>
+                                            <h4 class="card-title">1036</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +70,8 @@
                                     <div class="col-7 col-stats">
                                         <div class="numbers">
                                             <p class="card-category">Parent</p>
-                                            <h4 class="card-title">{{ $data->parent }}</h4>
+                                            {{-- <h4 class="card-title">{{ $data->parent }}</h4> --}}
+                                            <h4 class="card-title">1005</h4>
                                         </div>
                                     </div>
                                 </div>
