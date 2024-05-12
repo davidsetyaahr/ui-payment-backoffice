@@ -1154,57 +1154,70 @@ class AttendanceController extends Controller
             $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->where('is_class_new', false)->where('id_teacher', $teacherOld)->get();
-            foreach ($student as $key => $value) {
-                if ($value->priceid != $request->update_level) {
-                    $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
-                    $mutasi = new Mutasi;
-                    $mutasi->student_id = $value->id;
-                    $mutasi->price_id = $priceId;
-                    $mutasi->user_name = Auth::guard('staff')->user()->name;
-                    $mutasi->from = 'Backoffice';
-                    $mutasi->created_at = Carbon::now()->addHours(7);
-                    $mutasi->updated_at = Carbon::now()->addHours(7);
-                    if ($score != null) {
-                        $mutasi->score_id = $score->id;
-                    }
-                    $mutasi->save();
-                }
-            }
-            // New Class
-            DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+            if ($request->type == 'edit') {
+                DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '0')->update([
+                ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
                     "day1" => $request->update_day_one,
                     "day2" => $request->update_day_two,
                     "course_time" => $request->update_course_time,
                     "priceid" => $request->update_level,
                     "id_teacher" => $request->update_teacher,
-                    "is_class_new" => true,
-                    "is_certificate" => null,
-                    "date_certificate" => null,
-                    "is_failed_promoted" => '0',
-                    "is_follow_up" => '0',
                 ]);
+            } else {
+                foreach ($student as $key => $value) {
+                    if ($value->priceid != $request->update_level) {
+                        $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
+                        $mutasi = new Mutasi;
+                        $mutasi->student_id = $value->id;
+                        $mutasi->price_id = $priceId;
+                        $mutasi->user_name = Auth::guard('staff')->user()->name;
+                        $mutasi->from = 'Backoffice';
+                        $mutasi->created_at = Carbon::now()->addHours(7);
+                        $mutasi->updated_at = Carbon::now()->addHours(7);
+                        if ($score != null) {
+                            $mutasi->score_id = $score->id;
+                        }
+                        $mutasi->save();
+                    }
+                }
+                // New Class
+                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '0')->update([
+                        "day1" => $request->update_day_one,
+                        "day2" => $request->update_day_two,
+                        "course_time" => $request->update_course_time,
+                        "priceid" => $request->update_level,
+                        "id_teacher" => $request->update_teacher,
+                        "is_class_new" => true,
+                        "is_certificate" => null,
+                        "date_certificate" => null,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
 
-            // Failed Promoted From ecertificate
-            DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '1')->update([
-                    "is_certificate" => null,
-                    "date_certificate" => null,
-                    "is_failed_promoted" => '0',
-                    "is_follow_up" => '0',
-                ]);
+                // Failed Promoted From ecertificate
+                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '1')->update([
+                        "is_certificate" => null,
+                        "date_certificate" => null,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
 
 
-            // Old Class
-            DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+                // Old Class
+                DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
                     "is_class_new" => false,
                     "is_failed_promoted" => '0',
                     "is_follow_up" => '0',
                 ]);
+            }
+
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
