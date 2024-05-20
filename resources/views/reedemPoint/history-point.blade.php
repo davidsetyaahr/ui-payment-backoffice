@@ -81,6 +81,7 @@
                                                 <th>Opening Balance</th>
                                             @endif
                                             <th>Date</th>
+                                            <th>Date Time</th>
                                             <th>Point History</th>
                                             <th>Detail</th>
                                             <th>Type</th>
@@ -108,6 +109,7 @@
                                                     </td>
                                                 @endif
                                                 <td>{{ $item->date }}</td>
+                                                <td>{{ $item->created_at == null ? '-' : $item->created_at }}</td>
                                                 <td>{{ $item->total_point }}</td>
                                                 <td>{{ $item->keterangan }}</td>
                                                 <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>

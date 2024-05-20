@@ -78,6 +78,7 @@
                                             <th>Review / Test</th>
                                             <th>Due Date</th>
                                             <th>Time</th>
+                                            <th>Date Time</th>
                                             <th>QTY</th>
                                             <th>Comment</th>
                                             @if (Auth::guard('teacher')->user() == null)
@@ -101,6 +102,7 @@
                                                 <td>{{ $item->due_date }}</td>
                                                 <td>{{ !empty($class[5]) ? (!empty($class[6]) ? $class[6] : $class[5]) : $class[4] }}
                                                 </td>
+                                                <td>{{ $item->created_at }}</td>
                                                 <td>{{ $item->qty }}</td>
                                                 <td>{{ $item->comment }}</td>
 
