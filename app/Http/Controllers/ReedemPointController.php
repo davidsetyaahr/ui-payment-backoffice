@@ -13,6 +13,7 @@ use App\Models\ReedemItems;
 use App\Models\ReedemPoint;
 use App\Models\Students;
 use App\Models\Teacher;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -57,6 +58,8 @@ class ReedemPointController extends Controller
                         'type' => 'redeem',
                         'keterangan' => 'Reedem Point',
                         'balance_in_advanced' => $findPointStudent->total_point,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
                     ]);
                     $newPoint = intval($request->point) - intval($request->total_point);
                     Students::where('id', $student)
