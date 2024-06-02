@@ -349,7 +349,7 @@ class AttendanceController extends Controller
                                     'point' => $pointCategories[$pos]->point,
                                 ]);
                                 if ($request->totalPoint[$i] > 0) {
-                                    $totalPointCategory = $x == 0 ? 0 : $pointCategories[$pos]->point;
+                                    $totalPointCategory = $x == 0 ? 0 : $pointCategories[$pos - 1]->point;
                                     PointHistory::create([
                                         'student_id' => $request->studentId[$i],
                                         'date' => date('Y-m-d'),
