@@ -356,7 +356,7 @@ class AttendanceController extends Controller
                                         'total_point' => $pointCategories[$pos]->point,
                                         'type' => 'in',
                                         'keterangan' => $pointCategories[$pos]->name,
-                                        'balance_in_advanced' => $student->total_point + $x >= 0 ?: $request->isAbsentPoint[$i + 1] + $totalPointCategory,
+                                        'balance_in_advanced' => $student->total_point,
                                     ]);
                                 }
                                 // return ([
