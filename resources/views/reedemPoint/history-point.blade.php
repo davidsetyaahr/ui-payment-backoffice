@@ -92,6 +92,7 @@
                                         @php
                                             $no = 1;
                                         @endphp
+
                                         @foreach ($data as $item)
                                             @php
                                                 if (Request::get('student')) {
@@ -108,13 +109,156 @@
                                                     <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
                                                     </td>
                                                 @endif
-                                                <td>{{ $item->date }}</td>
+                                                <td> {{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
                                                 <td>{{ $item->created_at == null ? '-' : $item->created_at }}</td>
-                                                <td>{{ $item->total_point }}</td>
+                                                <td>{{ $item->total_point }} </td>
                                                 <td>{{ $item->keterangan }}</td>
                                                 <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
                                                 <td>{{ $item->balance_in_advanced }}</td>
                                         @endforeach
+
+
+                                        {{-- @php
+                                            $lastDate = null;
+                                        @endphp
+                                        @foreach ($data as $item)
+                                            @if ($lastDate != $item->date)
+                                                @php
+                                                    if (Request::get('student')) {
+                                                        $openingBalance = DB::table('point_histories')
+                                                            ->where('student_id', $item->student->id)
+                                                            ->where('keterangan', 'Opening Balance')
+                                                            ->first();
+                                                    }
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $item->student ? ucwords($item->student->name) : '-' }}</td>
+                                                    @if (Request::get('student'))
+                                                        <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
+                                                        </td>
+                                                    @endif
+                                                    <td>{{ $item->date }}</td>
+                                                    <td>{{ $item->created_at == null ? '-' : $item->created_at }}</td>
+                                                    <td>{{ $item->total_point }} </td>
+                                                    <td>{{ $item->keterangan }}</td>
+                                                    <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
+                                                    <td>{{ $item->balance_in_advanced }}</td>
+                                                </tr>
+                                                @php
+                                                    $lastDate = $item->date;
+                                                @endphp
+                                            @endif
+                                        @endforeach --}}
+
+                                        {{-- @php
+                                            $lastDate = null;
+                                            $totalPoint = 0;
+                                        @endphp
+                                        @foreach ($data as $item)
+                                            @if ($lastDate != $item->date)
+                                                @php
+                                                    if (Request::get('student')) {
+                                                        $openingBalance = DB::table('point_histories')
+                                                            ->where('student_id', $item->student->id)
+                                                            ->where('keterangan', 'Opening Balance')
+                                                            ->first();
+                                                    }
+                                                @endphp
+                                                @if ($lastDate != null)
+                                                    <tr>
+                                                        <td colspan="5">Total Point: {{ $totalPoint }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $totalPoint = 0;
+                                                    @endphp
+                                                @endif
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $item->student ? ucwords($item->student->name) : '-' }}</td>
+                                                    @if (Request::get('student'))
+                                                        <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
+                                                        </td>
+                                                    @endif
+                                                    <td>{{ $item->date }}</td>
+                                                    <td>{{ $item->created_at == null ? '-' : $item->created_at }}</td>
+                                                    <td>{{ $item->total_point }} </td>
+                                                    <td>{{ $item->keterangan }}</td>
+                                                    <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
+                                                    <td>{{ $item->balance_in_advanced }}</td>
+                                                </tr>
+                                                @php
+                                                    $lastDate = $item->date;
+                                                    $totalPoint += $item->total_point;
+                                                @endphp
+                                            @else
+                                                @php
+                                                    $totalPoint += $item->total_point;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                        @if ($lastDate != null)
+                                            <tr>
+                                                <td colspan="5">Total Point: {{ $totalPoint }}</td>
+                                            </tr>
+                                        @endif --}}
+                                        {{--
+                                        @php
+                                            $lastDate = null;
+                                            $lastTotalPoint = 0;
+                                        @endphp
+                                        @foreach ($data as $item)
+                                            @if ($lastDate != $item->date)
+                                                @php
+                                                    if (Request::get('student')) {
+                                                        $openingBalance = DB::table('point_histories')
+                                                            ->where('student_id', $item->student->id)
+                                                            ->where('keterangan', 'Opening Balance')
+                                                            ->first();
+                                                    }
+                                                @endphp
+                                                @if ($lastDate != null)
+                                                    <tr>
+                                                        <td colspan="5">Total Point: {{ $lastTotalPoint }}</td>
+                                                        <td colspan="4">Balance In Advance:
+                                                            {{ $item->balance_in_advanced + $lastTotalPoint }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $lastTotalPoint = 0;
+                                                    @endphp
+                                                @endif
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $item->student ? ucwords($item->student->name) : '-' }}</td>
+                                                    @if (Request::get('student'))
+                                                        <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
+                                                        </td>
+                                                    @endif
+                                                    <td>{{ $item->date }}</td>
+                                                    <td>{{ $item->created_at == null ? '-' : $item->created_at }}</td>
+                                                    <td>{{ $item->total_point }} </td>
+                                                    <td>{{ $item->keterangan }}</td>
+                                                    <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
+                                                    <td>{{ $item->balance_in_advanced }}</td>
+                                                </tr>
+                                                @php
+                                                    $lastDate = $item->date;
+                                                    $lastTotalPoint += $item->total_point;
+                                                @endphp
+                                            @else
+                                                @php
+                                                    $lastTotalPoint += $item->total_point;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                        @if ($lastDate != null)
+                                            <tr>
+                                                <td colspan="5">Total Point: {{ $lastTotalPoint }}</td>
+                                                <td colspan="4">Balance In Advance:
+                                                    {{ $item->balance_in_advanced + $lastTotalPoint }}</td>
+                                            </tr>
+                                        @endif --}}
+
                                     </tbody>
                                 </table>
                             </div>
