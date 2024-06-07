@@ -15,19 +15,21 @@
             </div>
         </div>
 
-        <div class="row mb-2">
-            @foreach ($arr as $key => $item)
-                <div class="col-md-3">
+        <div class="container mb-5 mt-5">
+            <div class="row">
+                @foreach ($arr as $key => $item)
+                    <div class="col-md-3 ">
 
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Remember to Input Score in </strong> {{ $item->class . ' - ' . $item->review_test }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Remember to Input Score in </strong> {{ $item->class . ' - ' . $item->review_test }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
                     </div>
-
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
 
 
@@ -134,7 +136,7 @@
                                         <div class="col-md-12">
                                             @if ($data->announces)
                                                 <!--<img style="width: 100%"
-                                                                                                                                                                src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                                                                                                                                            src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
                                                 <img style="width: 100%" src="{{ url($data->announces->banner) }}"
                                                     alt="">
                                             @endif
