@@ -91,6 +91,8 @@
                                     <tbody>
                                         @php
                                             $no = 1;
+                                            $balanceInAdvanced = 0;
+                                            $associativeArray = [];
 
                                             $associativeArray = collect($data)
                                                 ->map(function ($data) {
@@ -130,8 +132,11 @@
 
 
                                         @php
-                                            // Inisialisasi nilai balance_in_advanced dari entry pertama
-                                            $balanceInAdvanced = $associativeArray[0]['balance_in_advanced'];
+                                            if (Request::get('student')) {
+                                                // Inisialisasi nilai balance_in_advanced dari entry pertama
+                                                $balanceInAdvanced = $associativeArray[0]['balance_in_advanced'];
+                                            }
+
                                         @endphp
 
                                         @foreach ($associativeArray as $key => $item)
@@ -141,12 +146,15 @@
                                                     $balanceInAdvanced += $item['total_point'];
                                                 }
 
-                                                if (Request::get('student')) {
+                                                // Cek apakah ada entry dengan keterangan 'Opening Balance'
+
+                                                if (Request::get('student') != null) {
                                                     $openingBalance = DB::table('point_histories')
                                                         ->where('student_id', $item['student']['id'])
                                                         ->where('keterangan', 'Opening Balance')
                                                         ->first();
                                                 }
+
                                             @endphp
 
                                             <tr>
