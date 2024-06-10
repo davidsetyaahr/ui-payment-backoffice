@@ -143,7 +143,11 @@
                                             @php
                                                 // Jika bukan entry pertama, tambahkan total_point ke balance_in_advanced
                                                 if ($key > 0) {
-                                                    $balanceInAdvanced += $item['total_point'];
+                                                    if ($item['type'] == 'in') {
+                                                        $balanceInAdvanced += $item['total_point'];
+                                                    } else {
+                                                        $balanceInAdvanced -= $item['total_point'];
+                                                    }
                                                 }
 
                                                 // Cek apakah ada entry dengan keterangan 'Opening Balance'
