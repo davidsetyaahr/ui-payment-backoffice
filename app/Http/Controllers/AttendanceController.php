@@ -53,7 +53,13 @@ class AttendanceController extends Controller
         if ($request->day && Auth::guard('teacher')->check() == true) {
             $where = $where . ' AND (day1 = ' . $request->day . ' OR day2 = ' . $request->day . ') AND id_teacher =' . Auth::guard('teacher')->user()->id;
         }
-        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null AND student.status = 'ACTIVE' $where ORDER BY priceid ASC, day1,course_time;");
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student
+        join price on student.priceid = price.id
+        join day day_1 on student.day1 = day_1.id
+        join day day_2 on student.day2 = day_2.id
+        -- join attendance_details ad on student.id = ad.student_id
+        join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null AND student.status = 'ACTIVE' $where ORDER BY priceid ASC, day1,course_time;");
+
         $private = [];
         $general = [];
         $semiPrivate = [];
@@ -68,8 +74,19 @@ class AttendanceController extends Controller
                 array_push($general, $value);
             }
         }
+        // dd($general);
         $day = DB::table('day',)->get();
-        return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level', 'semiPrivate'));
+
+        $isNew = Attendance::where('is_class_new', '1')->get();
+        // // dd($checkAbsent->toArray());
+        // $already_absent = [];
+        // foreach ($checkAbsent as $key => $value) {
+        //     $check = AttendanceDetail::where('attendance_id', $value->id)->where('is_absent', '1')->get();
+        //     array_push($already_absent, $check);
+        // };
+        // dd($already_absent);
+
+        return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level', 'semiPrivate', 'isNew'));
     }
 
     /**
@@ -177,7 +194,7 @@ class AttendanceController extends Controller
             $student = $student->where('id_teacher', $reqTeacher);
         }
 
-        $student =   $student->get();
+        $student = $student->get();
 
 
         foreach ($student as $keyS => $valueS) {
@@ -215,7 +232,7 @@ class AttendanceController extends Controller
             } else {
                 $inStudent = $inStudent->where('id_teacher', $reqTeacher);
             }
-            $inStudent =   $inStudent->update([
+            $inStudent = $inStudent->update([
                 'day1' => null,
                 'day2' => null,
                 'course_time' => null,
@@ -229,7 +246,7 @@ class AttendanceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -302,7 +319,7 @@ class AttendanceController extends Controller
 
                     $student = Students::where('id', $request->studentId[$i])->first();
                     Students::where('id', $request->studentId[$i])->update([
-                        'total_point' => $student->total_point +  $request->totalPoint[$i],
+                        'total_point' => $student->total_point + $request->totalPoint[$i],
                     ]);
                     if (count($request->isAbsent[$i + 1]) != 1) {
                         PointHistory::create([
@@ -323,13 +340,13 @@ class AttendanceController extends Controller
                         PointHistory::create([
                             'student_id' => $request->studentId[$i],
                             'date' => date('Y-m-d'),
-                            'total_point' =>  30,
+                            'total_point' => 30,
                             'type' => 'in',
-                            'keterangan' =>  'Extra Birthday',
+                            'keterangan' => 'Extra Birthday',
                             'balance_in_advanced' => $student->total_point,
                         ]);
                         Students::where('id', $request->studentId[$i])->update([
-                            'total_point' => $student->total_point +  30,
+                            'total_point' => $student->total_point + 30,
                         ]);
                     }
 
@@ -349,12 +366,13 @@ class AttendanceController extends Controller
                                     'point' => $pointCategories[$pos]->point,
                                 ]);
                                 if ($request->totalPoint[$i] > 0) {
+                                    $totalPointCategory = $pointCategories[$pos]->point;
                                     PointHistory::create([
                                         'student_id' => $request->studentId[$i],
                                         'date' => date('Y-m-d'),
-                                        'total_point' =>  $pointCategories[$pos]->point,
+                                        'total_point' => $pointCategories[$pos]->point,
                                         'type' => 'in',
-                                        'keterangan' =>  $pointCategories[$pos]->name,
+                                        'keterangan' => $pointCategories[$pos]->name,
                                         'balance_in_advanced' => $student->total_point,
                                     ]);
                                 }
@@ -478,7 +496,7 @@ class AttendanceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function show(Attendance $attendance)
@@ -489,7 +507,7 @@ class AttendanceController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
@@ -581,7 +599,7 @@ class AttendanceController extends Controller
             $student = $student->where('id_teacher', $reqTeacher);
         }
 
-        $student =   $student->get();
+        $student = $student->get();
         foreach ($student as $keyS => $valueS) {
             $or = $keyS + 1 != count($student) ? ' or ' : '';
             $whereStudent .= 'student_id = ' . $valueS->id . $or;
@@ -609,8 +627,8 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Attendance  $attendance
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $attendance)
@@ -707,7 +725,7 @@ class AttendanceController extends Controller
                 $student = Students::where('id', $request->studentId[$i])->first();
                 $tmpPoint = $student->total_point - $detailTotalPoint;
                 Students::where('id', $request->studentId[$i])->update([
-                    'total_point' => $tmpPoint +  $request->totalPoint[$i],
+                    'total_point' => $tmpPoint + $request->totalPoint[$i],
                 ]);
                 if (count($request->isAbsent[$i + 1]) > 1) {
                     PointHistory::create([
@@ -729,7 +747,7 @@ class AttendanceController extends Controller
                                     $pos = $key;
                                 }
                             }
-                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
+                            $avl = AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
                                 ->get();
                             $tmpDetail = [];
 
@@ -821,7 +839,7 @@ class AttendanceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function destroy(Attendance $attendance)
@@ -862,7 +880,6 @@ class AttendanceController extends Controller
         $data = [];
 
         //echo count($students);
-
 
 
         foreach ($students as $s) {
@@ -952,9 +969,6 @@ class AttendanceController extends Controller
         //}
 
 
-
-
-
         /*foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
@@ -986,7 +1000,6 @@ class AttendanceController extends Controller
                 array_push($arrAbsent, $attendance);
             }
         }*/
-
 
 
         /*foreach ($arrAbsent as $k => $v) {
@@ -1156,14 +1169,14 @@ class AttendanceController extends Controller
                 ->where('course_time', $reqTime)->where('is_class_new', false)->where('id_teacher', $teacherOld)->get();
             if ($request->type == 'edit') {
                 DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
-                    "day1" => $request->update_day_one,
-                    "day2" => $request->update_day_two,
-                    "course_time" => $request->update_course_time,
-                    "priceid" => $request->update_level,
-                    "id_teacher" => $request->update_teacher,
-                ]);
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->update([
+                        "day1" => $request->update_day_one,
+                        "day2" => $request->update_day_two,
+                        "course_time" => $request->update_course_time,
+                        "priceid" => $request->update_level,
+                        "id_teacher" => $request->update_teacher,
+                    ]);
             } else {
                 foreach ($student as $key => $value) {
                     if ($value->priceid != $request->update_level) {
@@ -1210,12 +1223,12 @@ class AttendanceController extends Controller
 
                 // Old Class
                 DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
-                    "is_class_new" => false,
-                    "is_failed_promoted" => '0',
-                    "is_follow_up" => '0',
-                ]);
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
+                        "is_class_new" => false,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
             }
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
@@ -1248,9 +1261,6 @@ class AttendanceController extends Controller
                 }
                 $model->save();
             }
-
-
-
 
 
             return redirect()->back()->with('message', 'Berhasil diupdate');

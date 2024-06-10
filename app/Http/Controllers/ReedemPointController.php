@@ -272,7 +272,19 @@ class ReedemPointController extends Controller
 
     public function historiAjax($id)
     {
-        $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'DESC')->get();
+
+        // $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'DESC')->get();
+        $query = "
+            SELECT ph.*, s.id as student_id, s.name as student_name, s.email as student_email
+            FROM point_histories ph
+            JOIN students s ON ph.student_id = s.id
+            WHERE ph.student_id = ?
+            ORDER BY ph.date DESC
+            LIMIT 10
+        ";
+
+        // Menjalankan query
+        $data = DB::select($query, [$id]);
         return $data;
     }
 
