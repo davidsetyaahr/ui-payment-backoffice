@@ -20,8 +20,10 @@
                 @foreach ($arr as $key => $item)
                     <div class="col-md-3 ">
 
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>Remember to Input Score in </strong> {{ $item->class . ' - ' . $item->review_test }}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="height: 120px">
+                            <strong>Remember to Input Score in </strong> <span style="font-size: 11px">
+                                {{ $item->class . ' - ' . $item->review_test }}</span>
+                            <p><i class="fas fa-info-circle"> {{ $item->name }}</i></p>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -136,7 +138,7 @@
                                         <div class="col-md-12">
                                             @if ($data->announces)
                                                 <!--<img style="width: 100%"
-                                                                                                                                                                            src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                                                                                                                                                                                    src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
                                                 <img style="width: 100%" src="{{ url($data->announces->banner) }}"
                                                     alt="">
                                             @endif

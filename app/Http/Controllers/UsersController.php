@@ -32,9 +32,10 @@ class UsersController extends Controller
         if (Auth::guard('teacher')->check()) {
             $nextWeek = date('Y-m-d', strtotime('next week'));
             $test = DB::table('order_reviews as or2')
-                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test')
+                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test', 's.name')
                 ->join('attendances as a', 'a.id', '=', 'or2.id_attendance')
                 ->join('attendance_details as ad', 'ad.attendance_id', '=', 'a.id')
+                ->join('student as s', 's.id', '=', 'ad.student_id')
                 ->where('or2.id_teacher', Auth::guard('teacher')->id())
                 ->where('or2.due_date', '<=', $nextWeek)
                 ->where('or2.type', 'test')
