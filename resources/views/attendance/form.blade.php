@@ -59,10 +59,10 @@
 
         /* Create the permissionCheckBox/indicator (hidden when not checked) */
         /*.permissionCheckBox:after {
-                content: "";
-                position: absolute;
-                display: none;
-            }*/
+                                content: "";
+                                position: absolute;
+                                display: none;
+                            }*/
 
 
 
@@ -74,10 +74,10 @@
 
         /* Show the permissionCheckBox when checked */
         /*.permission input[type=checkbox]:checked~.permissionCheckBox:after {
-                display: block;
-            }*.
+                                display: block;
+                            }*.
 
-            /* Style the permissionCheckBox/indicator */
+                            /* Style the permissionCheckBox/indicator */
         .permission .permissionCheckBox::after {
             left: 9px;
             top: 5px;
@@ -121,10 +121,10 @@
 
         /* Create the alphaCheckBox/indicator (hidden when not checked) */
         /*.alphaCheckBox:after {
-                content: "";
-                position: absolute;
-                display: none;
-            }*/
+                                content: "";
+                                position: absolute;
+                                display: none;
+                            }*/
 
         span.alphaCheckBox.checked::after {
             content: "";
@@ -134,8 +134,8 @@
 
         /* Show the alphaCheckBox when checked */
         /*.alpha input[type=checkbox]:checked~.alphaCheckBox:after {
-                display: block;
-            }*/
+                                display: block;
+                            }*/
 
 
 
@@ -269,7 +269,10 @@
                                             @if (Request::segment(2) == 'edit')
                                                 @foreach ($attendance as $i)
                                                     @php
-                                                        $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
+                                                        $cek = App\Models\AttendanceDetail::where(
+                                                            'attendance_id',
+                                                            $i->id,
+                                                        )->where('student_id', $item->id);
                                                         $count = $cek->count();
                                                         if ($count == 1 && $cek->first()->is_absent == '1') {
                                                             $absen = true;
@@ -292,7 +295,10 @@
                                             @else
                                                 @foreach ($attendance as $i)
                                                     @php
-                                                        $cek = App\Models\AttendanceDetail::where('attendance_id', $i->id)->where('student_id', $item->id);
+                                                        $cek = App\Models\AttendanceDetail::where(
+                                                            'attendance_id',
+                                                            $i->id,
+                                                        )->where('student_id', $item->id);
                                                         $count = $cek->count();
                                                         if ($count == 1 && $cek->first()->is_absent == '1') {
                                                             $absen = true;
@@ -367,7 +373,11 @@
 
                                             <tbody>
                                                 @php
-                                                    $agenda = App\Models\AttendanceDetail::join('attendances', 'attendance_details.attendance_id', 'attendances.id')->where('price_id', $priceId);
+                                                    $agenda = App\Models\AttendanceDetail::join(
+                                                        'attendances',
+                                                        'attendance_details.attendance_id',
+                                                        'attendances.id',
+                                                    )->where('price_id', $priceId);
 
                                                     $no = 1;
                                                     $whereRaw = '';
@@ -407,14 +417,23 @@
                                                                     ->where('is_absent', '1')
                                                                     ->count();
                                                                 $studentPointCategory = [];
-                                                                $getStudentPointCategory = \DB::table('attendance_detail_points')
-                                                                    ->join('attendance_details', 'attendance_detail_points.attendance_detail_id', 'attendance_details.id')
+                                                                $getStudentPointCategory = \DB::table(
+                                                                    'attendance_detail_points',
+                                                                )
+                                                                    ->join(
+                                                                        'attendance_details',
+                                                                        'attendance_detail_points.attendance_detail_id',
+                                                                        'attendance_details.id',
+                                                                    )
                                                                     ->where('student_id', $it->id)
                                                                     ->where('attendance_id', $data->attendanceId)
                                                                     ->get();
 
                                                                 foreach ($getStudentPointCategory as $k => $v) {
-                                                                    array_push($studentPointCategory, $v->point_category_id);
+                                                                    array_push(
+                                                                        $studentPointCategory,
+                                                                        $v->point_category_id,
+                                                                    );
                                                                 }
 
                                                                 $isChecked = false;
@@ -530,13 +549,23 @@
                                                                     @php
                                                                         $pointDay = 0;
                                                                         $pointHour = 0;
-                                                                        if (Request::get('day1') == 5 || Request::get('day1') == 6 || Request::get('day2') == 5 || Request::get('day2') == 6 || Request::get('day1') == Request::get('day2')) {
+                                                                        if (
+                                                                            Request::get('day1') == 5 ||
+                                                                            Request::get('day1') == 6 ||
+                                                                            Request::get('day2') == 5 ||
+                                                                            Request::get('day2') == 6 ||
+                                                                            Request::get('day1') == Request::get('day2')
+                                                                        ) {
                                                                             $pointDay = 20;
                                                                         } else {
                                                                             $pointDay = 10;
                                                                         }
 
-                                                                        if ($it->course_hour != null || $it->priceid == 42 || $it->priceid == 39) {
+                                                                        if (
+                                                                            $it->course_hour != null ||
+                                                                            $it->priceid == 42 ||
+                                                                            $it->priceid == 39
+                                                                        ) {
                                                                             // $totalPoint = $it->course_hour . '0';
                                                                             $totalPoint = $pointDay;
                                                                         } else {
@@ -723,15 +752,12 @@
                             ->where('day1', $reqDay1)
                             ->where('day2', $reqDay2)
                             ->where('teacher_id', $reqTeacher)
-                            ->where('course_time', $reqTime)
-                            ->where('is_class_new', Request::get('new'));
+                            ->where('course_time', $reqTime);
+                        // ->where('is_class_new', Request::get('new'));
                         if ($countAgenda != 0) {
                             $agenda = $agenda->whereRaw('(' . $whereRaw . ')');
                         }
-                        $agenda = $agenda
-                            ->orderBy('attendances.id', 'DESC')
-                            ->groupBy('attendances.id')
-                            ->get();
+                        $agenda = $agenda->orderBy('attendances.id', 'DESC')->groupBy('attendances.id')->get();
                     @endphp
                     {{-- @if (Auth::guard('teacher')->check() == true) --}}
                     <div class="card">
@@ -740,6 +766,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                {{-- {{ dd($agenda) }} --}}
                                 @foreach ($agenda as $item)
                                     <div class="col-md-3">
                                         <div class="card">
