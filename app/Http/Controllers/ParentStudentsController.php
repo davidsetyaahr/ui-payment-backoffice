@@ -98,7 +98,7 @@ class ParentStudentsController extends Controller
             $getStudent = Students::find($value->id);
             $getStudent->barcode = $value->id . '.jpg';
             $getStudent->save();
-            
+
             //File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
             File::put(public_path('barcode/' . $value->id . '.jpg'), $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
         }
@@ -120,7 +120,9 @@ class ParentStudentsController extends Controller
 
     public function print($id)
     {
-        $student = Students::join('price', 'price.id', 'student.priceid')->find($id);
+        // $student = Students::join('price', 'price.id', 'student.priceid')->find($id);
+        $student = Students::find($id);
+
         return view('parents.print', compact('id', 'student'));
     }
 
