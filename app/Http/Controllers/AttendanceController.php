@@ -100,7 +100,7 @@ class AttendanceController extends Controller
         $reqDay2 = $request->day2;
         $reqTime = $request->time;
         $reqTeacher = $request->teacher;
-        $reqNew = $request->new;
+        // $reqNew = $request->new;
         // $reqAmpm = $request->ampm;
         $student = "";
         $whereRaw = "";
@@ -112,7 +112,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
-            ->where('is_class_new', $reqNew)
+            // ->where('is_class_new', $reqNew)
             ->orderBy('id', 'DESC')
             ->first();
         // $agenda = [];
@@ -183,7 +183,7 @@ class AttendanceController extends Controller
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime)
-            ->where('is_class_new', $request->new)
+            // ->where('is_class_new', $request->new)
             ->where('is_follow_up', '!=', '1');
         if ($request->student) {
             $student = $student->where('id', $request->student);
@@ -208,7 +208,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
-            ->where('is_class_new', $request->new)
+            // ->where('is_class_new', $request->new)
             ->orderBy('id', 'asc');
         if ($request->student) {
             $attendance = $attendance->whereHas('detail', function ($q) use ($request) {
@@ -221,7 +221,7 @@ class AttendanceController extends Controller
         }
         $attendance = $attendance->get();
         if (count($student) != 0) {
-            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime', 'reqNew'));
+            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
         } else {
             $inStudent = Students::where('status', 'INACTIVE')->where('priceid', $class->id)
                 ->where("day1", $reqDay1)
