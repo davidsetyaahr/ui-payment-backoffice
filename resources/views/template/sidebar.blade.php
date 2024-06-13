@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <ul class="nav nav-primary">
-                    @if (Auth::guard('teacher')->user() == null)
+                    @if (Auth::guard('teacher')->user() != null)
                         <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
                             <a href="{{ url('/dashboard') }}" class="collapsed">
                                 <i class="fas fa-home"></i>
@@ -179,14 +179,14 @@
                             </a>
 
                         </li>
-                        @endif
-                        <li class="nav-item {{ Request::segment(1) == 'follow-up' ? 'active' : '' }}">
-                            <a href="{{ url('/follow-up') }}" class="collapsed">
-                                <i class="fas fa-database"></i>
-                                <p>Follow Up</p>
-                            </a>
+                    @endif
+                    <li class="nav-item {{ Request::segment(1) == 'follow-up' ? 'active' : '' }}">
+                        <a href="{{ url('/follow-up') }}" class="collapsed">
+                            <i class="fas fa-database"></i>
+                            <p>Follow Up</p>
+                        </a>
 
-                        </li>
+                    </li>
                 </ul>
             </div>
         </div>

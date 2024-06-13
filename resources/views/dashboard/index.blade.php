@@ -18,15 +18,25 @@
         <div class="container mb-5 mt-5">
             <div class="row">
                 @foreach ($arr as $key => $item)
-                    <div class="col-md-3 ">
+                    @php
+                        // cek apakah due_date sudah melawati 14 hari, jika iya tampilkan jika tidak jangan tampilkan
+                        // $due_date = Carbon\Carbon::parse($item->due_date);
+                        // $interval = Carbon\Carbon::now()->diffInDays($due_date);
+                        // if ($interval <= 14) {
+                        //     $hidden_data = '';
+                        // } else {
+                        //     $hidden_data = 'hidden';
+                        // }
+                    @endphp
+                    <div class="col-md-3">
 
                         <div class="alert alert-warning alert-dismissible fade show" role="alert" style="height: 120px">
-                            <strong>Remember to Input Score in </strong> <span style="font-size: 11px">
+                            <strong>Remember to Input Score in </strong> <br> <span style="font-size: 12px">
                                 {{ $item->class . ' - ' . $item->review_test }}</span>
                             <p><i class="fas fa-info-circle"> {{ $item->name }}</i></p>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            {{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>
+                            </button> --}}
                         </div>
 
                     </div>
@@ -138,7 +148,7 @@
                                         <div class="col-md-12">
                                             @if ($data->announces)
                                                 <!--<img style="width: 100%"
-                                                                                                                                                                                                                    src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                                                                                                                                                                                                                                                                                                src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
                                                 <img style="width: 100%" src="{{ url($data->announces->banner) }}"
                                                     alt="">
                                             @endif

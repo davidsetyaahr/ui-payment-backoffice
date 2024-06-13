@@ -28,19 +28,26 @@ class UsersController extends Controller
         $student = Students::where('status', 'ACTIVE')->where('course_time', '!=', null)->count();
         $parent = Parents::count();
         $teacher = Teacher::count();
+
         $arr = [];
         if (Auth::guard('teacher')->check()) {
-            $nextWeek = date('Y-m-d', strtotime('next week'));
+            // $twonextWeek = date('Y-m-d', strtotime('next week'));
+
             $test = DB::table('order_reviews as or2')
-                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test', 's.name')
+                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test', 's.name', 'p.program', 'p.id', 'or2.due_date')
                 ->join('attendances as a', 'a.id', '=', 'or2.id_attendance')
                 ->join('attendance_details as ad', 'ad.attendance_id', '=', 'a.id')
                 ->join('student as s', 's.id', '=', 'ad.student_id')
+                ->join('price as p', 'p.id', '=', 'a.price_id')
                 ->where('or2.id_teacher', Auth::guard('teacher')->id())
-                ->where('or2.due_date', '<=', $nextWeek)
+                // ->where('or2.due_date', '<=', $twonextWeek)
                 ->where('or2.type', 'test')
+                ->where('s.status', 'ACTIVE')
+                ->orderBy('p.id', 'ASC')
                 ->groupBy('ad.student_id', 'a.price_id', 'or2.test_id', 'or2.id_teacher')
                 ->get();
+
+
             foreach ($test as $item) {
                 $test1 = DB::table('student_scores as ss')
                     ->where('student_id', $item->student_id)
@@ -52,6 +59,7 @@ class UsersController extends Controller
                     array_push($arr, $item);
                 }
             }
+            // dd($arr);
 
             $announces = Announces::where('announce_for', 'Teacher')->orderBy('id', 'DESC')->first();
         } else
@@ -64,6 +72,13 @@ class UsersController extends Controller
             'teacher' => $teacher,
             'announces' => $announces,
         ]);
+
+
+
+
+
+
+
 
         return view('dashboard.index', compact('data', 'arr'));
     }
