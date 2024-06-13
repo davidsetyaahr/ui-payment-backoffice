@@ -154,12 +154,15 @@
                 url: "{{ url('score/ajax-last-class/') }}?id=" + $(this).val(),
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
+
                     $('#getClassLast').empty();
                     $('#getClassLast').append(`
                         <option value="">---Choose Class---</option>
                 `);
                     $(response).each(function(i, v) {
+                        // response = JSON.parse(v.price);
+
+
                         $('#getClassLast').append(`
                                 <option value="${v.price_id}">${v.program}</option>
                         `);
