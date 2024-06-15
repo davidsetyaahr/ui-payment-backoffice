@@ -59,10 +59,10 @@
 
         /* Create the permissionCheckBox/indicator (hidden when not checked) */
         /*.permissionCheckBox:after {
-                                content: "";
-                                position: absolute;
-                                display: none;
-                            }*/
+                                            content: "";
+                                            position: absolute;
+                                            display: none;
+                                        }*/
 
 
 
@@ -74,10 +74,10 @@
 
         /* Show the permissionCheckBox when checked */
         /*.permission input[type=checkbox]:checked~.permissionCheckBox:after {
-                                display: block;
-                            }*.
+                                            display: block;
+                                        }*.
 
-                            /* Style the permissionCheckBox/indicator */
+                                        /* Style the permissionCheckBox/indicator */
         .permission .permissionCheckBox::after {
             left: 9px;
             top: 5px;
@@ -121,10 +121,10 @@
 
         /* Create the alphaCheckBox/indicator (hidden when not checked) */
         /*.alphaCheckBox:after {
-                                content: "";
-                                position: absolute;
-                                display: none;
-                            }*/
+                                            content: "";
+                                            position: absolute;
+                                            display: none;
+                                        }*/
 
         span.alphaCheckBox.checked::after {
             content: "";
@@ -134,8 +134,8 @@
 
         /* Show the alphaCheckBox when checked */
         /*.alpha input[type=checkbox]:checked~.alphaCheckBox:after {
-                                display: block;
-                            }*/
+                                            display: block;
+                                        }*/
 
 
 

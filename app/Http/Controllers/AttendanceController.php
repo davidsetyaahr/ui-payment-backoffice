@@ -86,6 +86,7 @@ class AttendanceController extends Controller
         // };
         // dd($already_absent);
 
+
         return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level', 'semiPrivate', 'isNew'));
     }
 
@@ -221,6 +222,7 @@ class AttendanceController extends Controller
         }
         $attendance = $attendance->get();
         if (count($student) != 0) {
+
             return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
         } else {
             $inStudent = Students::where('status', 'INACTIVE')->where('priceid', $class->id)
@@ -239,6 +241,7 @@ class AttendanceController extends Controller
                 'id_teacher' => null,
                 'id_staff' => null,
             ]);
+
             return redirect('/attendance/class')->with('error', 'There is no student');
         }
     }

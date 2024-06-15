@@ -101,12 +101,6 @@
                                                             <b>
                                                                 {{ $item->program }}</b>
                                                             @if ($item->is_class_new == true)
-                                                                {{-- @foreach ($already_absent as $ab)
-                                                                    $new_label = '';
-                                                                    @if ($item->price_id != $ab->price_id && $item->day1 == $ab->day1 && $item->day2 == $ab->day2 && $item->course_time == $ab->course_time && $item->id_teacher == $ab->teacher_id)
-                                                                        $new_label = '<span style="color: red">(New!)</span>';
-                                                                    @endif
-                                                                @endforeach --}}
                                                                 @php
                                                                     $already_absent = DB::table('attendances')
                                                                         ->where([
@@ -125,9 +119,9 @@
                                                                         $new_label = '';
                                                                     }
                                                                 @endphp
-
                                                                 <span style="color: red" {{ $new_label }}>(New!)</span>
                                                             @endif
+
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
                                                             <div>
@@ -160,7 +154,8 @@
                                                         @endif
                                                     </div>
                                                     <br>
-                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                    <b>{{ $item->day_one }}
+                                                        {{ $item->day1 != $item->day2 ? '&' : '' }}
                                                         {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>

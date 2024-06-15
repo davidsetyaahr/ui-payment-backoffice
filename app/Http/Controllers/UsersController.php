@@ -14,6 +14,7 @@ use Facade\FlareClient\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -34,17 +35,19 @@ class UsersController extends Controller
             // $twonextWeek = date('Y-m-d', strtotime('next week'));
 
             $test = DB::table('order_reviews as or2')
-                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test', 's.name', 'p.program', 'p.id', 'or2.due_date')
+                ->select('or2.test_id', 'a.price_id', 'ad.student_id', 'or2.id_teacher', 'or2.class', 'or2.review_test', 's.name', 'p.program', 'p.id', 'day1.day as day1', 'day2.day as day2', 'a.course_time', 'or2.due_date')
                 ->join('attendances as a', 'a.id', '=', 'or2.id_attendance')
                 ->join('attendance_details as ad', 'ad.attendance_id', '=', 'a.id')
                 ->join('student as s', 's.id', '=', 'ad.student_id')
                 ->join('price as p', 'p.id', '=', 'a.price_id')
+                ->join('day as day1', 'day1.id', '=', 'a.day1')
+                ->join('day as day2', 'day2.id', '=', 'a.day2')
                 ->where('or2.id_teacher', Auth::guard('teacher')->id())
                 // ->where('or2.due_date', '<=', $twonextWeek)
                 ->where('or2.type', 'test')
                 ->where('s.status', 'ACTIVE')
                 ->orderBy('p.id', 'ASC')
-                ->groupBy('ad.student_id', 'a.price_id', 'or2.test_id', 'or2.id_teacher')
+                // ->groupBy('ad.student_id', 'a.price_id', 'or2.test_id', 'or2.id_teacher')
                 ->get();
 
 
@@ -212,7 +215,8 @@ class UsersController extends Controller
                 'username' => $request->username,
             ]);
             if ($request->password) {
-                $input['password'] = bcrypt($request->password);
+
+                $input['password'] = Hash::make($request->password);
             }
             if (Auth::guard('teacher')->check()) {
                 Teacher::where('id', $user)->update($input);
