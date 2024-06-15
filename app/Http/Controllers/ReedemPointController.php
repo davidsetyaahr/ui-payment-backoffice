@@ -300,6 +300,8 @@ class ReedemPointController extends Controller
             }
             $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
         }
+
+        // dd($data);
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
 

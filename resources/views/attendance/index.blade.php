@@ -91,110 +91,121 @@
                             <hr>
                             <div class="row">
                                 @foreach ($general as $key => $item)
-                                    <div class="col-sm-6 col-md-4 ">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <span style="font-size: 16px">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div>
-                                                            <i class="fa fas fa-angle-right"></i>
-                                                            <b>
-                                                                {{ $item->program }}</b>
-                                                            @if ($item->is_class_new == true)
-                                                                {{-- @foreach ($already_absent as $ab)
+                                    @if (
+                                        $item->priceid != 17 &&
+                                            $item->id_teacher != 4 &&
+                                            $item->day1 != 5 &&
+                                            $item->day2 != 5 &&
+                                            $item->course_time == '17:00' &&
+                                            $item->is_class_new != 1)
+                                        <div class="col-sm-6 col-md-4 ">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <span style="font-size: 16px">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>
+                                                                <i class="fa fas fa-angle-right"></i>
+                                                                <b>
+                                                                    {{ $item->program }}</b>
+                                                                @if ($item->is_class_new == true)
+                                                                    {{-- @foreach ($already_absent as $ab)
                                                                     $new_label = '';
                                                                     @if ($item->price_id != $ab->price_id && $item->day1 == $ab->day1 && $item->day2 == $ab->day2 && $item->course_time == $ab->course_time && $item->id_teacher == $ab->teacher_id)
                                                                         $new_label = '<span style="color: red">(New!)</span>';
                                                                     @endif
                                                                 @endforeach --}}
-                                                                @php
-                                                                    $already_absent = DB::table('attendances')
-                                                                        ->where([
-                                                                            ['price_id', $item->priceid],
-                                                                            ['day1', $item->day1],
-                                                                            ['day2', $item->day2],
-                                                                            ['course_time', $item->course_time],
-                                                                            ['teacher_id', $item->id_teacher],
-                                                                            ['is_presence', 1],
-                                                                        ])
-                                                                        ->first();
+                                                                    @php
+                                                                        $already_absent = DB::table('attendances')
+                                                                            ->where([
+                                                                                ['price_id', $item->priceid],
+                                                                                ['day1', $item->day1],
+                                                                                ['day2', $item->day2],
+                                                                                ['course_time', $item->course_time],
+                                                                                ['teacher_id', $item->id_teacher],
+                                                                                ['is_presence', 1],
+                                                                            ])
+                                                                            ->first();
 
-                                                                    if ($already_absent != null) {
-                                                                        $new_label = 'hidden';
-                                                                    } else {
-                                                                        $new_label = '';
-                                                                    }
-                                                                @endphp
+                                                                        if ($already_absent != null) {
+                                                                            $new_label = 'hidden';
+                                                                        } else {
+                                                                            $new_label = '';
+                                                                        }
+                                                                    @endphp
 
-                                                                <span style="color: red" {{ $new_label }}>(New!)</span>
+                                                                    <span style="color: red"
+                                                                        {{ $new_label }}>(New!)</span>
+                                                                @endif
+                                                            </div>
+                                                            @if (Auth::guard('staff')->check() == true)
+                                                                <div>
+                                                                    <form action="{{ url('schedule-class/delete') }}"
+                                                                        method="POST" class="form-inline">
+                                                                        @method('delete')
+                                                                        @csrf
+                                                                        <input type="hidden" name="priceid"
+                                                                            value="{{ $item->priceid }}">
+                                                                        <input type="hidden" name="day1"
+                                                                            value="{{ $item->day1 }}">
+                                                                        <input type="hidden" name="day2"
+                                                                            value="{{ $item->day2 }}">
+                                                                        <input type="hidden" name="course_time"
+                                                                            value="{{ $item->course_time }}">
+                                                                        <input type="hidden" name="id_teacher"
+                                                                            value="{{ $item->id_teacher }}">
+                                                                        <button type="submit"
+                                                                            onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
+                                                                            class="btn btn-xs btn-danger"
+                                                                            style="margin-right: 10px !important;"><i
+                                                                                class="fas fa-trash"></i></button>
+                                                                        <a href="javascript:void(0)"
+                                                                            class="btn btn-xs btn-success"
+                                                                            data-toggle="modal"
+                                                                            data-target="#editJadwalModal"
+                                                                            onclick="updateModalReg({{ $key }})"><i
+                                                                                class="fas fa-pencil-alt"></i></a>
+                                                                    </form>
+                                                                </div>
                                                             @endif
                                                         </div>
-                                                        @if (Auth::guard('staff')->check() == true)
-                                                            <div>
-                                                                <form action="{{ url('schedule-class/delete') }}"
-                                                                    method="POST" class="form-inline">
-                                                                    @method('delete')
-                                                                    @csrf
-                                                                    <input type="hidden" name="priceid"
-                                                                        value="{{ $item->priceid }}">
-                                                                    <input type="hidden" name="day1"
-                                                                        value="{{ $item->day1 }}">
-                                                                    <input type="hidden" name="day2"
-                                                                        value="{{ $item->day2 }}">
-                                                                    <input type="hidden" name="course_time"
-                                                                        value="{{ $item->course_time }}">
-                                                                    <input type="hidden" name="id_teacher"
-                                                                        value="{{ $item->id_teacher }}">
-                                                                    <button type="submit"
-                                                                        onclick="return confirm('apakah anda yakin ingin menghapus data ??')"
-                                                                        class="btn btn-xs btn-danger"
-                                                                        style="margin-right: 10px !important;"><i
-                                                                            class="fas fa-trash"></i></button>
-                                                                    <a href="javascript:void(0)"
-                                                                        class="btn btn-xs btn-success" data-toggle="modal"
-                                                                        data-target="#editJadwalModal"
-                                                                        onclick="updateModalReg({{ $key }})"><i
-                                                                            class="fas fa-pencil-alt"></i></a>
-                                                                </form>
-                                                            </div>
-                                                        @endif
+                                                        <br>
+                                                        <b>{{ $item->day_one }}
+                                                            {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                            {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
+                                                        <br>
+                                                        <b>{{ $item->course_time }}</b>
+
+                                                        <input type="hidden" id="regprogramModal{{ $key }}"
+                                                            value="{{ $item->program }}">
+                                                        <input type="hidden" id="regcourseTimeModal{{ $key }}"
+                                                            value="{{ $item->course_time }}">
+                                                        <input type="hidden" id="regday1Modal{{ $key }}"
+                                                            value="{{ $item->day1 }}">
+                                                        <input type="hidden" id="regday2Modal{{ $key }}"
+                                                            value="{{ $item->day2 }}">
+                                                        <input type="hidden" id="regteacherModal{{ $key }}"
+                                                            value="{{ $item->teacher_name }}">
+                                                        <input type="hidden" id="regteacherOldModal{{ $key }}"
+                                                            value="{{ $item->id_teacher }}">
+                                                        <input type="hidden" id="regclassModal{{ $key }}"
+                                                            value="{{ $item->priceid }}">
+                                                        <input type="hidden" id="regdayOneModal{{ $key }}"
+                                                            value="{{ $item->day_one }}">
+                                                        <input type="hidden" id="regdayTwoModal{{ $key }}"
+                                                            value="{{ $item->day_two }}">
+                                                        <input type="hidden" id="regidteacherModal{{ $key }}"
+                                                            value="{{ $item->id_teacher }}">
+                                                    </span>
+
+                                                    <div class="d-flex justify-content-between mt-4">
+                                                        <div class="fw-bold">{{ $item->teacher_name }}</div>
+                                                        <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time) . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new }}"
+                                                            class="btn btn-xs btn-primary">View</a>
                                                     </div>
-                                                    <br>
-                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
-                                                        {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
-                                                    <br>
-                                                    <b>{{ $item->course_time }}</b>
-
-                                                    <input type="hidden" id="regprogramModal{{ $key }}"
-                                                        value="{{ $item->program }}">
-                                                    <input type="hidden" id="regcourseTimeModal{{ $key }}"
-                                                        value="{{ $item->course_time }}">
-                                                    <input type="hidden" id="regday1Modal{{ $key }}"
-                                                        value="{{ $item->day1 }}">
-                                                    <input type="hidden" id="regday2Modal{{ $key }}"
-                                                        value="{{ $item->day2 }}">
-                                                    <input type="hidden" id="regteacherModal{{ $key }}"
-                                                        value="{{ $item->teacher_name }}">
-                                                    <input type="hidden" id="regteacherOldModal{{ $key }}"
-                                                        value="{{ $item->id_teacher }}">
-                                                    <input type="hidden" id="regclassModal{{ $key }}"
-                                                        value="{{ $item->priceid }}">
-                                                    <input type="hidden" id="regdayOneModal{{ $key }}"
-                                                        value="{{ $item->day_one }}">
-                                                    <input type="hidden" id="regdayTwoModal{{ $key }}"
-                                                        value="{{ $item->day_two }}">
-                                                    <input type="hidden" id="regidteacherModal{{ $key }}"
-                                                        value="{{ $item->id_teacher }}">
-                                                </span>
-
-                                                <div class="d-flex justify-content-between mt-4">
-                                                    <div class="fw-bold">{{ $item->teacher_name }}</div>
-                                                    <a href="{{ url('attendance/form/' . $item->priceid . '?day1=' . $item->day1 . '&day2=' . $item->day2 . '&time=' . $item->course_time) . '&teacher=' . $item->id_teacher . '&new=' . $item->is_class_new }}"
-                                                        class="btn btn-xs btn-primary">View</a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
