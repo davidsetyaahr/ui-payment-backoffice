@@ -295,6 +295,7 @@ class ReedemPointController extends Controller
         $data = [];
         if ($request->from && $request->to) {
             $data = PointHistory::with('student')->whereBetween('date', [$request->from, $request->to]);
+
             if ($request->student) {
                 $data = $data->where('student_id', $request->student)->orderBy('date', 'ASC');
             }

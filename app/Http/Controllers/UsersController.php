@@ -14,6 +14,7 @@ use Facade\FlareClient\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -214,7 +215,8 @@ class UsersController extends Controller
                 'username' => $request->username,
             ]);
             if ($request->password) {
-                $input['password'] = bcrypt($request->password);
+
+                $input['password'] = Hash::make($request->password);
             }
             if (Auth::guard('teacher')->check()) {
                 Teacher::where('id', $user)->update($input);

@@ -104,8 +104,6 @@
 
                                             $groupedItems = collect($associativeArray)->groupBy('date')->toArray();
 
-                                            // dd($groupedItems);
-
                                         @endphp
                                         @php
                                             if (Request::get('student')) {
@@ -134,7 +132,6 @@
                                                 }
 
                                             @endphp
-
 
                                             <tr>
                                                 <td>{{ $no++ }}</td>
