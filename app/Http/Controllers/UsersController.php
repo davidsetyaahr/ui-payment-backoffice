@@ -44,7 +44,7 @@ class UsersController extends Controller
                 ->where('or2.id_teacher', Auth::guard('teacher')->id())
                 // ->where('or2.due_date', '<=', $twonextWeek)
                 ->where('or2.type', 'test')
-                // ->where('s.status', 'ACTIVE')
+                ->where('s.status', 'ACTIVE')
                 ->orderBy('p.id', 'ASC')
                 // ->groupBy('ad.student_id', 'a.price_id', 'or2.test_id', 'or2.id_teacher')
                 ->get();
