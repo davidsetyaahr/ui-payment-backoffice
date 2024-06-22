@@ -54,6 +54,7 @@
                             <hr>
                             <div class="row">
                                 @foreach ($class as $key => $item)
+                                    {{-- {{ dd($item) }} --}}
                                     <div class="col-sm-6 col-md-4 ">
                                         <div class="card">
                                             <div class="card-body">
@@ -69,11 +70,14 @@
                                                                     ->where('id_teacher', $item->id_teacher)
                                                                     ->where('course_time', $item->course_time)
                                                                     ->get();
+                                                                // dd($studentCount);
+
                                                                 $countStudent = [];
                                                                 foreach ($studentCount as $keyS => $valueS) {
-                                                                    if ($valueS->is_certificate == true) {
-                                                                        array_push($countStudent, $valueS);
-                                                                    }
+                                                                    array_push($countStudent, $valueS);
+                                                                    // if ($valueS->is_certificate == true) {
+                                                                    //     array_push($countStudent, $valueS);
+                                                                    // }
                                                                 }
                                                             @endphp
                                                             @if ($item->program == 'Private' || $item->program == 'Semi Private')

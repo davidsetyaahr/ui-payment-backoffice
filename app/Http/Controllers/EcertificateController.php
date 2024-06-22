@@ -37,62 +37,19 @@ class EcertificateController extends Controller
                     $where = $where . ' AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
                 }
                 if (strpos($adult->program, "Adult") !== false || strpos($adult->program, "Conversation") !== false) {
-                    $having = 'HAVING
-        COUNT(DISTINCT CASE WHEN ss.test_id = 2 THEN ss.student_id END) > 0';
-                    $where .= '
-        AND ss.test_id = 2';
+                    $having = 'HAVING COUNT(DISTINCT CASE WHEN ss.test_id = 2 THEN ss.student_id END) > 0';
+                    $where .= ' AND ss.test_id = 2';
                 } else if (strpos($adult->program, "Advance") !== false) {
-                    $having = 'HAVING
-        COUNT(DISTINCT CASE WHEN ss.test_id = 1 THEN ss.student_id END) > 0';
-                    $where .= '
-        AND ss.test_id = 1';
+                    $having = 'HAVING COUNT(DISTINCT CASE WHEN ss.test_id = 1 THEN ss.student_id END) > 0';
+                    $where .= ' AND ss.test_id = 1';
                 } else {
-                    $having = 'HAVING
-        COUNT(DISTINCT CASE WHEN ss.test_id = 3 THEN ss.student_id END) > 0';
-                    $where .= '
-        AND ss.test_id = 3';
+                    $having = 'HAVING COUNT(DISTINCT CASE WHEN ss.test_id = 3 THEN ss.student_id END) > 0';
+                    $where .= ' AND ss.test_id = 3';
                 }
-                $class = DB::select("SELECT
-        priceid,
-        day1,
-        day2,
-        course_time,
-        student.status as status_student,
-        id_teacher,
-        price.level,
-        price.program,
-        day_1.day AS day_one,
-        day_2.day AS day_two,
-        teacher.name AS teacher_name,
-        student.id_teacher AS teacher_id,
-        student.day1 AS d1,
-        student.day2 AS d2
-    FROM
-        student
-    JOIN
-        price ON student.priceid = price.id
-    JOIN
-        student_scores AS ss ON ss.student_id = student.id
-    JOIN
-        day day_1 ON student.day1 = day_1.id
-    JOIN
-        day day_2 ON student.day2 = day_2.id
-    JOIN
-        teacher ON student.id_teacher = teacher.id
-    WHERE
-        day1 IS NOT NULL
-        AND day2 IS NOT NULL
-        AND course_time IS NOT NULL
-        AND id_teacher IS NOT NULL
-        AND ss.price_id = price.id
-        AND student.status = 'ACTIVE'
-        AND (student.is_certificate = 0 OR student.is_certificate IS NULL)
-        $where
-    GROUP BY
-        priceid, day1, day2, course_time, id_teacher, price.level, price.program, day_one, day_two, teacher_name, teacher_id, d1, d2
-    $having
-    ORDER BY
-        priceid ASC, day1, course_time;");
+
+                $class = DB::select("SELECT priceid, day1, day2, course_time, student.status as status_student, id_teacher, price.level, price.program, day_1.day AS day_one, day_2.day AS day_two, teacher.name AS teacher_name, student.id_teacher AS teacher_id, student.day1 AS d1, student.day2 AS d2 FROM student JOIN price ON student.priceid = price.id JOIN student_scores AS ss ON ss.student_id = student.id JOIN day day_1 ON student.day1 = day_1.id JOIN day day_2 ON student.day2 = day_2.id JOIN teacher ON student.id_teacher = teacher.id WHERE day1 IS NOT NULL AND day2 IS NOT NULL AND course_time IS NOT NULL AND id_teacher IS NOT NULL AND ss.price_id = price.id AND student.status = 'ACTIVE'
+                -- AND (student.is_certificate = 0 OR student.is_certificate IS NULL)
+                 $where GROUP BY priceid, day1, day2, course_time, id_teacher, price.level, price.program, day_one, day_two, teacher_name, teacher_id, d1, d2 $having ORDER BY priceid ASC, day1, course_time;");
             } else {
                 $class = [];
             }
