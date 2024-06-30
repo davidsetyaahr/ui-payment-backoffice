@@ -98,7 +98,9 @@ class ParentStudentsController extends Controller
             $getStudent = Students::find($value->id);
             $getStudent->barcode = $value->id . '.jpg';
             $getStudent->save();
-            File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
+
+            //File::put('storage/barcode/' . $value->id . '.jpg', $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
+            File::put(public_path('barcode/' . $value->id . '.jpg'), $generator->getBarcode($value->id, $generator::TYPE_CODE_128));
         }
         return redirect('/barcode-student')->with('status', 'Berhasil mengupdate barcode');
     }
@@ -111,13 +113,16 @@ class ParentStudentsController extends Controller
 
     public function download($id)
     {
-        $filepath = 'storage/barcode/' . $id . '.jpg';
+        //$filepath = 'storage/barcode/' . $id . '.jpg';
+        $filepath = public_path('barcode/' . $id . '.jpg');
         return Response::download($filepath);
     }
 
     public function print($id)
     {
-        $student = Students::join('price', 'price.id', 'student.priceid')->find($id);
+        // $student = Students::join('price', 'price.id', 'student.priceid')->find($id);
+        $student = Students::find($id);
+
         return view('parents.print', compact('id', 'student'));
     }
 

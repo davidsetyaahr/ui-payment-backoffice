@@ -81,6 +81,7 @@
                                                 <th>Opening Balance</th>
                                             @endif
                                             <th>Date</th>
+                                            {{-- <th>Date Time</th> --}}
                                             <th>Point History</th>
                                             <th>Detail</th>
                                             <th>Type</th>
@@ -90,29 +91,73 @@
                                     <tbody>
                                         @php
                                             $no = 1;
+                                            $balanceInAdvanced = 0;
+                                            $associativeArray = [];
+                                            $groupedItems = [];
+                                            // $mergedItems = [];
+
+                                            $associativeArray = collect($data)
+                                                ->map(function ($data) {
+                                                    return $data->toArray();
+                                                })
+                                                ->toArray();
+
+                                            $groupedItems = collect($associativeArray)->groupBy('date')->toArray();
+
                                         @endphp
-                                        @foreach ($data as $item)
+                                        @php
+                                            if (Request::get('student')) {
+                                                // Inisialisasi nilai balance_in_advanced dari entry pertama
+                                                $balanceInAdvanced = $associativeArray[0]['balance_in_advanced'];
+                                            }
+
+                                        @endphp
+
+                                        @foreach ($associativeArray as $key => $item)
                                             @php
-                                                if (Request::get('student')) {
+
+                                                if ($key > 0) {
+                                                    if ($item['type'] == 'in') {
+                                                        $balanceInAdvanced += $item['total_point'];
+                                                    } else {
+                                                        $balanceInAdvanced -= $item['total_point'];
+                                                    }
+                                                }
+
+                                                if (Request::get('student') != null) {
                                                     $openingBalance = DB::table('point_histories')
-                                                        ->where('student_id', $item->student->id)
+                                                        ->where('student_id', $item['student']['id'])
                                                         ->where('keterangan', 'Opening Balance')
                                                         ->first();
                                                 }
+
                                             @endphp
+
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ $item->student ? ucwords($item->student->name) : '-' }}</td>
+                                                <td>{{ $item['student'] ? ucwords($item['student']['name']) : '-' }}</td>
                                                 @if (Request::get('student'))
                                                     <td>{{ $openingBalance != null ? $openingBalance->total_point : 0 }}
                                                     </td>
                                                 @endif
-                                                <td>{{ $item->date }}</td>
-                                                <td>{{ $item->total_point }}</td>
-                                                <td>{{ $item->keterangan }}</td>
-                                                <td>{{ $item->type == 'in' ? 'In' : 'Out' }}</td>
-                                                <td>{{ $item->balance_in_advanced }}</td>
+                                                <td>{{ $item['date'] ? \Carbon\Carbon::parse($item['date'])->format('d M Y') : '-' }}
+                                                </td>
+
+                                                <td>{{ $item['total_point'] }}</td>
+                                                <td>{{ $item['keterangan'] }}</td>
+                                                <td>{{ $item['type'] == 'in' ? 'In' : 'Out' }}</td>
+                                                <td>{{ $balanceInAdvanced }}</td>
+                                            </tr>
+
+                                            @php
+                                                // Set balance_in_advanced untuk iterasi berikutnya
+                                                $balanceInAdvanced = $balanceInAdvanced;
+                                            @endphp
                                         @endforeach
+
+
+
+
                                     </tbody>
                                 </table>
                             </div>

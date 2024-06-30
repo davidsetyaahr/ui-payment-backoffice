@@ -63,7 +63,16 @@
                                         } else {
                                             $test = App\Models\Tests::get();
                                         }
-                                        
+
+                                        // $cek_data = DB::table('attendances')
+                                        //     ->where('price_id', 17)
+                                        //     ->where('day1', 5)
+                                        //     ->where('day2', 5)
+                                        //     ->where('teacher_id', 4)
+                                        //     ->where('course_time', '17:00')
+                                        //     ->first();
+                                        // dd($cek_data);
+
                                     @endphp
                                     <div class="col-sm-6 col-md-4 ">
                                         <div class="card">

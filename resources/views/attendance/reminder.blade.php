@@ -127,35 +127,49 @@
                                                 @endphp
                                                 @foreach ($data as $item)
                                                     <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>{{ ucwords($item[0]->name) }}</td>
-                                                        <td>{{ $item[0]->teacher != null ? $item[0]->teacher : '-' }}</td>
-                                                        <td>{{ $item[0]->program }}</td>
-                                                        <td>{{ $item[0]->comment_teacher != null ? $item[0]->comment_teacher : '-' }}
+                                                        {{--<td>{{ $loop->iteration }}</td>--}}
+                                                        <td>{{ $no++ }}</td>
+                                                        <td>{{ ucwords($item->name) }}</td>
+                                                        <td>{{ $item->teacher != null ? $item->teacher : '-' }}</td>
+                                                        <td>{{ $item->program }}</td>
+                                                        <td>{{ $item->comment_teacher != null ? $item->comment_teacher : '-' }}
                                                         </td>
-                                                        <td>{{ $item[0]->comment_staff != null ? $item[0]->comment_staff : '-' }}
+                                                        <td>{{ $item->comment_staff != null ? $item->comment_staff : '-' }}
                                                         </td>
                                                         <td>
-                                                            @foreach ($item as $key => $value)
+                                                            {{ $item->absent_date }}
+                                                            
+                                                            {{-- @foreach ($item as $key => $value)
                                                                 {{ $value->date }}{{ $loop->last ? '' : ',' }}
-                                                            @endforeach
-                                                            {{-- {{ $item[0]->date != null ? $item[0]->date : '-' }},
-                                                            {{ $item[1]->date != null ? $item[1]->date : '-' }} --}}
+                                                            @endforeach --}}
+                                                            {{-- {{ $item->date != null ? $item->date : '-' }},
+                                                            {{ $item->date != null ? $item->date : '-' }} --}}
                                                         </td>
                                                         {{-- <td>{{ $item->program }}</td> --}}
                                                         <td>
-                                                            @if ($item[0]->is_done == true)
+                                                            @if ($item->is_done == true)
                                                                 <input type="checkbox" class="custom-checkbox-size" checked
                                                                     style="pointer-events:none">
-                                                                <a href="{{ url('attendance/reminder-absen') . '?student=' . $item[0]->student_id }}"
+                                                                <!--<a href="{{ url('attendance/reminder-absen') . '?student=' . $item->student_id }}"
+                                                                    class="btn btn-sm btn-danger text-white">Hapus</a>-->
+                                                                <a href="{{ url('attendance/reminder-absen') . '?student=' . $item->absent_id }}"
                                                                     class="btn btn-sm btn-danger text-white">Hapus</a>
                                                             @else
-                                                                <a href="{{ url('attendance/reminder-done') . '?student=' . $item[0]->student_id }}"
+                                                                <!--<a href="{{ url('attendance/reminder-done') . '?student=' . $item->student_id }}"
+                                                                    class="btn btn-sm btn-primary text-white">Done</a>-->
+                                                                <a href="{{ url('attendance/reminder-done') . '?student=' . $item->absent_id }}"
                                                                     class="btn btn-sm btn-primary text-white">Done</a>
+                                                                <!--<a href="javascript:void(0)"
+                                                                    data-tipe="{{ Auth::guard('staff')->user() != null ? 'staff' : 'teacher' }}"
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-name="{{ ucwords($item->name) }}"
+                                                                    class="btn btn-sm btn-success text-white modalAction"
+                                                                    data-toggle="modal"
+                                                                    data-target="#exampleModal">Comment</a>-->
                                                                 <a href="javascript:void(0)"
                                                                     data-tipe="{{ Auth::guard('staff')->user() != null ? 'staff' : 'teacher' }}"
-                                                                    data-id="{{ $item[0]->id }}"
-                                                                    data-name="{{ ucwords($item[0]->name) }}"
+                                                                    data-id="{{ $item->absent_id }}"
+                                                                    data-name="{{ ucwords($item->name) }}"
                                                                     class="btn btn-sm btn-success text-white modalAction"
                                                                     data-toggle="modal"
                                                                     data-target="#exampleModal">Comment</a>

@@ -10,5 +10,5 @@ class StudentScoreDetail extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'student_score_details';
-    protected $fillable = [ 'student_score_id', 'test_item_id', 'score'];
+    protected $fillable = ['student_score_id', 'test_item_id', 'score', 'created_at', 'updated_at'];
 }

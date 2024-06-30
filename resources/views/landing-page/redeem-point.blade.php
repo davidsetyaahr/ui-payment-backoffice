@@ -194,7 +194,7 @@
                                             </div>
                                             <div class="col-md-3">
 
-                                                <label for="email2">Id Student</label>
+                                                <label for="email2">Studen’s ID</label>
                                                 <input type="number" name="id_student" id="id_student"
                                                     class="form-control">
                                                 @error('student')

@@ -9,6 +9,7 @@ use App\Models\StudentScore;
 use App\Models\StudentScoreDetail;
 use App\Models\TestItems;
 use App\Models\Tests as ModelsTests;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,17 @@ class ScoreController extends Controller
             if ($request->level && Auth::guard('teacher')->check() == true) {
                 $where = $where . ' AND priceid = ' . $request->level . ' AND id_teacher =' . Auth::guard('teacher')->user()->id;
             }
-            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, student.id_teacher as teacher_id, student.day1 as d1, student.day2 as d2  from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where ORDER BY priceid ASC, day1,course_time;");
+            $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name,
+             student.id_teacher as teacher_id,  student.day1 as d1, student.day2 as d2  from student
+             join price on student.priceid = price.id
+             join day day_1 on student.day1 = day_1.id
+             join day day_2 on student.day2 = day_2.id
+             join teacher on student.id_teacher = teacher.id
+
+              WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where ORDER BY priceid ASC, day1,course_time;");
+
+
+            // dd($class);
             return view('score.form', compact('class', 'level'));
         } catch (\Throwable $th) {
             // throw $th;
@@ -57,7 +68,7 @@ class ScoreController extends Controller
                 $testItem = TestItems::get();
             }
             $reqClass = $request->class;
-            $students = Students::with('score')->where('priceid', $reqClass)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)->get();
+            $students = Students::with('score')->where('priceid', $reqClass)->where('day1', $request->day1)->where('day2', $request->day2)->where('id_teacher', $request->teacher)->where('course_time', $request->time)->where('status', 'ACTIVE')->get();
             return view('score.form-index', compact('test', 'testItem', 'students'));
         } catch (\Throwable $th) {
             //throw $th;
@@ -137,12 +148,16 @@ class ScoreController extends Controller
             $scores->comment = $request->comment ?? '-';
             $scores->price_id = $request->classt;
             $scores->date = $request->date;
+            $scores->created_at = Carbon::now();
+            $scores->updated_at = Carbon::now();
             $scores->save();
             for ($i = 0; $i < count($request->items); $i++) {
                 StudentScoreDetail::create([
                     'student_score_id' => $scores->id,
                     'test_item_id' => $request->items[$i],
                     'score' => $request->score[$i],
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ]);
             }
             if ($request->day1 != null) {
@@ -196,11 +211,13 @@ class ScoreController extends Controller
                 'comment' => $request->comment ?? '-',
                 'price_id' => $request->classt,
                 'date' => $request->date,
+                'updated_at' => Carbon::now(),
             ]);
             for ($i = 0; $i < count($request->items); $i++) {
                 StudentScoreDetail::where('id',  $request->idScore[$i])
                     ->update([
                         'score' => $request->score[$i],
+                        'updated_at' => Carbon::now(),
                     ]);
             }
             if ($request->day1 != null) {

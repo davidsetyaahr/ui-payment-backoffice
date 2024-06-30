@@ -53,7 +53,13 @@ class AttendanceController extends Controller
         if ($request->day && Auth::guard('teacher')->check() == true) {
             $where = $where . ' AND (day1 = ' . $request->day . ' OR day2 = ' . $request->day . ') AND id_teacher =' . Auth::guard('teacher')->user()->id;
         }
-        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student join price on student.priceid = price.id join day day_1 on student.day1 = day_1.id join day day_2 on student.day2 = day_2.id join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null $where ORDER BY priceid ASC, day1,course_time;");
+        $class = DB::select("SELECT DISTINCT priceid,day1,day2,course_time,id_teacher,price.level,price.program,day_1.day day_one,day_2.day day_two,teacher.name teacher_name, is_class_new from student
+        join price on student.priceid = price.id
+        join day day_1 on student.day1 = day_1.id
+        join day day_2 on student.day2 = day_2.id
+        -- join attendance_details ad on student.id = ad.student_id
+        join teacher on student.id_teacher = teacher.id  WHERE day1 is NOT null AND day2 is NOT null AND course_time is NOT null AND id_teacher is NOT null AND student.status = 'ACTIVE' $where ORDER BY priceid ASC, day1,course_time;");
+
         $private = [];
         $general = [];
         $semiPrivate = [];
@@ -68,8 +74,20 @@ class AttendanceController extends Controller
                 array_push($general, $value);
             }
         }
+        // dd($general);
         $day = DB::table('day',)->get();
-        return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level', 'semiPrivate'));
+
+        $isNew = Attendance::where('is_class_new', '1')->get();
+        // // dd($checkAbsent->toArray());
+        // $already_absent = [];
+        // foreach ($checkAbsent as $key => $value) {
+        //     $check = AttendanceDetail::where('attendance_id', $value->id)->where('is_absent', '1')->get();
+        //     array_push($already_absent, $check);
+        // };
+        // dd($already_absent);
+
+
+        return view('attendance.index', compact('private', 'general', 'day', 'teachers', 'level', 'semiPrivate', 'isNew'));
     }
 
     /**
@@ -83,7 +101,7 @@ class AttendanceController extends Controller
         $reqDay2 = $request->day2;
         $reqTime = $request->time;
         $reqTeacher = $request->teacher;
-        $reqNew = $request->new;
+        // $reqNew = $request->new;
         // $reqAmpm = $request->ampm;
         $student = "";
         $whereRaw = "";
@@ -95,7 +113,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
-            ->where('is_class_new', $reqNew)
+            // ->where('is_class_new', $reqNew)
             ->orderBy('id', 'DESC')
             ->first();
         // $agenda = [];
@@ -166,7 +184,8 @@ class AttendanceController extends Controller
             ->where("day1", $reqDay1)
             ->where("day2", $reqDay2)
             ->where('course_time', $reqTime)
-            ->where('is_class_new', $request->new);
+            // ->where('is_class_new', $request->new)
+            ->where('is_follow_up', '!=', '1');
         if ($request->student) {
             $student = $student->where('id', $request->student);
         }
@@ -176,7 +195,7 @@ class AttendanceController extends Controller
             $student = $student->where('id_teacher', $reqTeacher);
         }
 
-        $student =   $student->get();
+        $student = $student->get();
 
 
         foreach ($student as $keyS => $valueS) {
@@ -190,7 +209,7 @@ class AttendanceController extends Controller
             ->where('day2', $reqDay2)
             ->where('course_time', $reqTime)
             ->where('teacher_id', $reqTeacher)
-            ->where('is_class_new', $request->new)
+            // ->where('is_class_new', $request->new)
             ->orderBy('id', 'asc');
         if ($request->student) {
             $attendance = $attendance->whereHas('detail', function ($q) use ($request) {
@@ -203,7 +222,8 @@ class AttendanceController extends Controller
         }
         $attendance = $attendance->get();
         if (count($student) != 0) {
-            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime', 'reqNew'));
+
+            return view('attendance.form', compact('attendance', 'title', 'data', 'student', 'pointCategories', 'day', 'priceId', 'reqDay1', 'reqDay2', 'reqTeacher', 'reqTime'));
         } else {
             $inStudent = Students::where('status', 'INACTIVE')->where('priceid', $class->id)
                 ->where("day1", $reqDay1)
@@ -214,13 +234,14 @@ class AttendanceController extends Controller
             } else {
                 $inStudent = $inStudent->where('id_teacher', $reqTeacher);
             }
-            $inStudent =   $inStudent->update([
+            $inStudent = $inStudent->update([
                 'day1' => null,
                 'day2' => null,
                 'course_time' => null,
                 'id_teacher' => null,
                 'id_staff' => null,
             ]);
+
             return redirect('/attendance/class')->with('error', 'There is no student');
         }
     }
@@ -228,7 +249,7 @@ class AttendanceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -301,13 +322,13 @@ class AttendanceController extends Controller
 
                     $student = Students::where('id', $request->studentId[$i])->first();
                     Students::where('id', $request->studentId[$i])->update([
-                        'total_point' => $student->total_point +  $request->totalPoint[$i],
+                        'total_point' => $student->total_point + $request->totalPoint[$i],
                     ]);
                     if (count($request->isAbsent[$i + 1]) != 1) {
                         PointHistory::create([
                             'student_id' => $request->studentId[$i],
                             'date' => date('Y-m-d'),
-                            'total_point' =>  10,
+                            'total_point' => $request->isAbsentPoint[$i + 1],
                             'type' => 'in',
                             'keterangan' => 'Present',
                             'balance_in_advanced' => $student->total_point,
@@ -322,13 +343,13 @@ class AttendanceController extends Controller
                         PointHistory::create([
                             'student_id' => $request->studentId[$i],
                             'date' => date('Y-m-d'),
-                            'total_point' =>  30,
+                            'total_point' => 30,
                             'type' => 'in',
-                            'keterangan' =>  'Extra Birthday',
+                            'keterangan' => 'Extra Birthday',
                             'balance_in_advanced' => $student->total_point,
                         ]);
                         Students::where('id', $request->studentId[$i])->update([
-                            'total_point' => $student->total_point +  30,
+                            'total_point' => $student->total_point + 30,
                         ]);
                     }
 
@@ -348,12 +369,13 @@ class AttendanceController extends Controller
                                     'point' => $pointCategories[$pos]->point,
                                 ]);
                                 if ($request->totalPoint[$i] > 0) {
+                                    $totalPointCategory = $pointCategories[$pos]->point;
                                     PointHistory::create([
                                         'student_id' => $request->studentId[$i],
                                         'date' => date('Y-m-d'),
-                                        'total_point' =>  $pointCategories[$pos]->point,
+                                        'total_point' => $pointCategories[$pos]->point,
                                         'type' => 'in',
-                                        'keterangan' =>  $pointCategories[$pos]->name,
+                                        'keterangan' => $pointCategories[$pos]->name,
                                         'balance_in_advanced' => $student->total_point,
                                     ]);
                                 }
@@ -477,7 +499,7 @@ class AttendanceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function show(Attendance $attendance)
@@ -488,7 +510,7 @@ class AttendanceController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
@@ -580,7 +602,7 @@ class AttendanceController extends Controller
             $student = $student->where('id_teacher', $reqTeacher);
         }
 
-        $student =   $student->get();
+        $student = $student->get();
         foreach ($student as $keyS => $valueS) {
             $or = $keyS + 1 != count($student) ? ' or ' : '';
             $whereStudent .= 'student_id = ' . $valueS->id . $or;
@@ -608,8 +630,8 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Attendance  $attendance
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $attendance)
@@ -706,13 +728,13 @@ class AttendanceController extends Controller
                 $student = Students::where('id', $request->studentId[$i])->first();
                 $tmpPoint = $student->total_point - $detailTotalPoint;
                 Students::where('id', $request->studentId[$i])->update([
-                    'total_point' => $tmpPoint +  $request->totalPoint[$i],
+                    'total_point' => $tmpPoint + $request->totalPoint[$i],
                 ]);
                 if (count($request->isAbsent[$i + 1]) > 1) {
                     PointHistory::create([
                         'student_id' => $request->studentId[$i],
                         'date' => date('Y-m-d'),
-                        'total_point' =>  10,
+                        'total_point' => $request->isAbsentPoint[$i + 1],
                         'type' => 'in',
                         'keterangan' => 'Present',
                     ]);
@@ -728,7 +750,7 @@ class AttendanceController extends Controller
                                     $pos = $key;
                                 }
                             }
-                            $avl =  AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
+                            $avl = AttendanceDetailPoint::where('attendance_detail_id', $attendanceDetailId)
                                 ->get();
                             $tmpDetail = [];
 
@@ -820,7 +842,7 @@ class AttendanceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Attendance  $attendance
+     * @param \App\Models\Attendance $attendance
      * @return \Illuminate\Http\Response
      */
     public function destroy(Attendance $attendance)
@@ -832,11 +854,125 @@ class AttendanceController extends Controller
     {
         $arrAbsent = [];
         $arrAbsentFilter = [];
+
         $students = Students::where('status', 'ACTIVE')->get();
         // $students = Students::limit(100)->get();
         $class = Price::get();
         $teachers = Teacher::get();
-        foreach ($students as $key => $value) {
+
+        /*$attendance = DB::table('student s')
+            ->join('price p', 's.priceid=p.id')
+            ->join('teacher t', 's.id_teacher=t.id', 'left')
+            ->join('attendance_details ad', 's.id=ad.student_id')
+            ->selectRaw('s.name, t.name AS teacher, p.program, ad.comment_teacher, ad.comment_staff, COUNT(s.id) AS absent')
+            ->where('ad.is_absent', 1)
+            ->where('ad.is_done', 0)
+            ->where('s.status', 'ACTIVE');
+
+        if($request->level!='')
+            $attendance = $attendance->where('s.priceid', $request->level);
+
+
+        if($request->teacher!='')
+            $attendance = $attendance->where('s.id_teacher', $request->teacher)
+
+        $attendance = $attendance
+            ->groupBy('s.id')
+            ->havingRaw('absent >= 2');*/
+
+        $data = [];
+
+        //echo count($students);
+
+
+        foreach ($students as $s) {
+            $attendance = DB::table('student as s')
+                ->join('price as p', 's.priceid', 'p.id')
+                ->join('teacher as t', 's.id_teacher', 't.id')
+                ->join('attendance_details as ad', 's.id', 'ad.student_id')
+                ->join('attendances as a', 'ad.attendance_id', 'a.id')
+                ->selectRaw('s.id AS student_id, s.name, t.name AS teacher, p.program, ad.comment_teacher, ad.comment_staff, ad.is_absent, ad.is_permission, ad.is_done, ad.is_deleted, ad.id, a.date')
+                ->where('s.id', $s->id);
+
+            if (Auth::guard('teacher')->user() != null)
+                $attendance = $attendance->where('s.id_teacher', Auth::guard('teacher')->user()->id);
+
+
+            if ($request->level != '')
+                $attendance = $attendance->where('s.priceid', $request->level);
+
+            if ($request->teacher != '')
+                $attendance = $attendance->where('s.id_teacher', $request->teacher);
+
+
+            $date = new \DateTime(date('Y-m-d'));
+            $date->modify('-14 day');
+
+            $attendance = $attendance
+                ->where('a.date', '>=', $date->format('Y-m-d'))
+                ->orderBy('a.date', 'desc')->get();
+            //->limit(7)->get();
+
+            $temp = null;
+
+
+            $process = true;
+            $index = 0;
+            while ($process && $index < count($attendance)) {
+                //jika hadir atau sudah dihapus maka temp kembali ke null
+                //if($attendance[$index]->is_done=='1' || $attendance[$index]->is_absent=='1'){
+                if ($attendance[$index]->is_done == '1' || $attendance[$index]->is_permission == '1' || $attendance[$index]->is_absent == '1' || $attendance[$index]->is_deleted == '1') {
+                    $temp = null;
+                } else if ($attendance[$index]->is_absent == '0' && $attendance[$index]->is_deleted == '0') {
+                    //jika absen dan belum dihapus
+                    if ($temp == null) {
+                        $attendance[$index]->absent_date = $attendance[$index]->date;
+                        $attendance[$index]->absent_id = $attendance[$index]->id;
+
+                        $temp = $attendance[$index];
+                    } else {
+                        //jika sebelumnya sudah ada data maka masukkan ke dalam array
+
+                        $temp->absent_date .= ', ' . $attendance[$index]->date;
+                        $temp->absent_id .= '-' . $attendance[$index]->id;
+                        array_push($data, $temp);
+                        $temp = null;
+
+                        $process = false;
+                    }
+                }
+
+                $index++;
+            }
+
+            /*foreach($attendance as $r){
+                //kalau sudah done maka tidak usah diuji lagi
+
+                if($r->is_done){
+                    $temp=null;
+                }
+                else if($r->is_absent){
+                    if($temp!=null){
+                        $temp->
+
+
+                        array_push($array, $temp)
+                    }
+                    else{
+                        $r->
+                    }
+                }
+
+
+            }*/
+        }
+
+        //foreach($data as $r){
+        //    echo $r->student_id . '-' . $r->name . ' ' . $r->absent_date . '<br>';
+        //}
+
+
+        /*foreach ($students as $key => $value) {
             $ttlApha = 0;
             $attendance = AttendanceDetail::join('student as st', 'st.id', 'attendance_details.student_id')
                 ->join('price as p', 'p.id', 'st.priceid')
@@ -866,11 +1002,10 @@ class AttendanceController extends Controller
             if ($ttlApha >= 2) {
                 array_push($arrAbsent, $attendance);
             }
-        }
+        }*/
 
 
-
-        foreach ($arrAbsent as $k => $v) {
+        /*foreach ($arrAbsent as $k => $v) {
             if ($request->level != '' && $request->teacher == '') {
                 if ($v[0]->price_id == $request->level) {
                     array_push($arrAbsentFilter, $v);
@@ -896,7 +1031,7 @@ class AttendanceController extends Controller
             $data = $arrAbsentFilter;
         } else {
             $data = $arrAbsent;
-        }
+        }*/
 
         // $page = !empty($request->page) ? (int) $request->page : 1;
         // $total = count($data); //total items in array
@@ -908,6 +1043,7 @@ class AttendanceController extends Controller
         // if ($offset < 0) $offset = 0;
         // $data = array_slice($data, $offset, $limit);
         // return view('attendance.reminder', compact('data', 'totalPages'));
+
         return view('attendance.reminder', compact('data', 'class', 'teachers'));
     }
 
@@ -915,9 +1051,16 @@ class AttendanceController extends Controller
     {
         try {
             $student = $request->student;
-            AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
-                "is_done" => true,
-            ]);
+            //AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
+            //    "is_done" => true,
+            //]);
+
+            $arr = explode('-', $student);
+            foreach ($arr as $r) {
+                AttendanceDetail::where('id', $r)->update([
+                    'is_done' => '1',
+                ]);
+            }
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
@@ -931,9 +1074,18 @@ class AttendanceController extends Controller
     {
         try {
             $student = $request->student;
-            AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
+
+            /*AttendanceDetail::where('student_id', $student)->limit(2)->orderBy('id', 'desc')->update([
                 "is_absent" => '1'
-            ]);
+            ]);*/
+
+            $arr = explode('-', $student);
+            foreach ($arr as $r) {
+                AttendanceDetail::where('id', $r)->update([
+                    'is_deleted' => '1'
+                ]);
+            }
+
 
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
@@ -1018,40 +1170,70 @@ class AttendanceController extends Controller
             $student = DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
                 ->where("day2", $reqDay2)
                 ->where('course_time', $reqTime)->where('is_class_new', false)->where('id_teacher', $teacherOld)->get();
-            foreach ($student as $key => $value) {
-                if ($value->priceid != $request->update_level) {
-                    $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
-                    $mutasi = new Mutasi;
-                    $mutasi->student_id = $value->id;
-                    $mutasi->price_id = $priceId;
-                    $mutasi->user_name = Auth::guard('staff')->user()->name;
-                    $mutasi->from = 'Backoffice';
-                    $mutasi->created_at = Carbon::now()->addHours(7);
-                    $mutasi->updated_at = Carbon::now()->addHours(7);
-                    if ($score != null) {
-                        $mutasi->score_id = $score->id;
+            if ($request->type == 'edit') {
+                DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->update([
+                        "day1" => $request->update_day_one,
+                        "day2" => $request->update_day_two,
+                        "course_time" => $request->update_course_time,
+                        "priceid" => $request->update_level,
+                        "id_teacher" => $request->update_teacher,
+                    ]);
+            } else {
+                foreach ($student as $key => $value) {
+                    if ($value->priceid != $request->update_level) {
+                        $score = StudentScore::where('student_id', $request->student)->where('price_id', $value->priceid)->orderBy('id', 'desc')->first();
+                        $mutasi = new Mutasi;
+                        $mutasi->student_id = $value->id;
+                        $mutasi->price_id = $priceId;
+                        $mutasi->user_name = Auth::guard('staff')->user()->name;
+                        $mutasi->from = 'Backoffice';
+                        $mutasi->created_at = Carbon::now()->addHours(7);
+                        $mutasi->updated_at = Carbon::now()->addHours(7);
+                        if ($score != null) {
+                            $mutasi->score_id = $score->id;
+                        }
+                        $mutasi->save();
                     }
-                    $mutasi->save();
                 }
-            }
-            // New Class
-            DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->update([
-                    "day1" => $request->update_day_one,
-                    "day2" => $request->update_day_two,
-                    "course_time" => $request->update_course_time,
-                    "priceid" => $request->update_level,
-                    "id_teacher" => $request->update_teacher,
-                    "is_class_new" => true,
-                ]);
+                // New Class
+                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '0')->update([
+                        "day1" => $request->update_day_one,
+                        "day2" => $request->update_day_two,
+                        "course_time" => $request->update_course_time,
+                        "priceid" => $request->update_level,
+                        "id_teacher" => $request->update_teacher,
+                        "is_class_new" => true,
+                        "is_certificate" => null,
+                        "date_certificate" => null,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
 
-            // Old Class
-            DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
-                ->where("day2", $reqDay2)
-                ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
-                    "is_class_new" => false,
-                ]);
+                // Failed Promoted From ecertificate
+                DB::table('student')->where('priceid', $priceId)->where('is_class_new', false)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $teacherOld)->where('is_failed_promoted', '1')->update([
+                        "is_certificate" => null,
+                        "date_certificate" => null,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
+
+
+                // Old Class
+                DB::table('student')->where('priceid', $priceId)->where("day1", $reqDay1)
+                    ->where("day2", $reqDay2)
+                    ->where('course_time', $reqTime)->where('id_teacher', $request->old_teacher)->where('is_class_new', true)->update([
+                        "is_class_new" => false,
+                        "is_failed_promoted" => '0',
+                        "is_follow_up" => '0',
+                    ]);
+            }
+
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());
@@ -1063,13 +1245,27 @@ class AttendanceController extends Controller
     public function addComment($id, Request $request)
     {
         try {
-            $model = AttendanceDetail::find($id);
+            /*$model = AttendanceDetail::find($id);
             if ($request->type == 'teacher') {
                 $model->comment_teacher = $request->comment;
             } else {
                 $model->comment_staff = $request->comment;
             }
-            $model->save();
+            $model->save();*/
+
+            $arr = explode('-', $id);
+
+            foreach ($arr as $r) {
+                $model = AttendanceDetail::find($r);
+                if ($request->type == 'teacher') {
+                    $model->comment_teacher = $request->comment;
+                } else {
+                    $model->comment_staff = $request->comment;
+                }
+                $model->save();
+            }
+
+
             return redirect()->back()->with('message', 'Berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('message', 'Terjadi kesalahan. : ' . $e->getMessage());

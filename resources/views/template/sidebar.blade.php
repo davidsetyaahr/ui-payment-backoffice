@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <ul class="nav nav-primary">
-                    @if (Auth::guard('teacher')->user() == null)
+                    @if (Auth::guard('teacher')->user() != null)
                         <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
                             <a href="{{ url('/dashboard') }}" class="collapsed">
                                 <i class="fas fa-home"></i>
@@ -105,7 +105,7 @@
                         <li class="nav-item {{ Request::segment(1) == 'schedule-class' ? 'active' : '' }}">
                             <a href="{{ url('/schedule-class') }}" class="collapsed">
                                 <i class="fas fa-calendar"></i>
-                                <p>Schedule Class</p>
+                                <p>Class Schedule</p>
                             </a>
 
                         </li>
@@ -116,13 +116,15 @@
                             </a>
 
                         </li>
-                        <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
-                            <a href="{{ url('/history-test') }}" class="collapsed">
-                                <i class="fas fa-book"></i>
-                                <p>Test History</p>
-                            </a>
+                        @if (Auth::guard('teacher')->user() == null)
+                            <li class="nav-item {{ Request::segment(1) == 'history-test' ? 'active' : '' }}">
+                                <a href="{{ url('/history-test') }}" class="collapsed">
+                                    <i class="fas fa-book"></i>
+                                    <p>Test History</p>
+                                </a>
 
-                        </li>
+                            </li>
+                        @endif
                     @endif
 
                     <li class="nav-item {{ Request::segment(2) == 'reminder' ? 'active' : '' }}">
@@ -178,6 +180,13 @@
 
                         </li>
                     @endif
+                    <li class="nav-item {{ Request::segment(1) == 'follow-up' ? 'active' : '' }}">
+                        <a href="{{ url('/follow-up') }}" class="collapsed">
+                            <i class="fas fa-database"></i>
+                            <p>Follow Up</p>
+                        </a>
+
+                    </li>
                 </ul>
             </div>
         </div>

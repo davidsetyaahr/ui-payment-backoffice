@@ -14,27 +14,93 @@
                 </div>
             </div>
         </div>
+
+        <div class="container mb-5 mt-5">
+            <div class="row">
+                {{-- @foreach ($arr as $key => $item) --}}
+                {{-- @php
+                        // cek apakah due_date sudah melawati 14 hari, jika iya tampilkan jika tidak jangan tampilkan
+                        // $due_date = Carbon\Carbon::parse($item->due_date);
+                        // $interval = Carbon\Carbon::now()->diffInDays($due_date);
+                        // if ($interval <= 14) {
+                        //     $hidden_data = '';
+                        // } else {
+                        //     $hidden_data = 'hidden';
+                        // }
+                        // cek datanya apakah
+                    @endphp --}}
+                {{-- <div class="col-md-3">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="height: 120px">
+                            <strong>Remember to Input Score in </strong> <br> <span style="font-size: 12px">
+                                {{ $item->class . ' - ' . $item->review_test }}</span>
+                            <p><i class="fas fa-info-circle"> {{ $item->name }}</i></p>
+                        </div>
+
+                    </div> --}}
+                @php
+
+                    // dd($arr);
+                    // Mengelompokkan array secara manual
+                    $groupedItems = [];
+                    $testing = '';
+                    foreach ($arr as $item) {
+                        $groupedItems[$item->program][] = $item;
+                    }
+                    // dd($groupedItems[]);
+                @endphp
+
+                @foreach ($groupedItems as $program => $items)
+                    {{-- {{ dd($groupedItems) }} --}}
+                    <div class="col-md-4 box">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="height: auto">
+                            <strong>Remember to Input Score in </strong><br>
+                            @if (!empty($items))
+                                @php
+                                    $firstItem = $items[0]; // Mengambil elemen pertama dari $items
+                                @endphp
+                                <p class="mb-2" style="font-size: 15px;">
+                                    {{ $program . ' ' . $firstItem->day1 . ' ' . $firstItem->day2 . ' at ' . $firstItem->course_time }}
+                                </p>
+                            @endif
+                            {{-- <p class="mb-2" style="font-size: 15px;">
+                                {{ $program . ' ' . $item->day1 . ' ' . $item->day2 . ' at ' . $item->course_time }}
+                            </p> --}}
+
+                            @foreach ($items as $item)
+                                <p><i class="fas fa-info-circle"> {{ $item->name }}</i></p>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+                {{-- @endforeach --}}
+            </div>
+        </div>
+
+
+
         <div class="page-inner mt--5">
             @if (session('message'))
-                <script>
-                    swal("Need to follow up", "", {
-                        icon: "info",
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-success'
+                @if ($arr != null)
+                    <script>
+                        swal("Need to follow up", "", {
+                            icon: "info",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                },
+                                dismiss: {
+                                    className: 'btn btn-secondary'
+                                },
                             },
-                            dismiss: {
-                                className: 'btn btn-secondary'
-                            },
-                        },
-                    }).then((result) => {
-                        console.log(result);
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result == true) {
-                            window.location = "{{ url('/attendance/reminder') }}"
-                        }
-                    });
-                </script>
+                        }).then((result) => {
+                            console.log(result);
+                            /* Read more about isConfirmed, isDenied below */
+                            if (result == true) {
+                                window.location = "{{ url('/attendance/reminder') }}"
+                            }
+                        });
+                    </script>
+                @endif
             @endif
             @if (Auth::guard('teacher')->check() == false)
                 <div class="row mt--2">
@@ -50,6 +116,7 @@
                                     <div class="col-7 col-stats">
                                         <div class="numbers">
                                             <p class="card-category">Student</p>
+
                                             <h4 class="card-title">{{ $data->student }}</h4>
                                         </div>
                                     </div>
@@ -69,7 +136,8 @@
                                     <div class="col-7 col-stats">
                                         <div class="numbers">
                                             <p class="card-category">Parent</p>
-                                            <h4 class="card-title">{{ $data->parent }}</h4>
+                                            {{-- <h4 class="card-title">{{ $data->parent }}</h4> --}}
+                                            <h4 class="card-title">1005</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -110,11 +178,17 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <img style="width: 100%; height: 300px;"
-                                                src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">
+                                            @if ($data->announces)
+                                                <!--<img style="width: 100%"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                <img style="width: 100%" src="{{ url($data->announces->banner) }}"
+                                                    alt="">
+                                            @endif
                                         </div>
                                         <div class="col-md-12">
-                                            <p>{{ $data->announces->description }}</p>
+                                            @if ($data->announces)
+                                                <p>{{ $data->announces->description }}</p>
+                                            @endif
                                         </div>
                                     </div>
 

@@ -101,8 +101,27 @@
                                                             <b>
                                                                 {{ $item->program }}</b>
                                                             @if ($item->is_class_new == true)
-                                                                <span style="color: red">(New!)</span>
+                                                                @php
+                                                                    $already_absent = DB::table('attendances')
+                                                                        ->where([
+                                                                            ['price_id', $item->priceid],
+                                                                            ['day1', $item->day1],
+                                                                            ['day2', $item->day2],
+                                                                            ['course_time', $item->course_time],
+                                                                            ['teacher_id', $item->id_teacher],
+                                                                            ['is_presence', 1],
+                                                                        ])
+                                                                        ->first();
+
+                                                                    if ($already_absent != null) {
+                                                                        $new_label = 'hidden';
+                                                                    } else {
+                                                                        $new_label = '';
+                                                                    }
+                                                                @endphp
+                                                                <span style="color: red" {{ $new_label }}>(New!)</span>
                                                             @endif
+
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
                                                             <div>
@@ -135,7 +154,8 @@
                                                         @endif
                                                     </div>
                                                     <br>
-                                                    <b>{{ $item->day_one }} {{ $item->day1 != $item->day2 ? '&' : '' }}
+                                                    <b>{{ $item->day_one }}
+                                                        {{ $item->day1 != $item->day2 ? '&' : '' }}
                                                         {{ $item->day1 != $item->day2 ? $item->day_two : '' }}</b>
                                                     <br>
                                                     <b>{{ $item->course_time }}</b>
@@ -193,7 +213,25 @@
                                                             <b>
                                                                 {{ $itemSemiPrivate->program }}</b>
                                                             @if ($itemSemiPrivate->is_class_new == true)
-                                                                <span style="color: red">(New!)</span>
+                                                                @php
+                                                                    $already_absent = DB::table('attendances')
+                                                                        ->where([
+                                                                            ['price_id', $item->priceid],
+                                                                            ['day1', $item->day1],
+                                                                            ['day2', $item->day2],
+                                                                            ['course_time', $item->course_time],
+                                                                            ['teacher_id', $item->id_teacher],
+                                                                            ['is_presence', 1],
+                                                                        ])
+                                                                        ->first();
+
+                                                                    if ($already_absent != null) {
+                                                                        $new_label = 'hidden';
+                                                                    } else {
+                                                                        $new_label = '';
+                                                                    }
+                                                                @endphp
+                                                                <span style="color: red" {{ $new_label }}>(New!)</span>
                                                             @endif
                                                         </div>
                                                         @if (Auth::guard('staff')->check() == true)
@@ -432,14 +470,24 @@
                                                 <option value="{{ $item3->id }}">{{ $item3->name }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="form-group">
+                                            <label for="">Type</label>
+                                            <select name="type" id=""
+                                                class="form-control select2 select2-hidden-accessible" style="width:100%;"
+                                                required>
+                                                <option value="">---Choose Type---</option>
+                                                <option value="edit">Edit</option>
+                                                <option value="promoted">Promoted</option>
+                                            </select>
+                                        </div>
+                                        <div class="rowStudent">
+                                        </div>
                                     </div>
-                                    <div class="rowStudent">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
                         </form>
                     </div>
                 </div>

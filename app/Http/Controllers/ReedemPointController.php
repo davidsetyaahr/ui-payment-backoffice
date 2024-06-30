@@ -13,6 +13,7 @@ use App\Models\ReedemItems;
 use App\Models\ReedemPoint;
 use App\Models\Students;
 use App\Models\Teacher;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -57,6 +58,8 @@ class ReedemPointController extends Controller
                         'type' => 'redeem',
                         'keterangan' => 'Reedem Point',
                         'balance_in_advanced' => $findPointStudent->total_point,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
                     ]);
                     $newPoint = intval($request->point) - intval($request->total_point);
                     Students::where('id', $student)
@@ -269,7 +272,19 @@ class ReedemPointController extends Controller
 
     public function historiAjax($id)
     {
-        $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'DESC')->get();
+
+        // $data = PointHistory::where('student_id', $id)->limit(10)->orderBy('date', 'DESC')->get();
+        $query = "
+            SELECT ph.*, s.id as student_id, s.name as student_name, s.email as student_email
+            FROM point_histories ph
+            JOIN students s ON ph.student_id = s.id
+            WHERE ph.student_id = ?
+            ORDER BY ph.date DESC
+            LIMIT 10
+        ";
+
+        // Menjalankan query
+        $data = DB::select($query, [$id]);
         return $data;
     }
 
@@ -280,11 +295,14 @@ class ReedemPointController extends Controller
         $data = [];
         if ($request->from && $request->to) {
             $data = PointHistory::with('student')->whereBetween('date', [$request->from, $request->to]);
+
             if ($request->student) {
                 $data = $data->where('student_id', $request->student)->orderBy('date', 'ASC');
             }
             $data = $data->where('keterangan', '!=', 'Opening Balance')->get();
         }
+
+        // dd($data);
         return view('reedemPoint.history-point', compact('title', 'data', 'student'));
     }
 

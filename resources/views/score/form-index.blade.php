@@ -95,6 +95,7 @@
                                                     <th class="text-center">Grade</th>
                                                     <th class="text-center">Comment For Student</th>
                                                     <th class="text-center">Date Test</th>
+                                                    <th class="text-center">Date Time</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -124,15 +125,17 @@
                                                                     $detail = $detail->where('test_item_id', $itemTestValue->id)->first();
                                                                 }
                                                             @endphp
-                                                            <td>{{ $detail != null ? $detail->score : '' }}</td>
+                                                            <td>{{ $detail != null ? $detail->score : '-' }}</td>
                                                         @endforeach
-                                                        <td>{{ $average != null ? $average->average_score : '' }}
+                                                        <td>{{ $average != null ? $average->average_score : '-' }}
                                                         </td>
                                                         <td>{{ $average != null ? Helper::getGrade($average->average_score) : '' }}
                                                         </td>
-                                                        <td>{{ $average != null ? $average->comment : '' }}
+                                                        <td>{{ $average != null ? $average->comment : '-' }}
                                                         </td>
-                                                        <td>{{ $average != null ? $average->date : '' }}
+                                                        <td>{{ $average != null ? $average->date : '-' }}
+                                                        </td>
+                                                        <td>{{ $average != null ? $average->created_at : '-' }}
                                                         </td>
                                                         <td>
                                                             @if ($average != null)

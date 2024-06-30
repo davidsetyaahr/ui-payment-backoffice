@@ -43,6 +43,7 @@ class UsersController extends Controller
                     $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data->id)->first();
                     $data['default_student_id'] = $students->student_id;
                     $data['default_student_name'] = $students->name;
+                    $data['default_student_class'] = $students->priceid;
                     $credentials = ([
                         'no_hp' => $phone,
                         'password' => $otp,
@@ -181,9 +182,11 @@ class UsersController extends Controller
                 ->first();
 
             if ($data) {
-                $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->where('parent_id', $data['id'])->first();
+                $students = ParentStudents::join('student', 'parent_students.student_id', 'student.id')->join('price', 'student.priceid','price.id')->where('parent_id', $data['id'])->first();
                 $data['default_student_id'] = $students->student_id;
                 $data['default_student_name'] = $students->name;
+                $data['default_student_class'] = $students->priceid;
+                $data['default_student_class_name'] = $students->program;
                 if ($token = JWTAuth::attempt($credentials)) {
                     // return $this->respondWithToken($token, 'parent');
                     return response()->json([
@@ -248,8 +251,8 @@ class UsersController extends Controller
     {
         try {
             $students = [];
-            $data = ParentStudents::join('student', 'student.id', 'parent_students.student_id')
-                ->select('student.*')
+            $data = ParentStudents::join('student', 'student.id', 'parent_students.student_id')->join('price','student.priceid','price.id')
+                ->select('price.program','student.*')
                 ->where('parent_students.parent_id', $parentId)
                 ->get();
             foreach ($data as $key => $val) {

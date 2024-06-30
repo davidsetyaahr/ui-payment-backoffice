@@ -10,5 +10,5 @@ class Announces extends Model
     public $timestamps = false;
     use HasFactory;
     protected $table = 'announces';
-    protected $fillable = ['banner', 'description'];
+    protected $fillable = ['banner', 'description', 'announce_for'];
 }
