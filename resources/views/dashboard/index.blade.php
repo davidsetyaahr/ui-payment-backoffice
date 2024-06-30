@@ -42,6 +42,7 @@
                     // dd($arr);
                     // Mengelompokkan array secara manual
                     $groupedItems = [];
+                    $testing = '';
                     foreach ($arr as $item) {
                         $groupedItems[$item->program][] = $item;
                     }
@@ -49,12 +50,21 @@
                 @endphp
 
                 @foreach ($groupedItems as $program => $items)
+                    {{-- {{ dd($groupedItems) }} --}}
                     <div class="col-md-4 box">
                         <div class="alert alert-warning alert-dismissible fade show" role="alert" style="height: auto">
                             <strong>Remember to Input Score in </strong><br>
-                            <p class="mb-2" style="font-size: 15px;">
+                            @if (!empty($items))
+                                @php
+                                    $firstItem = $items[0]; // Mengambil elemen pertama dari $items
+                                @endphp
+                                <p class="mb-2" style="font-size: 15px;">
+                                    {{ $program . ' ' . $firstItem->day1 . ' ' . $firstItem->day2 . ' at ' . $firstItem->course_time }}
+                                </p>
+                            @endif
+                            {{-- <p class="mb-2" style="font-size: 15px;">
                                 {{ $program . ' ' . $item->day1 . ' ' . $item->day2 . ' at ' . $item->course_time }}
-                            </p>
+                            </p> --}}
 
                             @foreach ($items as $item)
                                 <p><i class="fas fa-info-circle"> {{ $item->name }}</i></p>
@@ -170,7 +180,7 @@
                                         <div class="col-md-12">
                                             @if ($data->announces)
                                                 <!--<img style="width: 100%"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    src="{{ url('/storage') . '/' . $data->announces->banner }}" alt="">-->
                                                 <img style="width: 100%" src="{{ url($data->announces->banner) }}"
                                                     alt="">
                                             @endif
